@@ -54,7 +54,7 @@ Important features and parameters:
 
 -   We have a continuous and a three level ordinal variable representing the population density for each tile
 
-The link to the source code for the `census.de.100.m.tile` object is [here](https://github.com/R-ramljak/MNO_GM/blob/master/1_Read%20in%20data.R).
+The link to the source code for the `census.de.100.m.tile` object is [here](https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/1_Read%20in%20data.R).
 
 ```{r message=FALSE}
 census.de.100m.tile <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
@@ -173,7 +173,7 @@ We generate a radio network, which is composed of three layers. The layers follo
 
 -   Parameters concerning the device to cell association are specified in the next section
 
-The link to the source code for the layers.1 object as well as the coverage.areas.1 object is [here](https://github.com/R-ramljak/MNO_GM/blob/master/2_Radio%20cell%20generation.R).
+The link to the source code for the layers.1 object as well as the coverage.areas.1 object is [here](https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R).
 
 ```{r}
 layers <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds")
@@ -270,7 +270,7 @@ At this stage we have added to the geographically distributed mobile phone popul
 
 The following module will establish the association between mobile phones of a generic tile to a relevant antenna. The result will be a reference matrix $P$ of size $I x J$, where I denotes the total number of radio cells (antennas), $J$ the total number of tiles and the elements correspond to the probability of the mobile phones of any tile $j$ are registered in the cell $i$. With $P$ one is able to simulate the column vector $c$ (random variable) which describes the total count of mobile phone associated to a radio cell.
 
-Lets assume that $\mathcal{L}_{j}$ denotes the subset of radio cells covering a particular tile (remember, overlapping coverage areas are very common). This means that these respective radio cells are competing with each other to be associated with the cell phones in the tile. We therefore assign probabilities which describe the respective association between a radio cell $i$ and tile $j$. This probability depends on the parameter signal strength which we mimic with a simple linear function that describes the gradual decrease in signal the further away the tile centroid $j$ is from the coverage area centroid of $i$. This means, we calculate the distance between the two centroids and divide it between the radius of that radio cell - it is denoted by $s_{ij}$. We introduce a minimum threshold value $\nu$ which limits radio cells with a too low signal intensity $s_{ij}$ for a particular tile to be able to be picked up a mobile phone in that tile. This particular operationalization of a function modeling the signal strength parameter instead of fixed categorical signal strength values makes the overall workflow of the notebook more realistic (granularity) and more modular as one can later implement very easy even more realistic functions describing the signal strength parameter. The exact operationalization can be found [here](https://github.com/R-ramljak/MNO_GM/blob/master/3_device%20to%20cell.R).
+Lets assume that $\mathcal{L}_{j}$ denotes the subset of radio cells covering a particular tile (remember, overlapping coverage areas are very common). This means that these respective radio cells are competing with each other to be associated with the cell phones in the tile. We therefore assign probabilities which describe the respective association between a radio cell $i$ and tile $j$. This probability depends on the parameter signal strength which we mimic with a simple linear function that describes the gradual decrease in signal the further away the tile centroid $j$ is from the coverage area centroid of $i$. This means, we calculate the distance between the two centroids and divide it between the radius of that radio cell - it is denoted by $s_{ij}$. We introduce a minimum threshold value $\nu$ which limits radio cells with a too low signal intensity $s_{ij}$ for a particular tile to be able to be picked up a mobile phone in that tile. This particular operationalization of a function modeling the signal strength parameter instead of fixed categorical signal strength values makes the overall workflow of the notebook more realistic (granularity) and more modular as one can later implement very easy even more realistic functions describing the signal strength parameter. The exact operationalization can be found [here](https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/3_device%20to%20cell.R).
 
 The elements of $P$ - the probability with which the mobile phones within a particular cell are associated with a particular radio cell - are defined by
 
