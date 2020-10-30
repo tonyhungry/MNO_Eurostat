@@ -1,5 +1,10 @@
 ---
 title: "Estimating present population based on Mobile Network Operator data - a simulation study - third draft 29.10.2020"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 author: "Stefania, Giulia, Tony, Marco"
 output:  
   html_document:
@@ -114,7 +119,7 @@ ECCDF.data <- census.de.100m.tile %>%
 
 # Giulia and Stefania will change this
 Fig.2.1 <- ECCDF.data %>%
-  sample_n(10000) %>% 
+  sample_n(10000) %>%
   ggplot() +
   geom_sf(aes(color = pop.area.kind), show.legend = F) +
   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
