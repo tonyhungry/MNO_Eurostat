@@ -7,7 +7,7 @@ library(furrr)
 library(Matrix)
 
 census.de.100m.tile <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds") %>% 
-  select(-c(cluster_id, pop.raster, cluster.tile.n))
+  dplyr::select(-c(cluster_id, pop.raster, cluster.tile.n))
 
 coverage.areas <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/coverage.areas.rds")
 
@@ -17,7 +17,7 @@ coverage.example <- coverage.areas %>%
   # st_drop_geometry() %>%
   # st_as_sf(coords = "antenna.centroid", crs = 3035)
 
-signal_strength <- Vectorize(function(distance, radius, max.equal = 0.7, min.threshold = 0.2) {
+signal_strength <- Vectorize(function(distance, radius, max.equal = 0.7, min.threshold = 0.03) {
   sij.calc <- 1 - distance / radius
 
   if (sij.calc < min.threshold) { # min.threshold (nu)
@@ -49,20 +49,39 @@ saveRDS(dev.to.cell, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working
 dev.to.cell <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.rds")
 
 
-C.vec.helper <- dev.to.cell %>% 
+dev.to.cell.classified <- dev.to.cell %>% 
   dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
-  st_drop_geometry()
+  st_drop_geometry() %>% 
+  mutate(coverage.kind = case_when(pop == 0 ~ "0 population",
+                                   pop >= 1 & weight.pij == 1 ~ "covered completely by one tile",
+                                   pop >= 1 & weight.pij > 0 & weight.pij < 1 ~ "covered by multpile tiles",
+                                   pop >= 1 & weight.pij == 0 ~ "tile uncovered sufficiently"))
 
+# saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified")
+# dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified")
 
-C.vec.help.0 <- C.vec.helper %>% 
-  filter(pop == 0)
+C.vec.multiple.helper <- dev.to.cell.classified %>% 
+  filter(coverage.kind == "covered by multpile tiles") %>% 
+  split(.$internal.id) 
 
-C.vec.help.1 <- C.vec.helper %>% 
-  filter(pop != 0 & weight.pij == 1)
+# saveRDS(C.vec.multiple.helper, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper")
+# C.vec.multiple.helper <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper")
 
 # Calculate the number of cores
 no_cores <- availableCores() - 1
 plan(multisession, workers = no_cores)
+
+C.vec.multiple <- C.vec.multiple.helper %>% 
+  future_map(~sample(., x = .$antenna.ID, mean(.$pop),
+                     replace = T, prob = .$weight.pij), .progress = T) %>% 
+  future_map(as_tibble, .id = "internal.id", .progress = T) %>% 
+  future_map(~group_by(., value), .progress = T) %>% 
+  future_map(~summarise(., pop.count.rand = n(), .groups = "drop"), .progress = T)
+
+
+  
+  
+
 
 # C.vec.help.rest <- C.vec.helper %>% 
 #   filter(pop >= 1 & weight.pij > 0 & weight.pij < 1) %>% 

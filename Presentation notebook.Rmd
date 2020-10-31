@@ -264,6 +264,17 @@ plot_grid(Fig.2.1, Fig.5, labels = "Fig.5: Full coverage corresponding to the de
 
 Add interpretation that coverage follows the pop.area.kind variable
 
+```{r}
+dev.to.cell <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.rds")
+
+C.vec.helper <- dev.to.cell %>% 
+  dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
+  st_drop_geometry() %>% 
+  mutate(coverage.kind = )
+
+
+```
+
 # Device-to-cell association
 
 At this stage we have added to the geographically distributed mobile phone population a radio network, which is setup in three layers, spanning respectively across tiles that correspond to specific area kinds (`pop.area.kind`).
