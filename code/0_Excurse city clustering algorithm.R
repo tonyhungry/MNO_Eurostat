@@ -8,7 +8,7 @@ library(raster)
 library(stars)
 library(osc)
 
-census.raw <- fread("Data/Census data Germany/csv_Bevoelkerung_100m_Gitter/Zensus_Bevoelkerung_100m-Gitter.csv")
+census.raw <- fread("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/Data/Census data Germany/csv_Bevoelkerung_100m_Gitter/Zensus_Bevoelkerung_100m-Gitter.csv")
 
 # Dataframe with bounding box, tile id, and two versions of the population variable
 census.de.100m <- census.raw %>% 
@@ -28,6 +28,8 @@ census.de.100m <- census.raw %>%
 census.de.100m.tile <- census.de.100m %>% 
   raster::rasterFromXYZ(crs = st_crs(3035)$proj4string) %>% 
   raster(layer = 3)
+
+saveRDS(census.de.100m.tile, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.de.100m.tile.rds")
 
 # Performing cca workflows
 cities <- cca(census.de.100m.tile, cell.class = 1, s = 20000000, unit = "m")

@@ -45,26 +45,29 @@ dev.to.cell <- census.de.100m.tile %>%
   ungroup()
 
 
-saveRDS(dev.to.cell, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.rds")
+# saveRDS(dev.to.cell, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.rds")
 dev.to.cell <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.rds")
 
 
 dev.to.cell.classified <- dev.to.cell %>% 
   dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
-  st_drop_geometry() %>% 
+  # st_drop_geometry() %>% 
   mutate(coverage.kind = case_when(pop == 0 ~ "0 population",
                                    pop >= 1 & weight.pij == 1 ~ "covered completely by one tile",
                                    pop >= 1 & weight.pij > 0 & weight.pij < 1 ~ "covered by multpile tiles",
                                    pop >= 1 & weight.pij == 0 ~ "tile uncovered sufficiently"))
 
-# saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified")
-# dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified")
+d <- dev.to.cell.classified %>% 
+  distinct(internal.id, .keep_all = T)
+
+# saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.rds")
+dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.rds")
 
 C.vec.multiple.helper <- dev.to.cell.classified %>% 
   filter(coverage.kind == "covered by multpile tiles") %>% 
   split(.$internal.id) 
 
-# saveRDS(C.vec.multiple.helper, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper")
+saveRDS(C.vec.multiple.helper, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper.rds")
 # C.vec.multiple.helper <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper")
 
 # Calculate the number of cores
@@ -72,11 +75,14 @@ no_cores <- availableCores() - 1
 plan(multisession, workers = no_cores)
 
 C.vec.multiple <- C.vec.multiple.helper %>% 
-  future_map(~sample(., x = .$antenna.ID, mean(.$pop),
+  future_map(~sample(x = .$antenna.ID, mean(.$pop),
                      replace = T, prob = .$weight.pij), .progress = T) %>% 
   future_map(as_tibble, .id = "internal.id", .progress = T) %>% 
   future_map(~group_by(., value), .progress = T) %>% 
   future_map(~summarise(., pop.count.rand = n(), .groups = "drop"), .progress = T)
+
+saveRDS(C.vec.multiple, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.rds")
+# C.vec.multiple.helper <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper")
 
 
   
