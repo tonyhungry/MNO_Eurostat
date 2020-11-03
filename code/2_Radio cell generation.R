@@ -4,6 +4,8 @@
 library(tidyverse)
 library(sf)
 
+set.seed(3)
+
 # Initital object from file 1 Read In
 census.de.100m.tile.1 <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
 
@@ -52,10 +54,14 @@ layers <- pmap(list(layer.base, tower.dist, rotation.degree),
   set_names(c("Layer.1", "Layer.2", "Layer.3"))
 
 saveRDS(layers, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds")
+layers <- readRDS(file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds")
   
 # plot(layers[[1]])
 # plot(layers[[2]], add = TRUE, col = 'red')
 # plot(layers[[3]], add = TRUE, col = 'green')
+
+
+manually.towers <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/manually placed towers.rds")  
 
 
 # Generate 3 antennas per tower and coverage areas
@@ -63,6 +69,7 @@ coverage.areas <- layers %>%
   map2(., jitter, ~st_jitter(st_centroid(.x), .y)) %>%
   map(~st_coordinates(.)) %>%
   map(~as_tibble(.)) %>%
+  map_at(c("Layer.2"), ~bind_rows(., manually.towers)) %>% 
   map(~dplyr::select(., X.tow = X, Y.tow = Y)) %>% 
   map2(., c("RT", "ST", "UT"), ~mutate(.x, tower.ID = paste0(.y, 1:n()))) %>%
   map(~slice(., rep(1:n(), each = 3))) %>%
@@ -97,9 +104,11 @@ coverage.areas %>%
   summarise(n.antenna = n())
 
 coverage.areas %>% 
+  filter(area.kind == "Suburban") %>% 
   ggplot() +
   geom_sf(aes(col = area.kind), fill = NA) +
-  facet_grid(cols = vars(area.kind)) +
+  # geom_sf(data = missings) + # layer of the originally uncovered tiles, where manual adjustment was needed
+  # facet_grid(cols = vars(area.kind)) +
   ggtitle("Fig 7: Coverage per layer", subtitle = "Signal density increases with increasing population density")
 
 
