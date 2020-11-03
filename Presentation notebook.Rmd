@@ -1,5 +1,5 @@
 ---
-title: "Estimating present population based on Mobile Network Operator data - a simulation study - third draft 29.10.2020"
+title: "Estimating present population based on Mobile Network Operator data - a simulation study - final draft 04.11.2020"
 knit: (function(input_file, encoding) {
   out_dir <- 'docs';
   rmarkdown::render(input_file,
@@ -107,18 +107,18 @@ plot_grid(Fig.1, labels = "Fig.1: Focusing on a part of South Bavaria",
 # Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation
 
 # ECCDF of population distribution
-ECCDF.data <- census.de.100m.tile %>% 
+ECCDF.data <- census.de.100m.tile %>%
+  sample_n(1000) %>% 
   mutate(pop.plot = pop + 1) %>% 
   arrange(pop.plot) %>% 
   mutate(prob = 1 / n()) %>% 
   mutate(cum.prob = cumsum(prob)) %>% 
-  mutate(log2.cum.prob.comp = log2(1 - cum.prob)) %>% 
-  mutate(log2.pop = log2(pop.plot)) %>% 
+  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>% 
+  mutate(log10.pop = log10(pop.plot)) %>% 
   mutate(pop.area.kind = case_when(pop == 0 ~ "Uninhabitated",
                                    TRUE ~ pop.area.kind))
 
 
-# Giulia and Stefania will change this
 Fig.2.1 <- ECCDF.data %>%
   sample_n(10000) %>%
   ggplot() +
@@ -131,12 +131,12 @@ Fig.2.1 <- ECCDF.data %>%
 Fig.2.2 <- ECCDF.data %>%  
   sample_n(1000) %>%
   ggplot() +
-  geom_point(aes(x = log2.pop, y = log2.cum.prob.comp,
-               color = pop.area.kind)) +
+  geom_point(aes(x = log10.pop, y = log10.cum.prob.comp,
+                 color = pop.area.kind)) +
+  geom_hline(yintercept = -0.3010300, linetype = "dotted") +
   geom_hline(yintercept = -1, linetype = "dotted") +
-  geom_hline(yintercept = -4.321928, linetype = "dotted") +
-  geom_text(x = 6, y = -0.65, label = "50% of the data") +
-  geom_text(x = 6, y = -4, label = "95% of the data") +
+  geom_text(x = 1.5, y = -0.2, label = "50% of the data") +
+  geom_text(x = 1.5, y = -0.9, label = "90% of the data") +
   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
   ggtitle("", subtitle = "Empirical cumulative complementary\ndistribution function") + 
   labs(y = "log2(Prob(Y > x))", x = "log2(Mobile phones)", 
@@ -149,7 +149,13 @@ plot_grid(Fig.2.1, Fig.2.2, labels = "Fig.2: Mobile phone density per tile",
           hjust = -0.1, label_size = 12, rel_widths = c(0.8, 1))
 ```
 
-Figure 2 shows the distribution of the population for the focus area. There are a scale of 8 colors representing the different population densities in the area of interest. (This will be later on adjusted with the following figure, representing the log CDF.) Looking at the figure, the major part of the territory has a population count below 2000; there are two evident urban agglomeration that correspond to Munich and Nuremberg. Focusing on these urban areas, a single tile can contain up to 8,000 people.
+Figure 2 shows the mobile phone density per tile in the focus area. In particular, we have 4 different colors rapresenting the clusters: unhabitated, rural, suburban and urban. 
+
+However, to have a deeper look of the mobile phone density per tile, in the figure (write the figure number of the first ECCDF) we choose to rapresent data with an empirical cumulative complementary distribution function[using a log base 10 transformation]. 
+
+The ECCDF is a step function with jumps `1/n` at observation values, where `i` is the number of tied observations at that value. Moreover, missing values are ignored and the objective "complementary" means that we need to substruct 1 - the cumulative probability. It is commonly used with datasets that has highly skewed distribution, as we can see in our distribution has a right skewed tail. 
+
+As the figure suggests, 50% of the data are rapresented by unhabitated tiles with no phones; then we can go thought the graph stating that 90% of the tiles contains less than 0.5 mobile phones and the 10% left are tiles both urban and rulal containing  0.5 and above mobile phones. 
 
 # Generation of a synthetic the Radio Network
 
@@ -169,7 +175,7 @@ We generate a radio network, which is composed of three layers. The layers follo
 
 -   The layer determines the coverage diameter of an antenna: `layer 1` = 15,000m; `layer 2` = 2500m; `layer 3` = 500m
 
--   Each tile of the focus area is covered by at least one antenna and the antennas' coverage areas are allowed to overlap
+-   Each tile of the focus area is sufficiently covered by at least one antenna and the antennas' coverage areas are allowed to overlap.
 
 -   Parameters concerning the device to cell association are specified in the next section
 
@@ -300,6 +306,38 @@ Estimation strategies:
 -   bayes rule: $\hat{u}_{j} = a_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} a_{k}}$
 
 -   MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
+
+
+
+```{r}
+coverage.intensity <- dev.to.cell.classified %>% 
+  # sample_n(100000) %>%
+  filter(!weight.pij == 0) %>% 
+  group_by(internal.id) %>% 
+  summarise(n.cells.cover = n()) %>% 
+  arrange(n.cells.cover) %>% 
+  mutate(prob = 1 / n()) %>% 
+  mutate(cum.prob = cumsum(prob))
+
+
+Fig.6 <- coverage.intensity %>%  
+  ggplot() + 
+  stat_count(aes(n.cells.cover), fill = "#4477A9") +
+  scale_x_continuous(breaks=c(1:11)) +
+  # geom_vline(yintercept = -0.3010300, linetype = "dotted") + implement half line
+  labs(y = "Count of tiles", x = "Covered by ... antennas", 
+       colour = "") +
+  theme(legend.position = "bottom")
+
+plot_grid(Fig.6, labels = "Fig.4: Number of antennas covering a tile", 
+          hjust = -0.1, label_size = 12)
+```
+
+
+
+In the figure 6 there is plotted an histogram representing the number of antennas per tile. The distribution is right skewed however we can see some important details as the minimum antenna per tile is one and the maximum is eleven. It is definitively possible to claim that even if we are working with synthetic data , they are a realistic values. Moreover, if a tile is covered by e.g. 3 antennas that all of these antennas are sufficiently covering the tile, this means that they have a positive probability ($p_{ij}$). 
+Another detail that is possible to see from the histogram is that the mean value is 2 antennas per tile and they are not normally distributed. Last remark is that we do not need to use any log transformation since the values were good enought to have a good representation of the distribution.
+
 
 # References
 
