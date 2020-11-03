@@ -63,6 +63,38 @@ d <- dev.to.cell.classified %>%
 # saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.rds")
 dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.rds")
 
+d <- dev.to.cell.classified %>% 
+  # sample_n(100000) %>%
+  filter(!weight.pij == 0) %>% 
+  group_by(internal.id) %>% 
+  summarise(n.cells.cover = n()) %>% 
+  arrange(n.cells.cover) %>% 
+  mutate(prob = 1 / n()) %>% 
+  mutate(cum.prob = cumsum(prob))
+  # mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>% 
+  # mutate(log10.n.cells.cover = log10(n.cells.cover))
+
+# d %>%  
+#   sample_n(10000) %>%
+#   ggplot() +
+#   geom_point(aes(x = n.cells.cover, y = n.cells.cover)) +
+#   geom_hline(yintercept = -0.3010300, linetype = "dotted") +
+#   geom_hline(yintercept = -1, linetype = "dotted") +
+#   geom_text(x = 0.75, y = -0.2, label = "50% of the data") +
+#   geom_text(x = 0.75, y = -0.9, label = "90% of the data") 
+
+
+Fig.coverage <- d %>%  
+  ggplot() + 
+  stat_count(aes(n.cells.cover), fill = "#4477A9") +
+  scale_x_continuous(breaks=c(1:11)) +
+  # geom_vline(yintercept = -0.3010300, linetype = "dotted") + implement half line
+  labs(y = "Count of tiles", x = "Covered by ... antennas", 
+       colour = "") +
+  theme(legend.position="bottom")
+ggsave(plot = Fig.coverage, filename = "plots/Fig coverage.png", device = "png")
+
+
 C.vec.multiple.helper <- dev.to.cell.classified %>% 
   filter(coverage.kind == "covered by multpile tiles") %>% 
   split(.$internal.id) 
