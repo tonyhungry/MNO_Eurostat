@@ -54,19 +54,19 @@ dev.to.cell.classified <- dev.to.cell %>%
 
 
 
-saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
-# dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
+# saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
+dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
 
 #### Plots
 
-coverage.intensity <- dev.to.cell.classified %>% 
-  # sample_n(100000) %>%
-  filter(!weight.pij == 0) %>% 
-  group_by(internal.id) %>% 
-  summarise(n.cells.cover = n()) %>% 
-  arrange(n.cells.cover) %>% 
-  mutate(prob = 1 / n()) %>% 
-  mutate(cum.prob = cumsum(prob))
+# coverage.intensity <- dev.to.cell.classified %>% 
+#   # sample_n(100000) %>%
+#   filter(!weight.pij == 0) %>% 
+#   group_by(internal.id) %>% 
+#   summarise(n.cells.cover = n()) %>% 
+#   arrange(n.cells.cover) %>% 
+#   mutate(prob = 1 / n()) %>% 
+#   mutate(cum.prob = cumsum(prob))
   # mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>% 
   # mutate(log10.n.cells.cover = log10(n.cells.cover))
 
@@ -94,6 +94,8 @@ coverage.intensity <- dev.to.cell.classified %>%
 
 
 C.vec.multiple.helper <- dev.to.cell.classified %>% 
+  st_drop_geometry() %>% 
+  select(-coverage.kind) %>% 
   filter(coverage.kind == "covered by multpile tiles") %>% 
   split(.$internal.id) 
 
