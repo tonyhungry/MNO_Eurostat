@@ -11,13 +11,8 @@ census.de.100m.tile <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/M
 
 coverage.areas <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/coverage.areas.rds")
 
-coverage.example <- coverage.areas %>% 
-  filter(area.kind %in% c("Rural", "Suburban")) %>% 
-  st_transform(crs = 3035)
-  # st_drop_geometry() %>%
-  # st_as_sf(coords = "antenna.centroid", crs = 3035)
 
-signal_strength <- Vectorize(function(distance, radius, max.equal = 0.7, min.threshold = 0.03) {
+signal_strength <- Vectorize(function(distance, radius, max.equal = 0.7, min.threshold = 0.01) {
   sij.calc <- 1 - distance / radius
 
   if (sij.calc < min.threshold) { # min.threshold (nu)
@@ -45,25 +40,26 @@ dev.to.cell <- census.de.100m.tile %>%
   ungroup()
 
 
-# saveRDS(dev.to.cell, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.rds")
-dev.to.cell <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.rds")
+saveRDS(dev.to.cell, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.final.rds")
+# dev.to.cell <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.final.rds")
 
 
 dev.to.cell.classified <- dev.to.cell %>% 
   dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
-  # st_drop_geometry() %>% 
+  # st_drop_geometry() %>%
   mutate(coverage.kind = case_when(pop == 0 ~ "0 population",
                                    pop >= 1 & weight.pij == 1 ~ "covered completely by one tile",
                                    pop >= 1 & weight.pij > 0 & weight.pij < 1 ~ "covered by multpile tiles",
                                    pop >= 1 & weight.pij == 0 ~ "tile uncovered sufficiently"))
 
-d <- dev.to.cell.classified %>% 
-  distinct(internal.id, .keep_all = T)
 
-# saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.rds")
-dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.rds")
 
-d <- dev.to.cell.classified %>% 
+saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
+# dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
+
+#### Plots
+
+coverage.intensity <- dev.to.cell.classified %>% 
   # sample_n(100000) %>%
   filter(!weight.pij == 0) %>% 
   group_by(internal.id) %>% 
@@ -84,15 +80,17 @@ d <- dev.to.cell.classified %>%
 #   geom_text(x = 0.75, y = -0.9, label = "90% of the data") 
 
 
-Fig.coverage <- d %>%  
-  ggplot() + 
-  stat_count(aes(n.cells.cover), fill = "#4477A9") +
-  scale_x_continuous(breaks=c(1:11)) +
-  # geom_vline(yintercept = -0.3010300, linetype = "dotted") + implement half line
-  labs(y = "Count of tiles", x = "Covered by ... antennas", 
-       colour = "") +
-  theme(legend.position="bottom")
-ggsave(plot = Fig.coverage, filename = "plots/Fig coverage.png", device = "png")
+# Fig.coverage <- coverage.intensity %>%  
+#   ggplot() + 
+#   stat_count(aes(n.cells.cover), fill = "#4477A9") +
+#   scale_x_continuous(breaks=c(1:11)) +
+#   # geom_vline(yintercept = -0.3010300, linetype = "dotted") + implement half line
+#   labs(y = "Count of tiles", x = "Covered by ... antennas", 
+#        colour = "") +
+#   theme(legend.position="bottom")
+
+########
+
 
 
 C.vec.multiple.helper <- dev.to.cell.classified %>% 
