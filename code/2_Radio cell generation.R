@@ -61,7 +61,9 @@ layers <- readRDS(file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/wor
 # plot(layers[[3]], add = TRUE, col = 'green')
 
 
-manually.towers <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/manually placed towers.rds")  
+manually.towers.rural <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/manually placed towers.rural.rds")  
+# manually.towers.suburban <- readRDS("C:/Users/ramljak/Desktop/marco/manually placed towers.suburban.rds")  
+# manually.towers.suburban.second <- readRDS("C:/Users/ramljak/Desktop/marco/manually placed towers.suburban.second.rds")  
 
 
 # Generate 3 antennas per tower and coverage areas
@@ -69,7 +71,8 @@ coverage.areas <- layers %>%
   map2(., jitter, ~st_jitter(st_centroid(.x), .y)) %>%
   map(~st_coordinates(.)) %>%
   map(~as_tibble(.)) %>%
-  map_at(c("Layer.2"), ~bind_rows(., manually.towers)) %>% 
+  map_at(c("Layer.1"), ~bind_rows(., manually.towers.rural)) %>% 
+  # map_at(c("Layer.2"), ~bind_rows(., manually.towers.suburban)) %>% 
   map(~dplyr::select(., X.tow = X, Y.tow = Y)) %>% 
   map2(., c("RT", "ST", "UT"), ~mutate(.x, tower.ID = paste0(.y, 1:n()))) %>%
   map(~slice(., rep(1:n(), each = 3))) %>%
@@ -79,11 +82,11 @@ coverage.areas <- layers %>%
   map(~mutate(., antenna.kind = str_sub(antenna.ID, -1))) %>%
   map2(., coverage.centroid.dist, ~mutate(.x,
                                           X.ant.help = case_when(antenna.kind == "1" ~ X.tow - .y * 0,
-                                                            antenna.kind == "2" ~ X.tow + .y * 0.77,
-                                                            antenna.kind == "3" ~ X.tow - .y * 0.77),
+                                                                 antenna.kind == "2" ~ X.tow + .y * 0.77,
+                                                                 antenna.kind == "3" ~ X.tow - .y * 0.77),
                                           Y.ant.help = case_when(antenna.kind == "1" ~ Y.tow - .y * 1, # meter distance apart
-                                                            antenna.kind == "2" ~ Y.tow + .y * 0.77,
-                                                            antenna.kind == "3" ~ Y.tow + .y * 0.77))) %>%
+                                                                 antenna.kind == "2" ~ Y.tow + .y * 0.77,
+                                                                 antenna.kind == "3" ~ Y.tow + .y * 0.77))) %>%
   # map(~mutate(., X.ant = X.ant.help,
   #             Y.ant = Y.ant.help)) %>% 
   map(~st_as_sf(., coords = c("X.ant.help", "Y.ant.help"))) %>%
