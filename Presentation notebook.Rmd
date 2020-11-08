@@ -49,7 +49,7 @@ The sample population value is used as the number of mobile phones in a specific
 The link to the source code for the census.de.100.m.tile object is [here](https://github.com/R-ramljak/MNO_GM/blob/master/1_Read%20in%20data.R).
 
 ```{r message=FALSE}
-census.de.100m.tile <- readRDS("C:/Users/ramljak/Desktop/marcocensus.tile.final.rds") 
+census.de.100m.tile <- readRDS("C:/Users/ramljak/Desktop/marco/census.tile.final.rds") 
  
 dim(census.de.100m.tile)
 
@@ -83,7 +83,7 @@ In the following section we then proceed to classify the tiles based on the numb
 
 #Download data from : https://gadm.org/download_country_v3.html --> R(sf) level 1
 
-germany.raw <- readRDS("C:/Users/ramljak/Desktop/marcogadm36_DEU_1_sf.rds") 
+germany.raw <- readRDS("C:/Users/ramljak/Desktop/marco/gadm36_DEU_1_sf.rds") 
 germany = germany.raw %>%  
   st_transform(crs = 3035)
 
@@ -165,7 +165,7 @@ Fig.2.1 <- prop.class %>%
   labs(fill = "") +  
   ggtitle("", subtitle = "Tile proportion") 
  
-result.sf <- readRDS("C:/Users/ramljak/Desktop/marcoresult.sf.rds") 
+result.sf <- readRDS("C:/Users/ramljak/Desktop/marco/result.sf.rds") 
  
 Fig.2.2 <- result.sf %>%  
   ggplot() +  
@@ -222,8 +222,8 @@ The link to the source code for the layers.1 object as well as the coverage.area
 The link to the source code for the layers object as well as the coverage.areas object is [here] (<https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R>).
 
 ```{r}
-layers <- readRDS("C:/Users/ramljak/Desktop/marcoradio cell layers.rds") 
-coverage.areas <- readRDS("C:/Users/ramljak/Desktop/marcocoverage.areas.rds") 
+layers <- readRDS("C:/Users/ramljak/Desktop/marco/radio cell layers.rds") 
+coverage.areas <- readRDS("C:/Users/ramljak/Desktop/marco/coverage.areas.rds") 
  
 coverage.layer1 <- coverage.areas %>%  
   filter(area.kind == "Rural") %>%  
@@ -254,7 +254,7 @@ We use a hexagonal structure to place towers across our focus area. This is a qu
 The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.
 
 ```{r testing}
-knitr::include_graphics("C:/Users/ramljak/Desktop/marcoantenna animation.gif")
+knitr::include_graphics("C:/Users/ramljak/Desktop/marco/antenna animation.gif")
 ```
 
 Basically, a tower is generated at its specified location, then three antennas are created. For the operationalized data structure, the antenna location is not really relevant as it corresponds to the respective tower location. What is more important are the antennas' *coverage area centroids* because they describe the middle point of the then generated circular coverage area. The specific radius of any generic coverage area is layer specific and listed above. As indicated in the animation, an antenna specific coverage area is setup with a variable *coverage intensity profile*. Basically, cell phones that are closer to the coverage area centroid of any antenna, have a higher coverage probability, which will be later introduced as the *signal strength* parameter.
@@ -358,7 +358,7 @@ $$
 where $s_{ij}$ describes the signal intensity of a particular cell $i$ associated with a particular tile $j$, and $\mathcal{L}_{j}$ describes the subset of radio cells that are covering the tile $j$. We then simulate the tile specific experiments - every mobile phone within a tile will be independently assigned to relevant radio cell with the probability $p_{ij}$. The result is the column vector $c$ which will act as a reference for the later on introduced estimation strategies.
 
 ```{r}
-C.vec.df <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.df.final.rds")
+C.vec.df <- readRDS("C:/Users/ramljak/Desktop/marco/C.vec.df.final.rds")
 
 # ECCDF of population distribution 
 ECCDF.phones.data <- C.vec.df %>% 
