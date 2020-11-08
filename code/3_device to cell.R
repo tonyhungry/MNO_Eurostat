@@ -6,6 +6,8 @@ library(sf)
 library(furrr)
 library(Matrix)
 
+set.seed(2)
+
 census.de.100m.tile <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds") %>% 
   dplyr::select(-c(cluster_id, pop.raster, cluster.tile.n))
 
@@ -40,8 +42,8 @@ dev.to.cell <- census.de.100m.tile %>%
   ungroup()
 
 
-saveRDS(dev.to.cell, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.final.rds")
-# dev.to.cell <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.final.rds")
+saveRDS(dev.to.cell, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.final.better.threshold.rds")
+dev.to.cell <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.final.better.threshold.rds")
 
 
 dev.to.cell.classified <- dev.to.cell %>% 
@@ -55,7 +57,7 @@ dev.to.cell.classified <- dev.to.cell %>%
 
 
 # saveRDS(dev.to.cell.classified, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
-dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
+dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.better.threshold.rds")
 
 #### Plots
 
@@ -91,20 +93,32 @@ dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrech
 
 ########
 
+# Differentiating workflows between device to cell associations depending on coverage.kind variable
+# One object where tiles are completely covered by one cell (no stochastic process)
+C.vec.fixed.helper <- dev.to.cell.classified %>% 
+  filter(coverage.kind == "covered completely by one tile") %>%
+  st_drop_geometry() %>% 
+  select(antenna.ID, pop)
 
+# saveRDS(C.vec.fixed.helper, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper.rds")
+# C.vec.fixed.helper <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper.rds")
 
+# One object where tiles are covered by multiple cells
 C.vec.multiple.helper <- dev.to.cell.classified %>% 
   st_drop_geometry() %>% 
-  select(-coverage.kind) %>% 
   filter(coverage.kind == "covered by multpile tiles") %>% 
   split(.$internal.id) 
 
-saveRDS(C.vec.multiple.helper, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper.rds")
-# C.vec.multiple.helper <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper")
+# Dropping associations for tiles with 0 population and tiles which are not sufficiently covered (in this case the coverage network was optimized that every tile is sufficiently covered)
+
+# saveRDS(C.vec.multiple.helper, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper.rds")
+# C.vec.multiple.helper <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper.rds")
 
 # Calculate the number of cores
 no_cores <- availableCores() - 1
 plan(multisession, workers = no_cores)
+
+set.seed(5)
 
 C.vec.multiple <- C.vec.multiple.helper %>% 
   future_map(~sample(x = .$antenna.ID, mean(.$pop),
@@ -113,39 +127,21 @@ C.vec.multiple <- C.vec.multiple.helper %>%
   future_map(~group_by(., value), .progress = T) %>% 
   future_map(~summarise(., pop.count.rand = n(), .groups = "drop"), .progress = T)
 
-saveRDS(C.vec.multiple, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.rds")
-# C.vec.multiple.helper <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.helper")
+# saveRDS(C.vec.multiple, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.rds")
+# C.vec.multiple <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.multiple.rds")
 
+C.vec.df <- C.vec.multiple %>% 
+  bind_rows() %>% 
+  select(antenna.ID = value, pop = pop.count.rand) %>% 
+  bind_rows(C.vec.fixed.helper) %>% 
+  group_by(antenna.ID) %>% 
+  summarise(phones.sum = sum(pop))
 
+# saveRDS(C.vec.df, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.df.final.rds")
+# C.vec.df <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.df.final.rds")
+ 
   
-  
-
-
-# C.vec.help.rest <- C.vec.helper %>% 
-#   filter(pop >= 1 & weight.pij > 0 & weight.pij < 1) %>% 
-#   split(.$internal.id)
-# saveRDS(C.vec.help.rest, "working objects/C.vec.rest.groups.rds")
-C.vec.help.rest <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.rest.groups.rds")
-
-C.rest.final <- C.vec.help.rest %>% 
-  future_map(~sample(., x = .$antenna.ID, mean(.$pop),
-                     replace = T, prob = .$weight.pij), .progress = T) %>% 
-  future_map(as_tibble, .id = "internal.id", .progress = T) %>% 
-  future_map(~group_by(., value), .progress = T) %>% 
-  future_map(~summarise(., pop.count.rand = n(), .groups = "drop"), .progress = T)
-
-n_distinct(C.vec.help.rest$internal.id)
-
-C.vec <- data.table(C.vec.helper) [, sample(x = C.vec.helper$antenna.ID, size = mean(C.vec.helper$pop),
-                                            replace = T, prob = C.vec.helper$weight.pij), by = internal.id]
-
-
-map(as_tibble, .id = "internal.id") %>% 
-  map(~group_by(., value)) %>% 
-  map(~summarise(., pop.count.rand = n(), .groups = "drop"))
-
-
-# sparse matrix of device to cell
+# sparse P matrix of device to cell
 P.helper <- dev.to.cell %>% 
   dplyr::select(internal.id, antenna.ID, weight.pij) %>% 
   mutate_at(vars(c("internal.id", "antenna.ID")), factor) %>% 
@@ -158,106 +154,13 @@ P.mat <- sparseMatrix(i = as.numeric(P.helper$antenna.ID),
                       dimnames = list(levels(P.helper$antenna.ID), levels(P.helper$internal.id)))
 
 
-saveRDS(P.mat, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/P.mat.rds")
+# saveRDS(Pcensus.de.100m.tile.mat, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/P.mat.rds")
 
-P.mat <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/P.mat.rds")
-
-
-# C-vector (total count of mobile phones of a tile stochastically assigned to a radio cell based on P --> here: weight.pij)
-C.vec.group <- dev.to.cell %>% 
-  dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
-  st_drop_geometry() %>%
-  group_split(internal.id)
-
-C.vec <- C.vec.group %>% 
-  map(~sample(x = .$antenna.ID, mean(.$pop),
-              replace = T, prob = .$weight.pij)) %>% 
-  map(as_tibble, .id = "internal.id") %>% 
-  map(~group_by(., value)) %>% 
-  map(~summarise(., pop.count.rand = n(), .groups = "drop"))
-
-
-
-
-r <- d %>% 
-  bind_rows() %>% 
-  pivot_wider(id_cols = internal.id, names_from = antenna.ID, values_from = weight.pij)
-
-d <- dev.to.cell %>% 
-  head(1000) %>% 
-  dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
-  st_drop_geometry() %>% 
-  group_split(internal.id) %>% 
-  map(~dplyr::select(., weight.pij)) %>% 
-  map(deframe)
-
-u <- dev.to.cell %>% 
-  head(1000) %>% 
-  dplyr::select(internal.id, pop) %>% 
-  st_drop_geometry() %>% 
-  filter(internal.id %in% names(d)) %>% 
-  deframe()
-
-antennas <- dev.to.cell %>% 
-  head(1000) %>% 
-  dplyr::select(antenna.ID, internal.id, pop, weight.pij) %>% 
-  st_drop_geometry() %>% 
-  group_by(internal.id) %>% 
-  group_split() %>% 
-  map(~select(., antenna.ID)) %>%
-  map(deframe)
-
-probb <- d %>% 
-  pmap(list(antennas, u, d), ~sample(x = .x, size = .y, replace = T, prob = .z))
-
-t <- r %>% 
-  group_by(internal.id) %>% 
-  filter(!sum(weight.pij) == 0) %>% 
-  group_split()
-
-e <- t %>% 
-  map(~sample(x = .$antenna.ID, mean(.$pop),
-              replace = T, prob = .$weight.pij)) %>% 
-  map(as_tibble, .id = "internal.id") %>% 
-  map(~group_by(., value)) %>% 
-  map(~summarise(., pop.count.rand = n(), .groups = "drop"))
-
-
-
-# C-vector (total count of mobile phones of a tile stochastically assigned to a radio cell based on P --> here: weight.pij)
-C.vec.group <- dev.to.cell %>% 
-  dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
-  st_drop_geometry() %>%
-  group_by(internal.id) %>% 
-  group_split()
-
-C.vec <- C.vec.group %>% 
-  map(~sample(x = .$antenna.ID, mean(.$pop),
-              replace = T, prob = .$weight.pij)) %>% 
-  map(as_tibble, .id = "internal.id") %>% 
-  map(~group_by(., value)) %>% 
-  map(~summarise(., pop.count.rand = n(), .groups = "drop"))
 
 
 # u-vector
-U.vec <- census.de.1km.tile %>% 
+U.vec <- census.de.100m.tile %>% 
   dplyr::select(internal.id, pop)
 
-saveRDS(U.vec, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/U.vec.rds")
+# saveRDS(U.vec, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/U.vec.rds")
 
-# Calculate the number of cores
-no_cores <- availableCores() - 1
-plan(multisession, workers = no_cores)
-
-C.vec.1 <- dev.to.cell %>% 
-  dplyr::select(internal.id, antenna.ID, pop, weight.pij) %>% 
-  st_drop_geometry() %>%
-  group_by(internal.id) %>% 
-  group_split() %>% 
-  future_map(~sample(., x = .$antenna.ID, mean(.$pop),
-              replace = T, prob = .$weight.pij), .progress = T) %>% 
-  future_map(as_tibble, .id = "internal.id", .progress = T) %>% 
-  future_map(~group_by(., value), .progress = T) %>% 
-  future_map(~summarise(., pop.count.rand = n(), .groups = "drop"), .progress = T)
-
-saveRDS(C.vec, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.rds")
