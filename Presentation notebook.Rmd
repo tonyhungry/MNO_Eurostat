@@ -399,6 +399,80 @@ Estimation strategies:
 
 -   MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
 
+```{r}
+# non-informative prior
+a.non.inf.vec <- rep(1, length(census.de.100m.tile$internal.id))
+
+# informative prior based on area kind
+a.inf.vec <- census.de.100m.tile %>% 
+  mutate(a.vec = case_when(pop.area.kind == "Uninhabitated" ~ 1,
+                           pop.area.kind == "Rural" ~ 2,
+                           pop.area.kind == "Suburban" ~ 3,
+                           pop.area.kind == "Urban" ~ 4)) %>% 
+  st_drop_geometry() %>% 
+  dplyr::select(internal.id, a.vec) %>% 
+  arrange(internal.id) %>% 
+  deframe()
+
+# C vector
+c.vec <- C.vec.df %>% 
+  arrange(antenna.ID) %>% 
+  deframe()
+
+# P matrix oracle (P)
+P.orcale.mat <- readRDS("C:/Users/ramljak/Desktop/marco/P.mat.rds")
+
+# P matrix flat coverage (P')
+P.prime.mat.helper <- P.orcale.mat
+P.prime.mat.helper@x[P.prime.mat.helper@x > 0] <- 1
+P.prime.mat <- t(t(P.prime.mat.helper)/colSums(P.prime.mat.helper))
+
+# Show the format of each object
+  
+```
+
+Describe format
+
+```{r}
+# Simple Bayesian estimation method
+SB_u_est <- function(c.vec, P.mat, a.vec) {
+  P.trans.mat <- t(P.mat)
+  P.correct.mat <- P.mat
+  P.correct.mat@x[P.correct.mat@x > 0] <- 1
+  denominator.summary <- tibble(u = c(1:length(c.vec)), value = colSums(P.trans.mat * a.vec)) # of length u
+  denominator.vec <- colSums(P.trans.mat * a.vec)
+  
+  corrector <- P.correct.mat * denominator.summary$value
+  
+  sX <- summary(P.correct.mat)
+  sY <- summary(corrector)
+  sRes <- merge(sX, sY, by = c("i", "j"))
+  f <- sparseMatrix(i = sRes[,1], j = sRes[,2], x = sRes[,3]/sRes[,4],
+                    dimnames = dimnames(P.correct.mat))
+  
+  fraction.final <- colSums((f * P.mat) * c.vec, na.rm = T)
+  u <- fraction.final * a.vec
+  return(u)
+}
+
+
+# Estimating
+# Oracle model (non.informative prior, P = P)
+u.est.oracle <- SB_u_est(c.vec, P.orcale.mat, a.non.inf.vec) # ca 10 min
+u.total.est <- sum(u.est)
+# SB model 1 (non.informative prior, P = P')
+u.est.non.inf <- SB_u_est(c.vec, P.prime.mat, a.non.inf.vec) # ca 10 min
+u.total.est <- sum(u.est)
+# SB model 2 (informative prior, P = P')
+u.est.inf <- SB_u_est(c.vec, P.prime.mat, a.inf.vec) # ca 10 min
+u.total.est <- sum(u.est)
+```
+
+
+# Evaluation
+--> Visual analysis
+--> KWD analysis
+
 # References
 
 [1] Ricciato F, Lanzieri G., Wirthmann A., and Seynaeve G.(2020) Towards a methodological framework for estimating present population density from mobile network operator data. <https://ec.europa.eu/eurostat/cros/content/towards-methodological-framework-estimating-present-population-density-mobile-network-operator-data-extended-version_en>
