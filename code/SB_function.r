@@ -25,13 +25,42 @@ a.vec <- c(2, 1, 1)
 SB_u_est <- function(c.vec, P.mat, a.vec) {
   P.trans <- t(P.mat)
   denominator.vec <- colSums(P.trans * a.vec)
-  P.vec <- P.mat$
+  denominator.summary <- tibble(u = c(1:length(a.vec)), value = colSums(P.trans * a.vec)) # of length u
   fraction.vec <- colSums(matrix(((P.vec / denominator.vec) * c.vec), nrow = length(c.vec), ncol = length(a.vec)))
   u <- fraction.vec * a.vec
   return(u)
 }
 
+SB_u_est <- function(c.vec, P.mat, a.vec) {
+  P.trans.mat <- t(P.mat)
+  P.correct.mat <- P.mat
+  P.correct.mat[P.correct.mat > 0] <- 1
+  denominator.summary <- tibble(u = c(1:length(a.vec)), value = colSums(P.trans.mat * a.vec)) # of length u
+  denominator.vec <- colSums(P.trans.mat * a.vec)
+  
+  
+  corrector <- P.correct.mat * denominator.summary$value
+  fraction.final <- colSums(((P.correct.mat / corrector) * P.mat) * c.vec, na.rm = T)
+  
+  u <- fraction.final * a.vec
+  return(u)
+}
+
+SB_u_est()
+
+P.mat.new <- P.mat
+P.mat.new[P.mat.new > 0] <- 1
+d <- P.mat.new * denominator.summary$value
+e <- colSums(((P.mat.new / d) * P.vec) * c.vec, na.rm = T)
+e * a.vec
+
 sum(SB_u_est(c.vec, P.mat, a.vec))
+
+sX <- summary(P.mat)
+sY <- summary(Y)
+sRes <- merge(sX, sY, by=c("i", "j"))
+
+d <- as.matrix(P.mat)
 
 
 
