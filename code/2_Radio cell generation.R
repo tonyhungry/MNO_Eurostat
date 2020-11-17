@@ -20,7 +20,7 @@ layer.base <- list("Rural" = census.de.100m.tile.1, "Suburban" = census.de.100m.
 
 
 area.kind <- list("Rural" = "Rural", "Suburban" = "Suburban", "Urban" = "Urban")
-tower.dist <- list("Rural" = 27000, "Suburban" = 7000, "Urban" = 900) # relation to radius (qm)
+tower.dist <- list("Rural" = 23000, "Suburban" = 7000, "Urban" = 900) # relation to radius (qm)
 rotation.degree <- list("Rural" = 0, "Suburban" = 35, "Urban" = 70)
 jitter <- list("Rural" = 5000, "Suburban" = 1000, "Urban" = 400)
 coverage.centroid.dist <- list("Rural" = 15000, "Suburban" = 2500, "Urban" = 500) # same as radius
