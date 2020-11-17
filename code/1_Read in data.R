@@ -28,7 +28,7 @@ census.de.100m <- census.raw %>%
   dplyr::select(-pop.raw)
 
 saveRDS(census.de.100m, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/example data frame.rds")
-census.de.100m <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/example data frame.rds")
+# census.de.100m <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/example data frame.rds")
 
 # Raster brick object of the complete bounding box region
 census.tile <- raster::rasterFromXYZ(census.de.100m, crs = st_crs(3035)$proj4string)
@@ -75,8 +75,8 @@ suburban.buffer <- st_buffer(result.interim, 3000)
   
 # classifiy tiles that are within the respective buffer with either suburban or urban, rest is rural
 census.classified.final.sf <- census.classified.sf.transform %>% 
-  mutate(urban.dummy = lengths(st_within(census.classified.final.sf, urban.buffer))) %>% 
-  mutate(suburban.dummy = lengths(st_within(census.classified.final.sf, suburban.buffer))) %>% 
+  mutate(urban.dummy = lengths(st_within(census.classified.sf.transform, urban.buffer))) %>% 
+  mutate(suburban.dummy = lengths(st_within(census.classified.sf.transform, suburban.buffer))) %>% 
   mutate(pop.area.kind = case_when(urban.dummy > 0 ~ "Urban",
                                    suburban.dummy > 0 & urban.dummy == 0 ~ "Suburban",
                                    TRUE ~ "Rural"))
@@ -90,7 +90,7 @@ census.classified.final.sf %>%
 
 
 saveRDS(census.classified.final.sf, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
-census.classified.final.sf <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
+# census.classified.final.sf <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
 
 
   
