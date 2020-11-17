@@ -159,7 +159,6 @@ Fig.2.1 <- prop.class %>%
   geom_bar(width = 1, stat = "identity", color = "white") + 
   scale_fill_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
   geom_text(aes(y = lab.ypos, label = paste0(prop, "%")), color = "black") +
-  coord_polar("y", start = 0) +
   theme_void() + 
   theme(legend.position = "bottom") +
   labs(fill = "") +  
