@@ -1,6 +1,6 @@
 # MNO_Eurostat
 
-This repository serves as a collection of all codes we used for the Eurostat Summer Coding Labs - MNO Project. 
+This repository serves as a collection of all codes we used for the Eurostat Summer Coding Labs - MNO Project 2020. 
 
 Objects and data used in our notebook will be provided upon request.
 
