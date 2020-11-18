@@ -20,11 +20,11 @@ layer.base <- list("Rural" = census.de.100m.tile.1, "Suburban" = census.de.100m.
 
 
 area.kind <- list("Rural" = "Rural", "Suburban" = "Suburban", "Urban" = "Urban")
-tower.dist <- list("Rural" = 27000, "Suburban" = 7000, "Urban" = 900) # relation to radius (qm)
+tower.dist <- list("Rural" = 20000, "Suburban" = 4000, "Urban" = 900) # relation to radius (qm)
 rotation.degree <- list("Rural" = 0, "Suburban" = 35, "Urban" = 70)
 jitter <- list("Rural" = 5000, "Suburban" = 1000, "Urban" = 400)
-coverage.centroid.dist <- list("Rural" = 15000, "Suburban" = 2500, "Urban" = 500) # same as radius
-coverage.radius <- c("Rural" = 15000, "Suburban" = 2500, "Urban" = 500)
+coverage.centroid.dist <- list("Rural" = 12000, "Suburban" = 2500, "Urban" = 500) # same as radius
+coverage.radius <- c("Rural" = 12000, "Suburban" = 2500, "Urban" = 500)
 # Focus area
 bb.focus.vec <- c(xmin = 4400000, xmax = 4500000,
                   ymin = 2700000, ymax = 2900000)
@@ -54,7 +54,7 @@ layers <- pmap(list(layer.base, tower.dist, rotation.degree),
   set_names(c("Layer.1", "Layer.2", "Layer.3"))
 
 saveRDS(layers, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds")
-layers <- readRDS(file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds")
+# layers <- readRDS(file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds")
   
 # plot(layers[[1]])
 # plot(layers[[2]], add = TRUE, col = 'red')
@@ -99,6 +99,7 @@ coverage.areas <- layers %>%
   map2_dfr(., area.kind, ~mutate(., area.kind = .y))
 
 saveRDS(coverage.areas, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/coverage.areas.rds")
+# d <- readRDS(file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/coverage.areas.rds")
 
 
 coverage.areas %>%
@@ -107,7 +108,7 @@ coverage.areas %>%
   summarise(n.antenna = n())
 
 coverage.areas %>% 
-  filter(area.kind == "Suburban") %>% 
+  # filter(area.kind == "Urban") %>% 
   ggplot() +
   geom_sf(aes(col = area.kind), fill = NA) +
   # geom_sf(data = missings) + # layer of the originally uncovered tiles, where manual adjustment was needed

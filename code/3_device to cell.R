@@ -16,6 +16,13 @@ coverage.areas <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/wo
 
 signal_strength <- Vectorize(function(distance, radius, max.equal = 0.7, min.threshold = 0.01) {
   sij.calc <- 1 - distance / radius
+  
+  if (str_detect(antenna.ID, "RT") & sij.calc > 0.7) {
+    sij.calc <- sij.calc - 0.3 # sanction parameter for rural antennas 
+  } else {
+    sij.calc <- sij.calc
+  }
+  
 
   if (sij.calc < min.threshold) { # min.threshold (nu)
     sij <- as.numeric(0)

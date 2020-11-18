@@ -28,6 +28,7 @@ census.de.100m <- census.raw %>%
   dplyr::select(-pop.raw)
 
 saveRDS(census.de.100m, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/example data frame.rds")
+# census.de.100m <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/example data frame.rds")
 
 # Raster brick object of the complete bounding box region
 census.tile <- raster::rasterFromXYZ(census.de.100m, crs = st_crs(3035)$proj4string)
@@ -50,7 +51,7 @@ no_cores <- availableCores() - 1
 plan(multisession, workers = no_cores)
 
 # Rasterizing the sf object with cluster results and transforming back to final sf object
-census.classified.final.sf <- census.classified.sf %>% 
+census.classified.sf.transform <- census.classified.sf %>% 
   future_map(~raster::rasterFromXYZ(., crs = st_crs(3035)$proj4string), .progress = T) %>% 
   future_map(~st_as_stars(.), .progress = T) %>% 
   future_map_dfr(~st_as_sf(., coords = c("long", "lat")), .progress = T) %>%
@@ -58,14 +59,41 @@ census.classified.final.sf <- census.classified.sf %>%
   group_by(cluster_id) %>% 
   mutate(cluster.tile.n = n()) %>% 
   ungroup() %>% 
-  mutate(pop.area.kind = case_when(pop.raster != 0 & cluster.tile.n > 100 ~ "Urban", # cluster with at least 100 tiles is urban
-                                   pop.raster != 0 & cluster.tile.n > 50 & cluster.tile.n <= 100 ~ "Suburban", # cluster with at least fifty and below 100 tiles is suburban
-                                   TRUE ~ "Rural")) %>%  # Remaining tiles are considered as rural
-  dplyr::select(-parts)
+  dplyr::select(-parts) %>% 
+  mutate(pop.area.kind.helper = case_when(pop.raster != 0 & cluster.tile.n > 50 ~ 1, # specify clusters that have at least fifty tiles
+                                          TRUE ~ 0))  
+
+# summarise clusters geometries to build buffers
+result.interim <- census.classified.sf.transform %>% 
+  filter(pop.area.kind.helper == 1 & !is.na(cluster_id)) %>% 
+  group_by(cluster_id) %>% 
+  summarise(geometry = st_union(geometry))
+
+# build buffers for suburban and urban area respectively
+urban.buffer <- st_buffer(result.interim, 500)
+suburban.buffer <- st_buffer(result.interim, 3000)
+  
+# classifiy tiles that are within the respective buffer with either suburban or urban, rest is rural
+census.classified.final.sf <- census.classified.sf.transform %>% 
+  mutate(urban.dummy = lengths(st_within(census.classified.sf.transform, urban.buffer))) %>% 
+  mutate(suburban.dummy = lengths(st_within(census.classified.sf.transform, suburban.buffer))) %>% 
+  mutate(pop.area.kind = case_when(urban.dummy > 0 ~ "Urban",
+                                   suburban.dummy > 0 & urban.dummy == 0 ~ "Suburban",
+                                   TRUE ~ "Rural"))
+  
+
+# check if correctly classified
+census.classified.final.sf %>% 
+  filter(!pop.area.kind == "Rural") %>% 
+  ggplot() +
+  geom_sf(aes(color = pop.area.kind))
 
 
 saveRDS(census.classified.final.sf, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
+# census.classified.final.sf <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
 
+
+  
 
 ######################################################
 
