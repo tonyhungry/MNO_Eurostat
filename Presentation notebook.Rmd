@@ -8,15 +8,16 @@ knit: (function(input_file, encoding) {
 author: "Stefania, Giulia, Tony, Marco"
 date: "`r Sys.Date()`"
 output:  
-  html_document:
+  bookdown::html_document2:
     code_download: true
     theme: lumen 
     toc: true  
     toc_float: true
     number_sections: true
+    fig_caption: yes
 ---
 
-```{r message=FALSE}
+```{r packages, message=FALSE}
 library(tidyverse)
 library(sf)
 library(raster)
@@ -50,8 +51,8 @@ The sample population value is used as the number of mobile phones in a specific
 
 The link to the source code for the census.de.100.m.tile object is [here](https://github.com/R-ramljak/MNO_GM/blob/master/1_Read%20in%20data.R).
 
-```{r message=FALSE}
-census.de.100m.tile <- readRDS("C:/Users/ramljak/Desktop/marco/census.tile.final.rds") 
+```{r exploration census, message=FALSE}
+census.de.100m.tile <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds") 
  
 dim(census.de.100m.tile)
 
@@ -76,20 +77,20 @@ Important features and parameters:
 
 In the following section we then proceed to classify the tiles based on the number of populations per tile as well its proximity to neighboring tiles in order identify groups of tiles into different categories of urbanization. In this section we will be using the `cca` function from the `OSC` package. After the classification, we then proceed to look at the overall distribution of the tiles based on the categories of urbanization.
 
-```{r}
+```{r focus area}
 # # Bounding box of focus area
- bb.focus.dat <- data.frame(xmin = 4400000, xmax = 4500000,
-                            ymin = 2700000, ymax = 2900000)
- bb.focus.vec <- c(xmin = 4400000, xmax = 4500000,
-                   ymin = 2700000, ymax = 2900000)
+bb.focus.dat <- data.frame(xmin = 4400000, xmax = 4500000,
+                           ymin = 2700000, ymax = 2900000)
+bb.focus.vec <- c(xmin = 4400000, xmax = 4500000,
+                  ymin = 2700000, ymax = 2900000)
 
 #Download data from : https://gadm.org/download_country_v3.html --> R(sf) level 1
 
-germany.raw <- readRDS("C:/Users/ramljak/Desktop/marco/gadm36_DEU_1_sf.rds") 
-germany = germany.raw %>%  
+germany.raw <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/gadm36_DEU_1_sf.rds") 
+germany <- germany.raw %>%  
   st_transform(crs = 3035)
 
-Fig.1 <- germany %>%  
+focus.area.plot <- germany %>%  
   ggplot() + 
   geom_sf() + 
   geom_rect(data = bb.focus.dat, aes(ymin = ymin, ymax = ymax,  
@@ -101,36 +102,77 @@ Fig.1 <- germany %>%
                           # breaks = c("Focus area"), 
                           labels = c("Focus area"), 
                           guide = "legend") +
-  labs(
-    x = NULL,
-    y = NULL,
+  labs(x = NULL, y = NULL,
     title = "Fig.1: Focusing on a part of South Bavaria",
     subtitle = "We will only focus on a subset of the tiles located in the state of 
-    Bavaria because it comprises both urban, suburban, and rural areas",
-    caption = "Source: https://gadm.org/download_country_v3.html"
-  )
+Bavaria because it comprises both urban, suburban, and rural areas")
  
-plot_grid(Fig.1,  
-          hjust = -0.1, label_size = 12)
+plot_grid(focus.area.plot, hjust = -0.1, label_size = 12)
 ```
 
-```{r}
+```{r pop distribution 1}
 # Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation
 
 # ECCDF of population distribution 
-ECCDF.data <- census.de.100m.tile %>% 
-  # sample_n(1000) %>%
+ECCDF.pop.data <- census.de.100m.tile %>% 
+  sample_n(1000) %>%
   mutate(pop.plot = pop + 1) %>%  
   arrange(pop.plot) %>%  
   mutate(prob = 1 / n()) %>%  
   mutate(cum.prob = cumsum(prob)) %>%  
   mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
   mutate(log10.pop = log10(pop.plot)) %>%  
+  mutate(cum.prob.comp = 1 - cum.prob) %>% 
   mutate(pop.area.kind = case_when(pop == 0 ~ "Uninhabitated", 
                                    TRUE ~ pop.area.kind))
 
+prop.class <- data.frame( 
+  class = c("Rural","Suburban", "Uninhabitated","Urban"), 
+  n = summary(as.factor(ECCDF.pop.data$pop.area.kind)), 
+  prop = round(summary(as.factor(ECCDF.pop.data$pop.area.kind)) / length(census.de.100m.tile$internal.id), digits = 4) * 100)  %>% 
+  mutate(class = factor(class)) %>% 
+  arrange(desc(class)) %>% 
+  mutate(lab.ypos = cumsum(prop) - 0.5 * prop) 
+ 
+tile.prop.plot <- prop.class %>% 
+  ggplot(aes(x = "", y = prop, fill = class)) + 
+  geom_bar(width = 1, stat = "identity", color = "white") + 
+  scale_fill_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
+  geom_text(aes(y = lab.ypos, label = paste0(prop, "%")), color = "black") +
+  theme(legend.position = "bottom") +
+  labs(x = "Class", y = "Number of tiles",
+    title = "Fig.2.1 Tile proportion",
+    subtitle = "The classification results from the clustering algorithm and the proportion of people in the area categories") + 
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5))
 
-Fig.3.1 <- ECCDF.data %>% 
+result.sf <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/result.sf.rds") 
+ 
+cluster.plot <- result.sf %>%  
+  ggplot() +  
+  geom_sf(aes(col = factor(area.kind)), show.legend = F) + 
+  ggtitle("", subtitle = "Clustering Results") + 
+  theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
+  scale_color_ptol(breaks = c("Uninhabited", "Rural", "Suburban", "Urban")) +
+   labs(title= "Figure 2.2: Clustering results",
+    subtitle = "Distribution of the four different categories of tiles;
+    obtained through spatial clustering") +
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5))
+
+plot_grid(cluster.plot, tile.prop.plot, labels = "Fig.2: Population Classification",  
+            hjust = -0.1, label_size = 12, rel_widths = c(0.8, 1)) 
+```
+
+
+Note: We understand that the threshold used in this section is not optimal yet, however, optimization of the parameters is out of the scope of this project.
+
+Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working on this very low spatial resolution, one cannot just classify tiles independently based on their respective continuous population value but ones needs to take spatial dependence into consideration in order to classify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 70 people per tile. Tiles below 70 are either classified as Uninhabited or Rural, from the start on (Uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 70 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 70 people.
+
+The stacked bar plot shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, `r prop.class$prop[1]`% of the tiles are urban areas. `r prop.class$prop[2]`% of the tiles are uninhabited areas. `r prop.class$prop[3]`% of the tiles are suburban areas, and `r prop.class$prop[4]`% of the tiles are rural areas.
+
+```{r pop distribution 2}
+pop.dist.map.plot <- ECCDF.pop.data %>% 
   # sample_n(10000) %>% 
   ggplot() + 
   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
@@ -138,7 +180,7 @@ Fig.3.1 <- ECCDF.data %>%
   ggtitle("", subtitle = "Geographic distribution") + 
   theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) 
  
-Fig.3.2 <- ECCDF.data %>%   
+ECCDF.pop.plot <- ECCDF.pop.data %>%   
   # sample_n(1000) %>% 
   ggplot() + 
   geom_point(aes(x = log10.pop, y = log10.cum.prob.comp, 
@@ -151,95 +193,32 @@ Fig.3.2 <- ECCDF.data %>%
   ggtitle("", subtitle = "Empirical cumulative complementary\ndistribution function") +  
   labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)",  
         colour = "") + 
-  theme(legend.position="bottom") 
+  ylim(-7, 0) +
+  theme(legend.position = "bottom") 
  
-a <- as.factor(ECCDF.data$pop.area.kind) 
-prop.class <- data.frame( 
-  class = c("Rural","Suburban", "Uninhabitated","Urban"), 
-  n = summary(a), 
-  prop = round(summary(a) / length(census.de.100m.tile$internal.id), digits = 4) * 100) 
- 
-prop.class <- prop.class %>% 
-  mutate(class = factor(class)) %>% 
-  arrange(desc(class)) %>% 
-  mutate(lab.ypos = cumsum(prop) - 0.5 * prop) 
- 
-Fig.2.1 <- prop.class %>% 
-  ggplot(aes(x = "", y = prop, fill = class)) + 
-  geom_bar(width = 1, stat = "identity", color = "white") + 
-  scale_fill_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
-  geom_text(aes(y = lab.ypos, label = paste0(prop, "%")), color = "black") +
-  theme(legend.position = "bottom") +
-  labs(
-    x = "Class",
-    y = "Number of tiles",
-    title= "Fig.2.1 Tile proportion",
-    subtitle = "The classification results from the clustering algorithm and the proportion of people in the area categories"
-  )+theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
-  plot.subtitle = element_text(size=9,hjust = 0.5))
- 
-result.sf <- readRDS("C:/Users/ramljak/Desktop/marco/result.sf.rds") 
- 
-Fig.2.2 <- result.sf %>%  
-  ggplot() +  
-  geom_sf(aes(col = factor(area.kind)), show.legend = F) + 
-  ggtitle("", subtitle = "Clustering Results") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
-  scale_color_ptol(breaks = c("Uninhabited", "Rural", "Suburban", "Urban")) +
-   labs(title= "Figure 2.2: Clustering results",
-    subtitle = "Distribution of the four different categories of tiles(Uninhabited, Rural, Suburban and Urban);
-    obtained thought the clustering algorithm"
-  ) +theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
-  plot.subtitle = element_text(size=9,hjust = 0.5))
-            
-ECCDF.data2 <- census.de.100m.tile %>% 
-  # sample_n(1000) %>%
-  mutate(pop.plot = pop + 1) %>%  
-  arrange(pop.plot) %>%  
-  mutate(prob = 1 / n()) %>%  
-  mutate(cum.prob = cumsum(prob)) %>%  
-  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
-  mutate(log10.pop = log10(pop.plot)) %>%  
-  mutate(cum.prob.comp = 1 - cum.prob) %>% 
-  mutate(pop.area.kind = case_when(pop == 0 ~ "Uninhabitated", 
-                                   TRUE ~ pop.area.kind))
-Fig.3.3 <- ECCDF.data2 %>%   
+
+ECDF.pop.plot <- ECCDF.pop.data %>%   
   # sample_n(1000) %>% 
   ggplot() + 
-  geom_point(aes(x = pop.plot, y = cum.prob.comp)) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
-  labs(y = "Prob(Y > x)", x = "Mobile phones",
-    subtitle = "Fig 3.3:Linear ECCDF."
-  ) +theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
-  plot.subtitle = element_text(size=9,hjust = 0.5))
+  geom_point(aes(x = pop.plot, y = cum.prob.comp, color = pop.area.kind)) + 
+  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban"), guide = FALSE, expand = c(0, 0)) +
+  labs(y = "", x = "") +
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
 
-# eccdf linear
-Fn <- ecdf(census.de.100m.tile$pop)
-plot(Fn)
+pop.dist.ecdf.insert <- ECCDF.pop.plot +
+  annotation_custom(ggplotGrob(ECDF.pop.plot), 
+                    xmin = 0, xmax = 1.5, 
+                    ymin = -7, ymax = -3)
 
-Fn = census.de.100m.tile$pop %>%
-  ecdf() %>%
-  plot()
-
-Figure2 <- ggarrange(Fig.2.1.new, Fig.2.2)
-annotate_figure(Figure2,
-               top = text_grob("Population Classification", color = "Black", face = "bold", size = 14))
-               
+plot_grid(pop.dist.map.plot, pop.dist.ecdf.insert, labels = "Mobile phone density per tile",  
+          hjust = -0.1, label_size = 12, rel_widths = c(0.8, 1))
 ```
 
-Note: We understand that the threshold used in this section is not optimal yet, however, optimization of the parameters is out of the scope of this project.
 
-Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working on this very low spatial resolution, one cannot just classify tiles independently based on their respective continuous population value but ones needs to take spatial dependence into consideration in order to classify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 70 people per tile. Tiles below 70 are either classified as Uninhabited or Rural, from the start on (Uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 70 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 70 people.
-
-The pie chart shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, `r prop.class$prop[1]`% of the tiles are urban areas. `r prop.class$prop[2]`% of the tiles are uninhabited areas. `r prop.class$prop[3]`% of the tiles are suburban areas, and `r prop.class$prop[4]`% of the tiles are rural areas.
-
-```{r}
-Figure3 <- ggarrange(Fig.3.1, Fig.3.2, Fig.3.3)
-annotate_figure(Figure3,
-               top = text_grob("Fig.3: Mobile phone density per tile", color = "Black", face = "bold", size = 14))
-```
-
-Figure 2 shows the mobile phone density per tile in the focus area. In particular, we have 4 different colors representing the clusters: Uninhabited, Rural, Suburban and Urban.
+Figure 3 shows the mobile phone density per tile in the focus area. In particular, we have 4 different colors representing the clusters: Uninhabited, Rural, Suburban and Urban.
 
 However, to have a deeper look of the mobile phone density per tile, in the figure (write the figure number of the first ECCDF) we choose to represent data with an empirical cumulative complementary distribution function [using a log base 10 transformation].
 
@@ -271,9 +250,9 @@ The link to the source code for the layers.1 object as well as the coverage.area
 
 The link to the source code for the layers object as well as the coverage.areas object is [here] (<https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R>).
 
-```{r}
-layers <- readRDS("C:/Users/ramljak/Desktop/marco/radio cell layers.rds") 
-coverage.areas <- readRDS("C:/Users/ramljak/Desktop/marco/coverage.areas.rds") 
+```{r network layers}
+layers <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds") 
+coverage.areas <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/coverage.areas.rds") 
  
 coverage.layer1 <- coverage.areas %>%  
   filter(area.kind == "Rural") %>%  
@@ -281,7 +260,7 @@ coverage.layer1 <- coverage.areas %>%
   dplyr::select(-antenna.centroid) %>%  
   st_as_sf(coords = c("X.tow", "Y.tow"), crs = 3035) 
  
-Fig.4 <- layers[[1]] %>% 
+layers.plot <- layers[[1]] %>% 
   st_as_sf(crs = 3035) %>%  
   ggplot() + 
     # geom_rect(data = bb.focus.dat, aes(ymin = ymin, ymax = ymax,  
@@ -292,32 +271,29 @@ Fig.4 <- layers[[1]] %>%
   scale_color_identity(name = "", 
                        # breaks = c("Focus area"), 
                        labels = c("Jittered tower location"), 
-                       guide = "legend") + labs(
-    x = NULL,
-    y = NULL,
-    subtitle = "In the figure there is rapresented the exagonal structure. Each triangol is a tower location with some randomness implemented"
-  )+
+                       guide = "legend") + 
+  labs(x = NULL, y = NULL,
+    subtitle = "Towers are located in the centroid of a hexagon.") +
   theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
   plot.subtitle = element_text(size=9,hjust = 0.5))
    
-Figure4 <- ggarrange(Fig.4)
-annotate_figure(Figure4,
-               top = text_grob("Fig.4: Radio Network- Example layer 1 (Rural)", color = "Black", face = "bold", size = 14))
+plot_grid(layers.plot, labels = "Fig.4: Radio network - Example Layer 1 (Rural)",  
+          hjust = -0.1, label_size = 12)
 ```
 
 We use a hexagonal structure to place towers across our focus area. This is a quite realistic setup for cell towers. Each hexagon corresponds to one tower which is originally placed in the centroid of the respective hexagon. In order to exclude symmetrical structure, we implement some randomness in the exact location of the cell towers. Figure 3 exemplifies the effect of the jitter parameter in the 1st layer - the actual location deviates slightly from the centroid in order to break the symmetry of the underlying hexagonal structure. This is done for every layer.
 
 The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.
 
-```{r testing}
-knitr::include_graphics("C:/Users/ramljak/Desktop/marco/antenna animation.gif")
+```{r animation}
+knitr::include_graphics("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/antenna animation.gif")
 ```
 
 Basically, a tower is generated at its specified location, then three antennas are created. For the operationalized data structure, the antenna location is not really relevant as it corresponds to the respective tower location. What is more important are the antennas' *coverage area centroids* because they describe the middle point of the then generated circular coverage area. The specific radius of any generic coverage area is layer specific and listed above. As indicated in the animation, an antenna specific coverage area is setup with a variable *coverage intensity profile*. Basically, cell phones that are closer to the coverage area centroid of any antenna, have a higher coverage probability, which will be later introduced as the *signal strength* parameter.
 
 The following table presents the number of towers and the number of antennas of each layer. The number of antennas is not always a perfect factor of 3 as the coverage areas are cropped according to the focus area. This means if the complete coverage area of an antenna lies outside of the focus area it is discarded.
 
-```{r}
+```{r coverage areas 1}
 tile.count <- census.de.100m.tile %>%  
   mutate(area.kind = case_when(pop.area.kind %in% c("Rural", "Suburban", "Urban") ~ "Rural", 
                                pop.area.kind %in% c("Suburban", "Urban") ~ "Suburban", 
@@ -343,30 +319,27 @@ As described in the parameter list above, rural areas are covered only by layer 
 
 The following figures present the actual coverage of each layer for the focus area.
 
-```{r}
-Fig.5 <- coverage.areas %>%  
+```{r coverage areas 2}
+coverage.area.plot <- coverage.areas %>%  
   ggplot() + 
   geom_sf(aes(col = area.kind), fill = NA) + 
   facet_grid(cols = vars(area.kind)) + 
   ggtitle("", subtitle = "Signal density increases with increasing population density") + 
     scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-  labs(
-    x = NULL,
-    y = NULL,
-    subtitle ="The circles rapresents the coverage area of each tower per layer depending on the signal strenght. As the figure shows, the signal density increases with increasing population density")+
+  labs(x = NULL, y = NULL,
+    subtitle ="The circles represents the coverage area of each tower per layer depending on the signal strengh. The signal density increases with increasing population density") +
   theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
   plot.subtitle = element_text(size=9,hjust = 0.5))
 
-Figure5 <- ggarrange(Fig.5)
-annotate_figure(Figure5,
-               top = text_grob("Fig.5: Coverage per area", color = "Black", face = "bold", size = 14))
+plot_grid(coverage.area.plot, labels = "Coverage per layer",  
+          hjust = -0.1, label_size = 12) 
 ```
 
 The interpretations of the table above correspond to the level of coverage of each layer. It should be noticed that the antennas' coverage areas are allowed to overlap - with antennas of the same tower, as well as across towers of the same or another layer.
 
-```{r}
+```{r coverage areas 3}
 # Implement shape of focus area
-Fig.6 <- coverage.areas %>% 
+coverage.area.full.plot <- coverage.areas %>% 
   ggplot() +
   geom_sf(aes(col = area.kind), fill = NA) +
   ggtitle("", subtitle = "Full coverage") +
@@ -377,17 +350,14 @@ Fig.6 <- coverage.areas %>%
   theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
   plot.subtitle = element_text(size=9,hjust = 0.5))
 
-Figure6 <- ggarrange(Fig.3.1 , Fig.6)
-title <- expression(atop(bold("Fig.6: Full coverage corresponding to the density"), scriptstyle("The figure on the left shows the geographical distribution of the tiles classified in three layers based on clustering algorithm. On the righ side, the coverage areas per layers are rapresented and it is possible to see that the full coverage corresponds to the population density.")))
-
-annotate_figure(Figure6,
-               top = text_grob(title))
+plot_grid(pop.dist.map.plot, coverage.area.full.plot, labels = "Full coverage corresponding to the density", 
+          hjust = -0.1, label_size = 12)
 ```
 
 Figure 6 presents the full network structure. By comparing the network structure to the tile density one can see that full, partially overlapping coverage is granted for all areas and that the network layering structure follows suit with the true geographical population density.
 
-```{r}
-# dev.to.cell.classified <- readRDS("C:/Users/ramljak/Desktop/marco/dev.to.cell.classified.final.rds") 
+```{r coverage intensity}
+# dev.to.cell.classified <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/dev.to.cell.classified.final.rds")
 # coverage.intensity <- dev.to.cell.classified %>% 
 #   filter(!weight.pij == 0) %>% 
 #   group_by(internal.id) %>% 
@@ -432,8 +402,8 @@ $$
 
 where $s_{ij}$ describes the signal intensity of a particular cell $i$ associated with a particular tile $j$, and $\mathcal{L}_{j}$ describes the subset of radio cells that are covering the tile $j$. We then simulate the tile specific experiments - every mobile phone within a tile will be independently assigned to relevant radio cell with the probability $p_{ij}$. The result is the column vector $c$ which will act as a reference for the later on introduced estimation strategies.
 
-```{r}
-C.vec.df <- readRDS("C:/Users/ramljak/Desktop/marco/C.vec.df.final.rds")
+```{r }
+C.vec.df <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.df.final.rds")
 
 # ECCDF of population distribution 
 ECCDF.phones.data <- C.vec.df %>% 
@@ -442,13 +412,14 @@ ECCDF.phones.data <- C.vec.df %>%
                            str_detect(antenna.ID, "UT") ~ "Layer 3")) %>% 
   arrange(phones.sum) %>%  
   mutate(prob = 1 / n()) %>%  
-  mutate(cum.prob = cumsum(prob)) %>%  
+  mutate(cum.prob = cumsum(prob)) %>% 
+  mutate(cum.prob.comp = 1 - cum.prob) %>% 
   mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
-  mutate(log10.pop = log10(phones.sum))
+  mutate(log10.phones = log10(phones.sum))
 
-Fig.8 <- ECCDF.phones.data %>%   
+ECCDF.phones.plot <- ECCDF.phones.data %>%   
   ggplot() + 
-  geom_point(aes(x = log10.pop, y = log10.cum.prob.comp, 
+  geom_point(aes(x = log10.phones, y = log10.cum.prob.comp, 
                  color = layer)) + 
   geom_hline(yintercept = -0.3010300, linetype = "dotted") + 
   geom_hline(yintercept = -1, linetype = "dotted") + 
@@ -456,19 +427,29 @@ Fig.8 <- ECCDF.phones.data %>%
   geom_text(x = 4, y = -0.85, label = "90% of the data") + 
   scale_color_ptol(breaks = c("Layer 1", "Layer 2", "Layer 3")) + 
   ggtitle("") +
-  labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)",  
-        colour = "") + 
-  theme(legend.position = "bottom") +
-  labs(
-    x = "log10(Mobile phones)",
-    y = "log10(Prob(Y > x))",
-    subtitle ="In this figure there is rapresented the EECDF for the c vector. It is possible to claim that the 90% of the obseved number of mobile devices are associated to rural tiles/towers. ")+
+  labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)", colour = "",
+       subtitle ="In this figure there is rapresented the EECDF for the c vector. It is possible to claim that the 90% of the obseved number of mobile devices are associated to rural tiles/towers. ")+
   theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
-  plot.subtitle = element_text(size=9,hjust = 0.5))
+        plot.subtitle = element_text(size=9,hjust = 0.5))
 
-Figure8 <- ggarrange(Fig.8)
-annotate_figure(Figure8,
-               top = text_grob("Fig.8: ECCDF c Vector", color = "Black", face = "bold", size = 14))
+ECDF.phones.plot <- ECCDF.phones.data %>%   
+  # sample_n(1000) %>% 
+  ggplot() + 
+  geom_point(aes(x = phones.sum, y = cum.prob.comp, color = layer)) + 
+  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban"), guide = FALSE, expand = c(0, 0)) +
+  labs(y = "", x = "") +
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
+
+pop.dist.ecdf.insert <- ECCDF.phones.plot +
+  annotation_custom(ggplotGrob(ECDF.phones.plot), 
+                    xmin = 0, xmax = 2, 
+                    ymin = -3.5, ymax = -1)
+    
+
+plot_grid(pop.dist.ecdf.insert, labels = "ECCDF c Vector",  hjust = -0.1, label_size = 12)
 ```
 
 # Estimation strategies
@@ -482,67 +463,10 @@ Estimation strategies:
 -   MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
 
 ```{r}
-# # non-informative prior
-# a.non.inf.vec <- rep(1, length(census.de.100m.tile$internal.id))
-# 
-# # informative prior based on area kind
-# a.inf.vec <- census.de.100m.tile %>% 
-#   mutate(a.vec = case_when(pop.area.kind == "Uninhabitated" ~ 1,
-#                            pop.area.kind == "Rural" ~ 2,
-#                            pop.area.kind == "Suburban" ~ 3,
-#                            pop.area.kind == "Urban" ~ 4)) %>% 
-#   st_drop_geometry() %>% 
-#   dplyr::select(internal.id, a.vec) %>% 
-#   arrange(internal.id) %>% 
-#   deframe()
-# 
-# # C vector
-# c.vec <- C.vec.df %>% 
-#   arrange(antenna.ID) %>% 
-#   deframe()
-# 
-# # P matrix oracle (P)
-# P.orcale.mat <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/P.mat.rds")
-# 
-# # P matrix flat coverage (P')
-# P.prime.mat.helper <- P.orcale.mat
-# P.prime.mat.helper@x[P.prime.mat.helper@x > 0] <- 1
-# P.prime.mat <- t(t(P.prime.mat.helper)/colSums(P.prime.mat.helper))
-
-# Show the format of each object
-
-# # Simple Bayesian estimation method
-# SB_u_est_EM <- function(c.vec, P.mat, a.vec, n.iter = 10) {
-#   
-#   # result <- vector(mode = "numeric", length = length(a.vec))
-#   result <- matrix(nrow = length(a.vec), ncol = n.iter)
-#   
-#   for (i in 2:n.iter){
-#     P.trans.mat <- t(P.mat)
-#     P.correct.mat <- P.mat
-#     P.correct.mat@x[P.correct.mat@x > 0] <- 1
-#     denominator.summary <- tibble(u = c(1:length(c.vec)), value = colSums(P.trans.mat * a.vec)) # of length u
-#     denominator.vec <- colSums(P.trans.mat * a.vec)
-#     
-#     corrector <- P.correct.mat * denominator.summary$value
-#     
-#     sX <- summary(P.correct.mat)
-#     sY <- summary(corrector)
-#     sRes <- merge(sX, sY, by = c("i", "j"))
-#     f <- sparseMatrix(i = sRes[,1], j = sRes[,2], x = sRes[,3]/sRes[,4],
-#                       dimnames = dimnames(P.correct.mat))
-#     
-#     fraction.final <- colSums((f * P.mat) * c.vec, na.rm = T)
-#     a.vec <- fraction.final * a.vec
-#     
-#     result[, i] <- a.vec
-#   }
-#   return(result)
-#   
-# }
 
 
-estimations <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/sampled.est.results.rds")
+
+estimations <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/working objects/sampled.est.results.rds")
 est.visual <- estimations %>% 
   dplyr::select(internal.id, P.equal2, P.equal10, P.true10, oracle, pop.area.kind, pop, geometry) %>% 
   st_as_sf() %>% 
@@ -551,18 +475,25 @@ est.visual <- estimations %>%
 
 ```
 
-
 # Evaluation
-The first evaluation is executed through visual analysis based on the complete focus area. The first map shows the ground truth population. The following maps show the models in the following order and specification: 
-Currently three modules are implemented:
 
--   (1) Simple Bayesian, non informative constant prior, equal probability P.matrix
+The first evaluation is executed through visual analysis based on the complete focus area. The first map shows the ground truth population. The following maps show the models in the following order and specification: Currently three modules are implemented:
 
--   (2) MLE Poisson, 10 iterations, non informative constant prior, equal P.matrix
+-   
 
--   (3) MLE Poisson, 10 iterations, non informative constant prior, true P.matrix
+    (1) Simple Bayesian, non informative constant prior, equal probability P.matrix
 
--   (3) Oracle, true pop prior, true P.matrix
+-   
+
+    (2) MLE Poisson, 10 iterations, non informative constant prior, equal P.matrix
+
+-   
+
+    (3) MLE Poisson, 10 iterations, non informative constant prior, true P.matrix
+
+-   
+
+    (3) Oracle, true pop prior, true P.matrix
 
 ```{r}
 # comparison
@@ -606,19 +537,8 @@ plot_grid(Fig.3.1, labels = "True population",
 
 ```
 
-```{r}
-Figure9a <- ggarrange(Fig.9.SB, Fig.9.equal)
-title9a <- expression(atop(bold("Fig.9a: Evaluation I"), scriptstyle("To assess the fairness of our evaluation, we conduct a visual comparison between the population distribution estimated though four  strategies and the true population. The first estimate is able to capture only the main Urban agglomerate, while the second one is more sensible.")))
-annotate_figure(Figure9a,
-               top = text_grob(title9a))
-```
 
-```{r}
-Figure9b <- ggarrange(Fig.9.true, Fig.9.oracle)
-title9b <- expression(atop(bold("Fig.9b: Evaluation II"), scriptstyle("By using the True P-matrix we can see the effect of a constat and uninformative prior against an informative prior.")))
-annotate_figure(Figure9b,
-               top = text_grob(title9b))
-```
+
 # References
 
 [1] Ricciato F, Lanzieri G., Wirthmann A., and Seynaeve G.(2020) Towards a methodological framework for estimating present population density from mobile network operator data. <https://ec.europa.eu/eurostat/cros/content/towards-methodological-framework-estimating-present-population-density-mobile-network-operator-data-extended-version_en>
