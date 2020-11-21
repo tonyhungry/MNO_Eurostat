@@ -2,7 +2,6 @@ library(tidyverse)
 library(Matrix)
 library(sf)
 library(data.table)
-library(svglite)
 
 census.de.100m.tile <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds") %>% 
   dplyr::select(-c(cluster_id, pop.raster, cluster.tile.n))
@@ -136,6 +135,20 @@ estimations.geo <- u.est.non.inf.P.equal.geo %>%
 saveRDS(estimations.geo, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/estimations.geo.rds")
 estimations.geo <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/estimations.geo.rds")
 
+# estimations.dt <- melt(estimations.geo, id.vars = c("internal.id", "u.true.x"),
+#              measure.vars = c("dob_child1", "dob_child2", "dob_child3"))
+
+
+estimations.new <- estimations.geo %>%
+  st_drop_geometry() %>% 
+  left_join(census.de.100m.tile, by = "internal.id") %>% 
+  filter(!pop.area.kind == "Rural") %>%
+  # filter(u.true.x > 10) %>%
+  mutate(u.lower = u.true.x - (u.true.x/2)) %>% 
+  mutate(u.upper = u.true.x + (u.true.x/2)) %>% 
+  summarise_at(vars(starts_with("u.P.")), ~mean(. >= u.lower & . <= u.upper))
+
+
 
 
 estimations.geo.final <- estimations.geo %>% 
@@ -143,32 +156,147 @@ estimations.geo.final <- estimations.geo %>%
                                                   TRUE ~ 0))
 
 
-f <- e %>% 
+u.P.equal1 <- estimations.geo.final %>%
+  select(u.P.equal1) %>% 
+  group_by(u.P.equal1) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.equal2 <- estimations.geo.final %>%
+  select(u.P.equal2) %>% 
+  group_by(u.P.equal2) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.equal10 <- estimations.geo.final %>%
+  select(u.P.equal10) %>% 
+  group_by(u.P.equal10) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.equal20 <- estimations.geo.final %>%
+  select(u.P.equal20) %>% 
   group_by(u.P.equal20) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.equal50 <- estimations.geo.final %>%
+  select(u.P.equal50) %>% 
+  group_by(u.P.equal50) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.equal100 <- estimations.geo.final %>%
+  select(u.P.equal100) %>% 
+  group_by(u.P.equal100) %>% 
+  summarize(geometry = st_union(geometry.x))
+
+u.P.oracle1 <- estimations.geo.final %>%
+  select(u.P.oracle1) %>% 
+  group_by(u.P.oracle1) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.oracle2 <- estimations.geo.final %>%
+  select(u.P.oracle2) %>% 
+  group_by(u.P.oracle2) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.oracle10 <- estimations.geo.final %>%
+  select(u.P.oracle10) %>% 
+  group_by(u.P.oracle10) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.oracle20 <- estimations.geo.final %>%
+  select(u.P.oracle20) %>% 
+  group_by(u.P.oracle20) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.oracle50 <- estimations.geo.final %>%
+  select(u.P.oracle50) %>% 
+  group_by(u.P.oracle50) %>% 
+  summarize(geometry = st_union(geometry.x))
+u.P.oracle100 <- estimations.geo.final %>%
+  select(u.P.oracle100) %>% 
+  group_by(u.P.oracle100) %>% 
+  summarize(geometry = st_union(geometry.x))
+
+u.true <- estimations.geo.final %>%
+  select(u.true.x) %>% 
+  group_by(u.true.x) %>% 
   summarize(geometry = st_union(geometry.x))
 
 
-r %>% 
+u.P.equal1.plot <- u.P.equal1 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.equal2.plot <- u.P.equal2 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.equal10.plot <- u.P.equal10 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.equal20.plot <- u.P.equal20 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.equal50.plot <- u.P.equal50 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.equal100.plot <- u.P.equal100 %>% 
   st_as_sf() %>% 
   ggplot() +
   geom_sf(color = "black")
 
+u.P.oracle1.plot <- u.P.oracle1 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.oracle2.plot <- u.P.oracle2 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.oracle10.plot <- u.P.oracle10 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.oracle20.plot <- u.P.oracle20 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.oracle50.plot <- u.P.oracle50 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+u.P.oracle100.plot <- u.P.oracle100 %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+
+u.true.plot <- u.true %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(color = "black")
+
+saveRDS(u.P.equal1.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.equal1.rds")
+saveRDS(u.P.equal2.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.equal2.rds")
+saveRDS(u.P.equal10.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.equal10.rds")
+saveRDS(u.P.equal20.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.equal20.rds")
+saveRDS(u.P.equal50.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.equal50.rds")
+saveRDS(u.P.equal100.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.equal100.rds")
+saveRDS(u.P.oracle1.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.oracle1.rds")
+saveRDS(u.P.oracle2.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.oracle2.rds")
+saveRDS(u.P.oracle10.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.oracle10.rds")
+saveRDS(u.P.oracle20.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.oracle20.rds")
+saveRDS(u.P.oracle50.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.oracle50.rds")
+saveRDS(u.P.oracle100.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/u.P.oracle100.rds")
+saveRDS(u.true.plot, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/true.rds")
+
 
 est_plot <- function(data, variable) {
+
+  variable1 <- sym(variable)
   
-  dat <- 
+  dat <- data %>% 
+    select(!!variable1) %>% 
+    group_by(!!variable1) %>% 
+    summarize(geometry = st_union(geometry.x))
   
-  title <- variable
-  
-  plot <- data %>%
+  plot <- dat %>%
     ggplot() +
-    geom_sf(aes(color = factor(variable))) +
-    scale_color_manual(values = c("grey", "black"),
-                       labels = c("u hat > 50", "u <= 50"),
-                       name = "") +
+    geom_sf(color = "black") +
     ggtitle("", subtitle = variable) +
     theme(plot.margin = unit(c(0, 0, 0, 0), "mm"))
-  saveRDS(plot, paste0("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/", title, ".rds"))
+  saveRDS(plot, paste0("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/estimation plots/", variable, ".rds"))
   rm(plot)
 }
 
@@ -177,6 +305,12 @@ variables <- estimations.geo %>%
   select(starts_with("u.P")) %>% 
   st_drop_geometry() %>% 
   names(.)
+
+t <- head(estimations.geo.final, 1000)
+
+e <- est_plot(estimations.geo.final, "u.P.equal20")
+
+fi <- c("649725", "620677", "570726")
 
   
 walk(variables, ~est_plot(estimations.geo, .x))
