@@ -9,7 +9,7 @@ library(furrr)
 library(stars)
 library(osc)
 
-# Raw census 100 m² data read in
+# Raw census 100 m^2 data read in
 census.raw <- fread("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/Data/Census data Germany/csv_Bevoelkerung_100m_Gitter/Zensus_Bevoelkerung_100m-Gitter.csv")
 
 # Dataframe with bounding box, tile id, and two versions of the population variable
@@ -23,8 +23,8 @@ census.de.100m <- census.raw %>%
                               TRUE ~ as.integer(pop.raw))) %>% 
   mutate(pop = case_when(pop.true <= 12 ~ sample(0:4, n(), prob = c(3/4, 3/16, 3/64, 3/256, 1/256), replace = T),
                          pop.true > 12 ~ as.integer(round(pop.true / 3, 0)))) %>%  # reducing population by a third standing for one MNO provider population
-  mutate(pop.raster = case_when(pop < 50 ~ 0,
-                                pop >= 50 ~ 1)) %>%  # defining the pop threshold per tile
+  mutate(pop.raster = case_when(pop < 15 ~ 0,
+                                pop >= 15 ~ 1)) %>%  # defining the pop threshold per tile
   dplyr::select(-pop.raw)
 
 saveRDS(census.de.100m, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/example data frame.rds")
@@ -37,7 +37,7 @@ census.tile <- raster::rasterFromXYZ(census.de.100m, crs = st_crs(3035)$proj4str
 census.tile.pop.raster <- raster::raster(census.tile, layer = 4) 
 
 # CCA workflow, clustering 1 values (pop > 70) and define s
-cities <- cca(census.tile.pop.raster, cell.class = 1, s = 20000000, unit = "m") 
+cities <- cca(census.tile.pop.raster, cell.class = 1, s = 11100000, unit = "m") 
 
 # Adding classification results to census sf object and splitting it up for further parallelized workflow
 census.classified.sf <- cities[["cluster"]] %>% 
@@ -60,7 +60,7 @@ census.classified.sf.transform <- census.classified.sf %>%
   mutate(cluster.tile.n = n()) %>% 
   ungroup() %>% 
   dplyr::select(-parts) %>% 
-  mutate(pop.area.kind.helper = case_when(pop.raster != 0 & cluster.tile.n > 50 ~ 1, # specify clusters that have at least fifty tiles
+  mutate(pop.area.kind.helper = case_when(pop.raster != 0 & cluster.tile.n > 10 ~ 1, # specify clusters that have at least fifty tiles
                                           TRUE ~ 0))  
 
 # summarise clusters geometries to build buffers
@@ -70,9 +70,9 @@ result.interim <- census.classified.sf.transform %>%
   summarise(geometry = st_union(geometry))
 
 # build buffers for suburban and urban area respectively
-urban.buffer <- st_buffer(result.interim, 500)
+urban.buffer <- st_buffer(result.interim, 800)
 suburban.buffer <- st_buffer(result.interim, 3000)
-  
+
 # classifiy tiles that are within the respective buffer with either suburban or urban, rest is rural
 census.classified.final.sf <- census.classified.sf.transform %>% 
   mutate(urban.dummy = lengths(st_within(census.classified.sf.transform, urban.buffer))) %>% 
@@ -80,7 +80,7 @@ census.classified.final.sf <- census.classified.sf.transform %>%
   mutate(pop.area.kind = case_when(urban.dummy > 0 ~ "Urban",
                                    suburban.dummy > 0 & urban.dummy == 0 ~ "Suburban",
                                    TRUE ~ "Rural"))
-  
+
 
 # check if correctly classified
 census.classified.final.sf %>% 
@@ -93,7 +93,7 @@ saveRDS(census.classified.final.sf, "C:/Users/Marco/OneDrive - Universiteit Utre
 # census.classified.final.sf <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
 
 
-  
+
 
 ######################################################
 
@@ -117,4 +117,3 @@ result.sf <- st_as_stars(result) %>%
   mutate(area.kind = case_when(pop.raster =! 0 & pop.raster.n > 100 ~ "Urban", # cluster with at least 100 tiles is urban
                                pop.raster =! 0 & pop.raster.n > 50 & pop.raster.n <= 100 ~ "Suburban", # cluster with at least fifty and below 100 tiles is suburban
                                TRUE ~ NA_character_))  # Remaining tiles are considered as rural
-
