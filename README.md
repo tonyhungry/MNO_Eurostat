@@ -10,4 +10,4 @@ Objects and data used in our notebook will be provided upon request.
 
 This link provides more information regarding the topic of the MNO Project (p8-9): http://mse.ec.unipi.it/wp-content/uploads/2020/06/Eurostat-coding-lab_call_final-040620.pdf 
 
-* corresponding author
+\* corresponding author
