@@ -43,9 +43,9 @@ equal = esample %>%
 # Simulated Population over Iterations
 equal.plot = equal %>% 
   ggplot(aes(x = iter, y = sim, group = internal.id)) + 
-  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Simulated Population", title = "Equal Probability Matrix") + theme(axis.text.x = element_text(angle = 90,size=2)) + 
+  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Simulated Population", title = "Equal Probability Matrix") + theme(axis.text.x = element_text(angle = 45,size=2)) + 
   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
-  facet_grid(vars(pop.area.kind))
+  facet_grid(vars(pop.area.kind),scales="free")
 
 saveRDS(equal.plot, file = "equal.plot.rds")
 
