@@ -2,6 +2,10 @@ require(tidyverse)
 require(kableExtra)
 require(ggthemes)
 
+# Change the ticks to showing a few ticks
+# Change the simulated to estimated
+# EQUAL and TRUE
+
 #### EQUAL POPULATION MATRIX ####
 # sample <- readRDS("~/Desktop/Eurostat/est.equal.1000iter.sample.rds")
 esample <- readRDS("~/Desktop/Eurostat/est.equal.1000iter.sample.rds")
