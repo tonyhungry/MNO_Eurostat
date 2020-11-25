@@ -2,10 +2,6 @@ require(tidyverse)
 require(kableExtra)
 require(ggthemes)
 
-# Change the ticks to showing a few ticks
-# Change the simulated to estimated
-# EQUAL and TRUE
-
 #### EQUAL POPULATION MATRIX ####
 # sample <- readRDS("~/Desktop/Eurostat/est.equal.1000iter.sample.rds")
 esample <- readRDS("~/Desktop/Eurostat/est.equal.1000iter.sample.rds")
@@ -45,10 +41,10 @@ equal$iter = as.numeric(equal$iter)
 
 # saveRDS(equal, file = "equal.pop.rds")
 
-# Simulated Population over Iterations
+# Estimated Population over Iterations
 equal.plot = equal %>% 
   ggplot(aes(x = iter, y = sim, group = internal.id)) + 
-  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Estimated Population", title = "Equal Probability Matrix") + theme(axis.text.x = element_text(angle = 90,size=10)) + 
+  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Estimated Population", title = "Equal Probability Matrix") + theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + 
   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
   facet_grid(vars(pop.area.kind),scales="free") +
   scale_x_continuous(breaks=seq(0, 1000, 50))
@@ -95,8 +91,8 @@ equalr = esample %>%
   
 equal.resid.plot = equalr %>%
   ggplot(aes(x = iter, y = resid, group = internal.id)) + 
-  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Residual = Actual - Predicted", title = "Equal Probability Matrix ~ Residual") + theme(axis.text.x = element_text(angle = 90)) + scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
-  facet_grid(vars(pop.area.kind)) 
+  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Residual = Actual - Predicted", title = "Equal Probability Matrix ~ Residual") + theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
+  facet_grid(vars(pop.area.kind),scales = "free") 
 
 saveRDS(equal.resid.plot, file = "equal.resid.plot.rds")
 
@@ -117,7 +113,7 @@ tequal$iter = as.numeric(tequal$iter)
 # Estimated Population over Iterations plot
 true.plot = ggplot(data = tequal, aes(x = iter, y = sim, group = internal.id)) + 
   geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Estimated Population",     title = "True Population Matrix") + 
-  theme(axis.text.x = element_text(angle = 90, size=10)) +
+  theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") +
   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
   facet_grid(vars(pop.area.kind), scales = "free") +
   scale_x_continuous(breaks=seq(0, 1000, 50))
@@ -142,9 +138,9 @@ tequalr = tsample %>%
 
 true.resid.plot = ggplot(data = tequalr, aes(x = iter, y = resid, group = internal.id)) + 
   geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Residual = Actual - Predicted", title = "True Population Matrix ~ Residual") + 
-  theme(axis.text.x = element_text(angle = 90)) + 
+  theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + 
   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
-  facet_grid(vars(pop.area.kind)) 
+  facet_grid(vars(pop.area.kind),scales = "free") 
 
 saveRDS(true.resid.plot, file = "true.resid.plot.rds")
 
