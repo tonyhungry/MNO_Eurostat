@@ -1,0 +1,28 @@
+---
+title: "Graphical Estimation"
+author: "G M S T"
+date: "11/24/2020"
+output: html_document
+---
+
+
+``` {r}
+require(cowplot)
+
+equal.plot <- readRDS("~/Documents/MNO_Eurostat/Plots/Estimation Plots/equal.plot.rds")
+equal.resid.plot <- readRDS("~/Documents/MNO_Eurostat/Plots/Estimation Plots/equal.resid.plot.rds")
+
+plot_grid(equal.plot, equal.resid.plot) 
+
+```
+The graphs above shows how the estimated population evolve over time (left) as well as its prediction error (right). From the graph on the left, most of the estimated population stabilizes rather quickly in rural and suburban tiles. With the urban tiles, it is harder to say exactly when the convergence will occur, especially there are a bit of variation. The residual plot (right) shows the error of prediction in comparison to the actual population in that specific tile. The rural tiles shows a trend of constant error of prediction over iterations. The suburban tiles generally shows the same trend as well, but also shows that there are tiles that overestimated. The urban tiles tend to have an underestimation. 
+
+``` {r}
+
+true.plot <- readRDS("~/Documents/MNO_Eurostat/Plots/Estimation Plots/true.plot.rds")
+true.resid.plot <- readRDS("~/Documents/MNO_Eurostat/Plots/Estimation Plots/true.resid.plot.rds")
+
+plot_grid(true.plot, true.resid.plot) 
+
+```
+Using the true population matrix, the estimated population stabilizes faster over time in comparison to the equal population matrix. However, there are a few tiles that do not stabilize as fast as we hoped. This is particularly evident in the urban tiles. The residual plot (right) shows the error of prediction over time by the type of tile. There seems to be a trend of increasing prediction error as the degree of urbanization increases as well. We can see that the range of error for suburban tiles range from 30 to -10 and the range of error for urban tiles are between 100 and -75. The suburban tiles seems to underestimate and the urban tiles seems to overestimate. 
