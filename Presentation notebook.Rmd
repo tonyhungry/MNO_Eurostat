@@ -8,19 +8,22 @@ output:
     toc: yes
     df_print: paged
   bookdown::html_document2:
-    code_download: yes
+    code_download: true
     theme: lumen
-    toc: yes
-    toc_float: yes
+    toc: true
+    toc_float:
+      collapsed: false
     number_sections: yes
     fig_caption: yes
 knit: (function(input_file, encoding) { out_dir <- 'docs'; rmarkdown::render(input_file,
-  encoding=encoding, output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+  encoding=encoding, output_file=file.path(dirname(input_file), out_dir, 'indexnew.html'))})
 ---
 
 ```{r, setup}
 # change accordingly
 knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Marco/")) 
+knitr::opts_chunk$set(fig.width = 10)
+knitr::opts_knit$set(eval.after = "fig.cap")
 ```
 
 ```{r packages, message=FALSE}
@@ -79,7 +82,7 @@ Important features and parameters:
 
 In the following section we then proceed to classify the tiles based on the number of populations per tile as well its proximity to neighboring tiles in order identify groups of tiles into different categories of urbanization. In this section we will be using the `cca` function from the `OSC` package. After the classification, we then proceed to look at the overall distribution of the tiles based on the categories of urbanization.
 
-```{r focus area }
+```{r focus area, fig.width = 7, fig.cap="We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas" }
 # Bounding box of focus area
 bb.focus.dat <- data.frame(xmin = 4400000, xmax = 4500000,
                            ymin = 2700000, ymax = 2900000)
@@ -101,11 +104,11 @@ focus.area.plot <- germany %>%
                        labels = c("Focus area"), 
                        guide = "legend") +
   labs(x = NULL, y = NULL,
-       title = "Fig.1: Focusing on a part of South Bavaria",
-    subtitle = "We will only focus on a subset of the tiles located in the state of 
-Bavaria because it comprises both urban, suburban, and rural areas")
+       title = "")
  
-plot_grid(focus.area.plot,  hjust = -0.1, label_size = 13)
+plot_grid(focus.area.plot, 
+          labels = "Fig.1: Focusing on a part of South Bavaria",
+          hjust = -0.1, label_size = 13)
 ```
 
 ```{r pop distribution 1, fig.cap= "Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering."}
@@ -137,8 +140,7 @@ tile.prop.plot <- prop.class %>%
   geom_bar(width = 1, stat = "identity", color = "white") + 
   scale_fill_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
   geom_text(aes(y = lab.ypos, label = paste0(prop, "%")), color = "black") +
-  theme(legend.position = "bottom") +
-  labs(x = "Class", y = "Number of tiles",
+  labs(x = "Class", y = "Number of tiles", title = "",
     subtitle = "Fig. 2a: Tile proportion") + 
   theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
         plot.subtitle = element_text(size = 9, hjust = 0.5))
@@ -149,7 +151,7 @@ cluster.plot <- census.de.100m.tile %>%
   geom_sf(aes(col = factor(pop.area.kind)), show.legend = F) + 
   ggtitle("", subtitle = "Clustering Results") + 
   theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
-  scale_color_ptol(breaks = c("Uninhabited", "Rural", "Suburban", "Urban")) +
+  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#117733", "#CC6677")) +
    labs(subtitle = "Fig. 2b: Clustering results") +
   theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
         plot.subtitle = element_text(size = 9, hjust = 0.5))
@@ -243,7 +245,7 @@ The link to the source code for the layers.1 object as well as the coverage.area
 
 The link to the source code for the layers object as well as the coverage.areas object is [here] (<https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R>).
 
-```{r network layers , fig.cap = "The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented."}
+```{r network layers, fig.width = 7, fig.cap = "The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented."}
 layers <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/radio cell layers.rds") 
 coverage.areas <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage.areas.rds") 
  
@@ -281,7 +283,7 @@ We use a hexagonal structure to place towers across our focus area. This is a qu
 The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.
 
 ```{r animation}
-knitr::include_graphics("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/antenna animation.gif")
+knitr::include_graphics("https://github.com/R-ramljak/MNO_Eurostat/raw/master/antenna%20animation.gif")
 ```
 
 Basically, a tower is generated at its specified location, then three antennas are created. For the operationalized data structure, the antenna location is not really relevant as it corresponds to the respective tower location. What is more important are the antennas' *coverage area centroids* because they describe the middle point of the then generated circular coverage area. The specific radius of any generic coverage area is layer specific and listed above. As indicated in the animation, an antenna specific coverage area is setup with a variable *coverage intensity profile*. Basically, cell phones that are closer to the coverage area centroid of any antenna, have a higher coverage probability, which will be later introduced as the *signal strength* parameter.
@@ -311,7 +313,7 @@ coverage.areas %>%
   dplyr::select(layer = area.kind, n.tower, n.antenna, area.in.sq.km) %>%  
   kbl(caption = "Descriptive statistics per coverage layer") %>%
   kable_minimal() %>%
-  footnote(general = "Note: `area.in.sq.km` reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.")
+  footnote(general = "`area.in.sq.km` reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.")
 ```
 
 As described in the parameter list above, rural areas are covered only by layer 1, suburban areas are covered by layer 1 and 2 and the urbanized areas are covered by all three layers. The distances between towers of the same layer decrease in layer 2 and layer 3 compared to layer 1. This leads to denser networks within these layers represented by the higher numbers of towers and therefore higher numbers of antennas in layer 2 and 3, given their area. The reason for this is that any generic antenna can only offer signal service to a limited amount of number of mobile phones. To cover all cell phones in more urbanized areas a denser radio cell network is needed in these areas. This feature will be later introduced as the *capacity* parameter.
@@ -351,7 +353,7 @@ plot_grid(pop.dist.map.plot, coverage.area.full.plot, labels = "Fig. 6: Full cov
 
 Figure 6 presents the full network structure. By comparing the network structure to the tile density one can see that full, partially overlapping coverage is granted for all areas and that the network layering structure follows suit with the true geographical population density.
 
-```{r coverage intensity, fig.cap= "The distribution is right skewed with a mean of `r round(mean(coverage.intensity$count), 2)`, a minimum of `r min(coverage.intensity$count)` and a maximum of `r max(coverage.intensity$count)` antenna(s) per tile."}
+```{r coverage intensity, fig.width = 7, fig.cap= paste0("The distribution is right skewed with a mean of ", round(mean(coverage.intensity$count), 2),", a minimum of ", min(coverage.intensity$count),", and a maximum of ", max(coverage.intensity$count)," antenna(s) per tile.")}
 tiles.cat <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage intensity.rds")
 coverage.intensity <- tiles.cat %>%
   arrange(count) %>%
@@ -442,7 +444,7 @@ pop.dist.ecdf.insert <- ECCDF.phones.plot +
 plot_grid(pop.dist.ecdf.insert, labels = "Fig. 8: ECCDF Device-to-cell association",  hjust = -0.1, label_size = 14)
 ```
 
-```{r c.vector special cases, fig.cap = "These antennas have more than 10,000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers."}
+```{r c.vector special cases, fig.width = 7, fig.cap = "These antennas have more than 10,000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers."}
 
 extreme.antennas.plot <- C.vec.df %>%  
   filter(phones.sum >= 10000) %>% 
@@ -577,11 +579,8 @@ plot_grid(est.plot.list[[7]], est.plot.list[[8]],
 
 !!! Also under construction table for selected iterations will be added for next meeting
 
--   MLE Poisson: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
+-   Average discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
 
-```{r stat eval 1}
-
-```
 
 # References
 
