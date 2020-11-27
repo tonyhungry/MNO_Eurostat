@@ -1,1 +1,9 @@
-This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). Please see the page "Get Started" at https://bookdown.org/home/about/ for how to compile this example.
+# MNO Book
+
+This is the collection of scripts used to generate our book: Mobile Network Operator Data for Spatial Statistics.
+
+The authors of this book include: Giulia Regazzoni (UniBg, IT), Marco Ramljak* (UU, NL), Stefania Scrofani (UniBg, IT), and Tony Hung (VŠE, CZ).
+
+This book is generated using the bookdown package.
+
+\* corresponding author
