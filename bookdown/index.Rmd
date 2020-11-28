@@ -10,7 +10,7 @@ link-citations: yes
 description: "A showcase of our remote collaborative efforts from working on the MNO project"
 ---
 
-# Cover Page
+# Cover
 
 Joining far and wide in the heart of Europe, four master's student Skyped through the Eurostat Summer Coding Labs of the year 2020. Representing three universities from the Netherlands (UU), Italy (UniBg), and the Czech Republic (VŠE), while working collaboratively and have only seen each other through their laptop screens, the authors would like to present to you our book, a detailed collection of our work from the coding lab.
 

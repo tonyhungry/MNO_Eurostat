@@ -9,3 +9,6 @@ example-one
 example-two
 final-words
 cover-page
+section
+home
+cover
