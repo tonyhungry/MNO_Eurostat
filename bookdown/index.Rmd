@@ -16,8 +16,9 @@ Joining far and wide in the heart of Europe, four master's student Skyped throug
 
 This book could be used several ways. For a detailed overview of our project, a deep dive starting from the introduction is necessary. For a brief abstract, the executive summary could just be the case. This book is highly modular and adaptable to suit the reader's needs and curiosity.
 
-We would like to sincerely thank Fabio Ricciato, Matyas Meszaros, and Jacopo Grazzini for their valuable inputs and guidance throughout the experience.
+We would like to sincerely thank Fabio Ricciato, Matyas Meszaros, and Jacopo Grazzini for their invaluable inputs and generous guidance throughout the coding lab experience.
 
+This book is made using the `bookdown` package in R.
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
