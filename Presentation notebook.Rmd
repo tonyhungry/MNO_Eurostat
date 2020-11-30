@@ -52,7 +52,7 @@ Currently three modules are implemented:
 
 # Generating a semi-synthetic population based on real census data
 
-We have retrieved population census data from the German Federal Statistical Office on Germany [2] (<https://www.destatis.de/EN/Home/_node.html>). This data entails population count categories on the 100m\*100m tile level. For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises both urban, suburban, and rural areas. The underlying code is written in a modular way in order to have the possibility to repurpose our models for other regions. Furthermore, once a high computing machine is available, we could easily scale this notebook to the entirety of Germany.
+We have retrieved population census data from the German Federal Statistical Office on Germany [2] (<https://www.destatis.de/EN/Home/_node.html>). This data entails population count categories on the 100m\*100m tile level. For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises both urban, suburban, and rural areas. The underlying code is written in a modular way in order to have the possibility to re-purpose our models for other regions. Furthermore, once a high computing machine is available, we could easily scale this notebook to the entirety of Germany.
 
 The sample population value is used as the number of mobile phones in a specific tile and throughout in this current version of the notebook. This sample population is a direct reference to the u vector in the working paper. In subsequent versions, this original population value could be adjusted based on additional variables to get a more realistic count of people with mobile phones in each tile.
 
@@ -80,7 +80,7 @@ Important features and parameters:
 
 -   We have a continuous and a `r dim(census.de.100m.tile)[2]` level ordinal variable representing the population density for each tile
 
-In the following section we then proceed to classify the tiles based on the number of populations per tile as well its proximity to neighboring tiles in order identify groups of tiles into different categories of urbanization. In this section we will be using the `cca` function from the `OSC` package. After the classification, we then proceed to look at the overall distribution of the tiles based on the categories of urbanization.
+In order to imitate the real life situation where only one mobile carrier will provide us with their data, we have first randomly extracted a third of the population vector. Continuing with that, in the following section we then proceed to classify the tiles based on the number of populations per tile as well its proximity to neighboring tiles in order identify groups of tiles into different categories of urbanization. In this section we will be using the `cca` function from the `OSC` package. After the classification, we then proceed to look at the overall distribution of the tiles based on the categories of urbanization.
 
 ```{r focus area, fig.width = 7, fig.cap="We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas" }
 # Bounding box of focus area
@@ -160,9 +160,7 @@ plot_grid(cluster.plot, tile.prop.plot, labels = "Fig.2 : Population Classificat
             hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1)) 
 ```
 
-Note: We understand that the threshold used in this section is not optimal yet, however, optimization of the parameters is out of the scope of this project.
-
-Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working on this very low spatial resolution, one cannot just classify tiles independently based on their respective continuous population value but ones needs to take spatial dependence into consideration in order to classify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 70 people per tile. Tiles below 70 are either classified as Uninhabited or Rural, from the start on (Uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 70 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 70 people.
+Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working on this very low spatial resolution, one cannot just classify tiles independently based on their respective continuous population value but ones needs to take spatial dependence into consideration in order to classify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 15 people per tile. Tiles below 15 are either classified as Uninhabited or Rural, from the start (uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 15 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 15 people.
 
 The stacked bar plot shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, `r prop.class$prop[1]`% of the tiles are urban areas. `r prop.class$prop[2]`% of the tiles are uninhabited areas. `r prop.class$prop[3]`% of the tiles are suburban areas, and `r prop.class$prop[4]`% of the tiles are rural areas.
 
@@ -174,7 +172,7 @@ pop.dist.map.plot <- ECCDF.pop.data %>%
   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
   ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) 
+  theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
  
 ECCDF.pop.plot <- ECCDF.pop.data %>%   
   # sample_n(1000) %>% 
@@ -328,7 +326,7 @@ coverage.area.plot <- coverage.areas %>%
   ggtitle("") + 
     scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
   labs(x = NULL, y = NULL) +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  theme(axis.text.x=element_text(angle=90, hjust=1),plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
   plot.subtitle = element_text(size = 9, hjust = 0.5))
 
 plot_grid(coverage.area.plot, labels = "Fig. 5: Coverage per layer",
@@ -344,7 +342,8 @@ coverage.area.full.plot <- coverage.areas %>%
   geom_sf(aes(col = area.kind), fill = NA) +
   ggtitle("", subtitle = "Full coverage") +
     scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  theme(axis.text.x=element_text(angle=90, hjust=1),
+        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
   plot.subtitle = element_text(size = 9, hjust = 0.5))
 
 plot_grid(pop.dist.map.plot, coverage.area.full.plot, labels = "Fig. 6: Full coverage corresponding to the density", 
@@ -455,7 +454,7 @@ extreme.antennas.plot <- C.vec.df %>%
   ggtitle("") + 
   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
   labs(x = NULL, y = NULL) +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  theme(axis.text.x=element_text(angle=90, hjust=1),plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
   plot.subtitle = element_text(size = 9, hjust = 0.5))
 
 plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
@@ -516,7 +515,7 @@ This section is still under construction. We will evaluate the estimators and th
 
 3.  Statistical evaluation: !Still under construction! We will compute global metrics for the estimators performance such as the average absolute discrepancy between the estimands and the true values.
 
-## Distributional evaluation
+## Convergence Evaluation
 
 ```{r distributionl eval 1, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached."}
 
@@ -545,7 +544,7 @@ plot_grid(true.plot, true.resid.plot,
 
 Using the true population matrix, the estimated population stabilizes faster over time in comparison to the equal population matrix. However, there are a few tiles that do not stabilize as fast as we hoped. This is particularly evident in the urban tiles. The residual plot (right) shows the error of prediction over time by the type of tile. There seems to be a trend of increasing prediction error as the degree of urbanization increases as well. We can see that the range of error for suburban tiles range from 30 to -10 and the range of error for urban tiles are between 100 and -75. The suburban tiles seems to underestimate and the urban tiles seems to overestimate.
 
-## Geographical evaluation
+## Geographical Evaluation
 
 *!!! The plots with a 4 level scale and more iterations will be added until friday. They need to be rendered before for faster load in.*
 
@@ -575,12 +574,13 @@ plot_grid(est.plot.list[[7]], est.plot.list[[8]],
           align = "hv", hjust = -0.1)
 ```
 
-## Statistical evaluation
+## Statistical/Distributional Evaluation
 
 !!! Also under construction table for selected iterations will be added for next meeting
 
--   Average discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
+- Average Absolute Discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
 
+- Maximum Absolute Discrepancy: $D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |$
 
 # References
 
