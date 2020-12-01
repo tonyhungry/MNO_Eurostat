@@ -8,3 +8,9 @@ applications
 example-one
 example-two
 final-words
+cover-page
+section
+home
+cover
+executive-summary
+making-a-toy-world
