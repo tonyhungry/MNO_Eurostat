@@ -221,7 +221,7 @@ The ECCDF is a step function with jumps `i/n` at observation values, where `i` i
 
 As the figure suggests, 50% of the data are represented by uninhabited tiles with no phones; furthermore, 90% of the tiles contain less than half of the mobile phones in our focus area. One can also see the tiles' classification based on the clustering results. Some tiles classified as Rural have higher values for their mobile phone population - this is because they are not considered as an Urban or Suburban cluster, as mentioned above. 10% left are tiles both urban and rural containing 0.5 and above mobile phones.
 
-# Generation of a synthetic the Radio Network
+# Generation of a synthetic Radio Network
 
 We generate a radio network, which is composed of three layers. The layers follow the pop.area.kind variable - layer 1 (Rural) spans over the rural, suburban and urban tiles, layer 2 (Suburban) spans over the suburban and urban tiles and layer 3 (Urban) is spanned over the urban tiles.
 
