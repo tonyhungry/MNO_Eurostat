@@ -463,23 +463,174 @@ plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
 
 # Estimation strategies
 
--   Network module: Flat coverage: $p'_{ij} = \frac{1}{|\mathcal{L}_{j}|}$
+Currently three specific estimation strategies are implemented:
 
-Estimation strategies:
+-   Voronoi tesselation (tower locations as seeds)
 
--   bayes rule: $\hat{u}_{j} = a_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} a_{k}}$
+-   Bayes rule: $\hat{u}_{j} = a_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} a_{k}}$
 
 -   MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
 
-Currently two specific estimation strategies are implemented:
+## Voronoi tesselation
 
--   
+```{r, Voronoi prep}
+# adding to the coverage areas the results of the c vector
+coverage.areas.comp <- coverage.areas %>% 
+  left_join(c.vec, by = "antenna.ID") %>% 
+  mutate(phones.sum = case_when(is.na(phones.sum) ~ 0,
+                                TRUE ~ phones.sum))
 
-    (1) MLE Poisson, 100 iterations performed, non informative constant prior, equal probability P.matrix
+## derive the shape of the focus area
+# census.geo.body <- census.de.100m.tile %>% 
+#   select(internal.id) %>% 
+#   summarise(geometry = st_union(geometry))
+# saveRDS(census.geo.body, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
+census.geo.body <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
 
--   
+# select only the internal id and the mobile phone population per tile
+census.de.100m.tile.pop <- census.de.100m.tile %>% 
+  select(internal.id, pop)
 
-    (2) MLE Poisson, 100 iterations performed, non informative constant prior, true P.matrix
+```
+
+# Voronoi tesselation
+
+Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed there is one Voronoi region that contains the area that is closest to the particular seed. There are two seed specifications we are interested in:
+
+-   Tower locations as seeds --\> `n =` `r length(unique(coverage.areas$tower.ID))`
+
+-   Coverage area centroid (per antenna) locations as seeds --\> `n =` `r length(unique(coverage.areas$antenna.ID))`
+
+Currently, we have only implemented the first one.
+
+## Voronoi seeds resemble the tower locations
+
+Below we specify the tower locations as seed points. These are then used to compute the Voronoi regions. Before we do that we need to make sure that the corresponding c.vector is aggregated on the toer level. We then join the Voronoi regions with the tiles to create an object that links tiles within respective Voronoi regions.
+
+```{r voronoi tower plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions."}
+# specifiying an object with the point locations of the tower seeds and tower phone aggregates
+tower.aggr <- coverage.areas.comp %>% 
+  mutate(X.tow = case_when(tower.ID == "RT52" ~ 4493314,
+                           tower.ID == "ST116" ~ 4499810,
+                           TRUE ~ X.tow),
+         Y.tow = case_when(tower.ID == "RT52" ~ 2799819,
+                           tower.ID == "ST116" ~ 2793308,
+                           TRUE ~ Y.tow)) %>%
+  st_drop_geometry() %>% 
+  group_by(tower.ID) %>% 
+  mutate(phones.sum = sum(phones.sum)) %>% 
+  distinct(tower.ID, .keep_all = T) %>% 
+  select(tower.ID, X.tow, Y.tow, phones.sum) %>%
+  ungroup() %>% 
+  st_as_sf(coords = c("X.tow", "Y.tow")) %>% 
+  st_sf(crs = 3035)
+
+# Using the seed object to calculate the Voronoi regions
+tower.seed.voronoi <- tower.aggr %>%  
+  st_geometry() %>% 
+  st_union() %>% 
+  st_voronoi() %>% 
+  st_collection_extract(type = "POLYGON") %>% 
+  st_sf(crs = 3035) %>% 
+  st_join(tower.aggr) %>%  # rejoin with seed object to retain seed id
+  st_intersection(census.geo.body)
+
+# Visualizing the Vornoi regions with respective phone count
+VT.plot.1 <- tower.seed.voronoi %>% 
+  ggplot() +
+  geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
+  ggtitle("")
+
+plot_grid(VT.plot.1, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
+```
+
+We have now created the Voronoi regions for our focus area with tower locations as seeds. The number of tower locations (seeds) and Voronoi regions align with each other.
+
+The spatial density per tile can be expressed as the ratio of the mobile phones in that region and the area of the Voronoi region:
+
+$d_{k} = \frac{\sum c_{i}} {A_{k}}$
+
+This region specific estimate corresponds to the tile estimate for a tile that is contained in this region. On the tile level there can be two cases that we need to differentiate:
+
+-   Tiles that are completely contained within one Voronoi region 
+
+-   Tiles that intersect with two or more Vornoi regions
+
+For the first case, the tile specific estimate corresponds to $d_{k}$. For the second case we will calculate a weighted mean of the relevant Voronoi region estimates by using the corresponding tile area within each Voronoi region as weights. 
+
+```{r Voronoi tower multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator."}
+# spatial densities per Voronoi region
+tower.voronoi.est <- tower.seed.voronoi %>% 
+  mutate(area = as.numeric(st_area(.$geometry))) %>% 
+  mutate(voronoi.est = phones.sum / area) # the sum of the product of this and the area is the total pop
+
+
+# Joining the regions with the tile specific data
+tower.seed.voronoi.join <- tower.voronoi.est %>% 
+  st_join(census.de.100m.tile.pop) %>% # & re-connect the data items
+  st_set_agr("aggregate") %>% # clean up
+  group_by(internal.id) %>% 
+  mutate(count = n()) %>% 
+  ungroup()
+
+# identifiying tiles intersecting with multiple Voronoi regions
+tower.multiple <- tower.seed.voronoi.join %>%
+  st_drop_geometry() %>% 
+  filter(count > 1) %>% 
+  distinct(internal.id) %>% 
+  deframe()
+
+# calculate area within competing voronoi regions of "multiple" tiles
+tower.intersect.tiles <- census.de.100m.tile.pop %>% 
+  filter(internal.id %in% tower.multiple) %>%
+  st_intersection(tower.voronoi.est) %>% 
+  st_collection_extract(type = "POLYGON") %>% # select the polygons
+  mutate(amount.tiles = as.numeric(st_area(.$geometry)) / 10000) # checked if it adds up to 1
+
+# example plot
+# VT.bird.example.plot <- tower.intersect.tiles %>% 
+#   filter(internal.id == "342403") %>% 
+#   ggplot() +
+#   geom_sf(color = "red") +
+#   geom_sf(data = census.geo.body, fill = NA) +
+#   ggtitle("")
+
+VT.example.plot <- tower.intersect.tiles %>% 
+  filter(internal.id == "342403") %>% 
+  ggplot() +
+  geom_sf() + # add description and scales
+  geom_sf_label(aes(label = tower.ID)) +
+  geom_sf_text(aes(label = paste0("(", round(amount.tiles, 2), ")")), nudge_y = -7) +
+  geom_sf(data = (census.de.100m.tile.pop %>% 
+  filter(internal.id == "342403")), color = "red", fill = NA) +
+  ggtitle("")
+
+plot_grid(#VT.bird.example.plot,
+  VT.example.plot, labels = "Fig. 11: Example multiple tile",  hjust = -0.1, label_size = 14)
+
+```
+
+We can now calculate the estimated spatial density per tile.
+
+```{r VT estimate}
+# final datatset to calculate spatial density
+tower.voronoi.final <- tower.intersect.tiles %>% 
+  st_drop_geometry() %>% 
+  select(internal.id, tower.ID, amount.tiles) %>% 
+  right_join(tower.seed.voronoi.join, by = c("internal.id", "tower.ID")) %>% 
+  mutate(amount.tiles = case_when(is.na(amount.tiles) ~ 1,
+                                  TRUE ~ amount.tiles)) %>% 
+  group_by(internal.id) %>% 
+  mutate(voronoi.est.corrected = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
+  distinct(internal.id, voronoi.est.corrected, pop) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
+
+```
+
+We are currently not able to create Voronoi tesselations based on antenna coverage area centroids because multiple centroids are located outside of the focus area. A workaround for this will be developed at a later stage.
+
+## Simple Bayes
+
+## MLE Poisson
 
 ```{r estimations 1.1}
 equal.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
@@ -587,9 +738,9 @@ plot_grid(est.plot.list[[7]], est.plot.list[[8]],
 
 !!! Also under construction table for selected iterations will be added for next meeting
 
-- Average Absolute Discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
+-   Average Absolute Discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
 
-- Maximum Absolute Discrepancy: $D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |$
+-   Maximum Absolute Discrepancy: $D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |$
 
 # References
 
