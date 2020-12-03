@@ -632,28 +632,37 @@ We are currently not able to create Voronoi tesselations based on antenna covera
 
 ## MLE Poisson
 
-```{r estimations 1}
-sample.eval <- list.files("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/sample evaluation/", 
-                            pattern = "*.rds", full.names = TRUE) %>% 
-  map(readRDS)
+```{r estimations 1.1}
+equal.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
+equal.resid.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.resid.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
 
-plot_grid(sample.eval[[1]], sample.eval[[2]], 
+plot_grid(equal.100.plot, equal.resid.100.plot, 
           labels = "",  hjust = -0.1, label_size = 12,
           ncol = 2, nrow = 1)
+```
+```{r estimations 1.2}
+ematrix = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.equal.rmspe.rds", method = "libcurl"))
 
-sample.eval[[3]] %>% 
+ematrix %>% 
   kbl(caption = "Equal prob P.matrix, constant prior: RMSE") %>% 
   kable_minimal() 
 ```
 
-```{r estimations 2}
-plot_grid(sample.eval[[4]], sample.eval[[5]], 
+```{r estimations 2.1}
+true.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
+true.resid.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.resid.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
+
+plot_grid(true.100.plot, true.resid.100.plot, 
           labels = "",  hjust = -0.1, label_size = 12,
           ncol = 2, nrow = 1)
+```
 
-sample.eval[[6]] %>% 
-  kbl(caption = "True P.matrix, constant prior: RMSE") %>% 
-  kable_minimal()
+```{r estimations 2.2}
+tmatrix = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.true.rmspe.rds", method = "libcurl"))
+
+ematrix %>% 
+  kbl(caption = "Equal prob P.matrix, constant prior: RMSE") %>% 
+  kable_minimal() 
 ```
 
 # Evaluation of the MLE Poisson estimator
