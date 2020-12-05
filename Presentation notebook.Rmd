@@ -868,9 +868,9 @@ plot_grid(est.plot.list[[7]], est.plot.list[[8]],
 
 ```{r voronoi vs MLE}
 
-aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AAD_MAD/aad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/aad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
 
-mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AAD_MAD/mad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/mad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
 
 plot_grid(aad.plot, mad.plot,
           labels = "Voronoi Estimation vs MLE", 
@@ -880,9 +880,9 @@ By calculating the two discrepancy measures, we can then evaluate the overall pe
 
 ```{r}
 
-aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AAD_MAD/equal.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
 
-mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AAD_MAD/equal.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
 
 plot_grid(aad.plot, mad.plot,
           labels = "Discrepancy Over Time, Equal Pop. Matrix", 
@@ -891,9 +891,9 @@ plot_grid(aad.plot, mad.plot,
 For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 700th iteration, the discrepancy values are largely the same. 
 
 ```{r}
-aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AAD_MAD/true.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
 
-mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AAD_MAD/true.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
 
 plot_grid(aad.plot, mad.plot,
           labels = "Discrepancy Over Time, True Pop. Matrix", 
