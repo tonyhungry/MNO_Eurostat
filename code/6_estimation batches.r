@@ -1,7 +1,7 @@
 library(data.table)
 library(tidyverse)
 
-# Take a stratified sample (n_strata = 50) based on pop area kind, join all estimation parts togethe to one file with 150 observations and 1000 iterations
+# Take a stratified sample (n_strata = 50) based on pop area kind, join all estimation parts togethe to one file with 150 observations and 1000 iterationss
 
 
 setwd("C:/Users/Marco/")
