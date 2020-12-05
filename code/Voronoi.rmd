@@ -1,0 +1,311 @@
+---
+title: "Voronoi estimation"
+output: html_notebook
+---
+
+```{r, setup}
+# change accordingly
+knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Marco/")) 
+knitr::opts_chunk$set(fig.width = 10)
+knitr::opts_knit$set(eval.after = "fig.cap")
+```
+
+```{r packages, message=FALSE}
+library(tidyverse)
+library(sf)
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(ggthemes)
+library(cowplot)
+set.seed(76)
+```
+
+# Setup of necessary datasets
+
+For any kind of Voronoi tesselation we need to work with the grid level data (tiles) and the cell coverage data (tower, antennas).
+
+```{r, data load in}
+census.de.100m.tile <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds") 
+
+coverage.areas <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage.areas.rds") 
+
+c.vec <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.df.final.new.rds") 
+
+census.geo.body <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
+
+
+```
+
+```{r, Voronoi prep}
+# adding to the coverage areas the results of the c vector
+coverage.areas.comp <- coverage.areas %>% 
+  left_join(c.vec, by = "antenna.ID") %>% 
+  mutate(phones.sum = case_when(is.na(phones.sum) ~ 0,
+                                TRUE ~ phones.sum))
+
+## derive the shape of the focus area
+# census.geo.body <- census.de.100m.tile %>% 
+#   select(internal.id) %>% 
+#   summarise(geometry = st_union(geometry))
+# saveRDS(census.geo.body, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
+
+
+# select only the internal id and the mobile phone population per tile
+census.de.100m.tile.pop <- census.de.100m.tile %>% 
+  select(internal.id, pop)
+
+```
+
+# Voronoi tesselation
+
+Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed there is one Voronoi region that contains the area that is closest to the particular seed. There are two seed specifications we are interested in:
+
+-   Tower locations as seeds --\> `n =` `r length(unique(coverage.areas$tower.ID))`
+
+-   Coverage area centroid (per antenna) locations as seeds --\> `n =` `r length(unique(coverage.areas$antenna.ID))`
+
+Below we specify the tower locations as seed points. These are then used to compute the Voronoi regions. Before we do that we need to make sure that the corresponding c.vector is aggregated on the toer level. We then join the Voronoi regions with the tiles to create an object that links tiles within respective Voronoi regions.
+
+```{r voronoi tower prep}
+# aggregating the antennas to towers (and corresponding values) and identifying problematic tower locations (outside of focus area)
+tower.aggr <- coverage.areas.comp %>% 
+  st_drop_geometry() %>% 
+  group_by(tower.ID) %>% 
+  mutate(phones.sum = sum(phones.sum)) %>% 
+  distinct(tower.ID, .keep_all = T) %>% 
+  ungroup() %>% 
+  select(tower.ID, X.tow, Y.tow, phones.sum) %>%
+  st_as_sf(coords = c("X.tow", "Y.tow")) %>% 
+  st_sf(crs = 3035) %>%  
+  mutate(within.fa = lengths(st_within(., census.geo.body))) # find seeds outside the focus area
+
+# saving towerIDs of problematic towers
+towers.outside.ID <- tower.aggr %>% 
+  filter(within.fa == 0) %>% 
+  select(tower.ID) %>% 
+  deframe()
+
+# filtering unproblematic towers
+towers.inside <- tower.aggr %>% 
+  filter(within.fa == 1)
+
+# Finding respective nearest point on focus area border for every problematic tower location and binding the unproblematic towers back
+# this object contains the final seed locations in the geometry
+towers.final.data <- tower.aggr %>% 
+  filter(within.fa == 0) %>%
+  st_nearest_points(., census.geo.body) %>% 
+  st_cast("POINT") %>% 
+  .[seq(2, length(.), 2)] %>% # 
+  st_as_sf() %>% 
+  mutate(tower.ID = towers.outside.ID) %>% 
+  mutate(geometry = x) %>% 
+  st_sf(sf_column_name = "geometry") %>% 
+  select(-x) %>% 
+  bind_rows(towers.inside)
+
+sum(unlist(st_intersects(towers.final.data, census.geo.body))) == length(tower.aggr$tower.ID) # check if all are within now
+
+# Using the seed object to calculate the Voronoi regions
+tower.seed.voronoi <- towers.final.data %>%  
+  st_geometry() %>% 
+  st_union() %>% 
+  st_voronoi() %>% 
+  st_collection_extract(type = "POLYGON") %>% 
+  st_sf(crs = 3035) %>% 
+  st_join(tower.aggr) %>%  # rejoin with seed object to retain seed id
+  st_intersection(census.geo.body)
+```
+
+And now the same preparation for the coverage area centroids (here also just "antennas" even though this is imprecise).
+
+```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions."}
+### antennas
+# aggregating the antennas to towers (and corresponding values) and identifying problematic tower locations (outside of focus area)
+antenna.aggr <- coverage.areas.comp %>% 
+  st_drop_geometry() %>% 
+  select(antenna.ID, geometry = antenna.centroid, phones.sum) %>%
+  st_sf() %>% 
+  st_sf(crs = 3035) %>%  
+  mutate(within.fa = lengths(st_within(., census.geo.body))) # find seeds outside the focus area
+
+# saving towerIDs of problematic antennas
+antennas.outside.ID <- antenna.aggr %>% 
+  filter(within.fa == 0) %>% 
+  select(antenna.ID) %>% 
+  deframe()
+
+# filtering unproblematic antennas
+antennas.inside <- antenna.aggr %>% 
+  filter(within.fa == 1)
+
+# Finding respective nearest point on focus area border for every problematic antenna location and binding the unproblematic towers back
+# this object contains the final seed locations in the geometry
+antennas.final.data <- antenna.aggr %>% 
+  filter(within.fa == 0) %>%
+  st_nearest_points(., census.geo.body) %>% 
+  st_cast("POINT") %>% 
+  .[seq(2, length(.), 2)] %>% # 
+  st_as_sf() %>% 
+  mutate(antenna.ID = antennas.outside.ID) %>% 
+  mutate(geometry = x) %>% 
+  st_sf(sf_column_name = "geometry") %>% 
+  select(-x) %>% 
+  bind_rows(antennas.inside)
+
+# sum(unlist(st_intersects(antennas.final.data, census.geo.body))) == length(antenna.aggr$antenna.ID) # check if all are within now
+
+# Using the seed object to calculate the Voronoi regions
+antenna.seed.voronoi <- antennas.final.data %>%  
+  st_geometry() %>% 
+  st_union() %>% 
+  st_voronoi() %>% 
+  st_collection_extract(type = "POLYGON") %>% 
+  st_sf(crs = 3035) %>% 
+  st_join(antenna.aggr) %>%  # rejoin with seed object to retain seed id
+  st_intersection(census.geo.body)
+
+# Visualizing the Vornoi regions with respective phone count
+VT.plot.1 <- tower.seed.voronoi %>% 
+  ggplot() +
+  geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
+  ggtitle("", subtitle = "Tower locations as seeds")
+
+VA.plot1 <- antenna.seed.voronoi %>% 
+  ggplot() +
+  geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
+  ggtitle("", subtitle = "Coverage area centroid locations as seeds")
+
+plot_grid(VT.plot.1, VA.plot1, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
+```
+
+
+We have now created the Voronoi regions for our focus area with tower locations as seeds as well as with antenna respective coverage area centroid locations as seeds. The number of seeds and Voronoi regions align with each other.
+
+The spatial density per tile can be expressed as the ratio of the mobile phones in that region and the area of the Voronoi region:
+
+$d_{k} = \frac{\sum c_{i}} {A_{k}}$
+
+This region specific estimand corresponds to the tile estimate for a tile that is contained in this region. On the tile level there can be two cases that we need to differentiate:
+
+-   Tiles that are **completely contained** within one Voronoi region 
+
+-   Tiles that **intersect** with two or more Vornoi regions
+
+For the first case, the tile specific estimate corresponds to $d_{k}$. For the second case we will calculate a weighted mean of the relevant Voronoi region estimates by using the corresponding tile area within each Voronoi region as weights. 
+
+```{r Voronoi tower multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator."}
+# spatial densities per Voronoi region
+tower.voronoi.est <- tower.seed.voronoi %>% 
+  mutate(area = as.numeric(st_area(.$geometry))) %>% 
+  mutate(voronoi.est = phones.sum / area) # the sum of the product of this and the area is the total pop
+
+
+# Joining the regions with the tile specific data
+tower.seed.voronoi.join <- tower.voronoi.est %>% 
+  st_join(census.de.100m.tile.pop) %>% # & re-connect the data items
+  st_set_agr("aggregate") %>% # clean up
+  group_by(internal.id) %>% 
+  mutate(count = n()) %>% 
+  ungroup()
+
+# identifiying tiles intersecting with multiple Voronoi regions
+tower.multiple <- tower.seed.voronoi.join %>%
+  st_drop_geometry() %>% 
+  filter(count > 1) %>% 
+  distinct(internal.id) %>% 
+  deframe()
+
+# calculate area within competing voronoi regions of "multiple" tiles
+tower.intersect.tiles <- census.de.100m.tile.pop %>% 
+  filter(internal.id %in% tower.multiple) %>%
+  st_intersection(tower.voronoi.est) %>% 
+  st_collection_extract(type = "POLYGON") %>% # select the polygons
+  mutate(amount.tiles = as.numeric(st_area(.$geometry)) / 10000) # checked if it adds up to 1
+
+# example plot
+# VT.bird.example.plot <- tower.intersect.tiles %>% 
+#   filter(internal.id == "342403") %>% 
+#   ggplot() +
+#   geom_sf(color = "red") +
+#   geom_sf(data = census.geo.body, fill = NA) +
+#   ggtitle("")
+
+VT.example.plot <- tower.intersect.tiles %>% 
+  filter(internal.id == "342403") %>% 
+  ggplot() +
+  geom_sf() + # add description and scales
+  geom_sf_label(aes(label = tower.ID)) +
+  geom_sf_text(aes(label = paste0("(", round(amount.tiles, 2), ")")), nudge_y = -7) +
+  geom_sf(data = (census.de.100m.tile.pop %>% 
+  filter(internal.id == "342403")), color = "red", fill = NA) +
+  ggtitle("")
+
+plot_grid(#VT.bird.example.plot,
+  VT.example.plot, labels = "Fig. 11: Example multiple tile",  hjust = -0.1, label_size = 14)
+```
+
+And now the same again for the antennas.
+```{r Voronoi antenna multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator."}
+# spatial densities per Voronoi region
+antenna.voronoi.est <- antenna.seed.voronoi %>% 
+  mutate(area = as.numeric(st_area(.$geometry))) %>% 
+  mutate(voronoi.est = phones.sum / area) # the sum of the product of this and the area is the total pop
+
+
+# Joining the regions with the tile specific data
+antenna.seed.voronoi.join <- antenna.voronoi.est %>% 
+  st_join(census.de.100m.tile.pop) %>% # & re-connect the data items
+  st_set_agr("aggregate") %>% # clean up
+  group_by(internal.id) %>% 
+  mutate(count = n()) %>% 
+  ungroup()
+
+# identifiying tiles intersecting with multiple Voronoi regions
+antenna.multiple <- antenna.seed.voronoi.join %>%
+  st_drop_geometry() %>% 
+  filter(count > 1) %>% 
+  distinct(internal.id) %>% 
+  deframe()
+
+# calculate area within competing voronoi regions of "multiple" tiles
+antenna.intersect.tiles <- census.de.100m.tile.pop %>% 
+  filter(internal.id %in% antenna.multiple) %>%
+  st_intersection(antenna.voronoi.est) %>% 
+  st_collection_extract(type = "POLYGON") %>% # select the polygons
+  mutate(amount.tiles = as.numeric(st_area(.$geometry)) / 10000) # checked if it adds up to 1
+
+```
+
+We can now calculate the estimated spatial density per tile.
+
+```{r VT and VA estimate}
+#### Towers
+
+# final datatset to calculate spatial density
+tower.voronoi.final <- tower.intersect.tiles %>% 
+  st_drop_geometry() %>% 
+  select(internal.id, tower.ID, amount.tiles) %>% 
+  right_join(tower.seed.voronoi.join, by = c("internal.id", "tower.ID")) %>% 
+  mutate(amount.tiles = case_when(is.na(amount.tiles) ~ 1,
+                                  TRUE ~ amount.tiles)) %>% 
+  group_by(internal.id) %>% 
+  mutate(voronoi.est.corrected = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
+  distinct(internal.id, voronoi.est.corrected, pop) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
+
+
+#### antennas
+
+# final datatset to calculate spatial density
+antenna.voronoi.final <- antenna.intersect.tiles %>% 
+  st_drop_geometry() %>% 
+  select(internal.id, antenna.ID, amount.tiles) %>% 
+  right_join(antenna.seed.voronoi.join, by = c("internal.id", "antenna.ID")) %>% 
+  mutate(amount.tiles = case_when(is.na(amount.tiles) ~ 1,
+                                  TRUE ~ amount.tiles)) %>% 
+  group_by(internal.id) %>% 
+  mutate(voronoi.est.corrected = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
+  distinct(internal.id, voronoi.est.corrected, pop) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
+
+
+```
