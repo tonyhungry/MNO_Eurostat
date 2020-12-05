@@ -3,14 +3,16 @@ library(Matrix)
 library(sf)
 library(data.table)
 
-census.de.100m.tile <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds") %>% 
+census.de.100m.tile <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/census.tile.final.rds") %>% 
   dplyr::select(-c(cluster_id, pop.raster, cluster.tile.n))
 
-C.vec.df <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/C.vec.df.final.rds")
+C.vec.df <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/C.vec.df.final.new.rds")
 
-P.orcale.mat <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/P.mat.rds")
+P.orcale.mat <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/P.mat.rds")
 
-coverage.areas <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/coverage.areas.rds")
+# P.helper.missing <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/P.helper.missing.rds")
+
+coverage.areas <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/coverage.areas.rds")
 
 
 # New MLE iteration function by Matyas
@@ -42,10 +44,11 @@ SB_u_est_EM_mat <- function(c.vec, P.dt, a.vec, n.iter) {
   return(tiles)
   
 }
-  
+
 
 # non-informative prior
 a.non.inf.vec <- rep(1, length(census.de.100m.tile$internal.id))
+saveRDS(a.non.inf.vec, file = "C:/Users/ramljak/Desktop/marco/working objects/a.non.inf.vec.rds")
 
 # informative true prior oracle
 a.true.vec <- census.de.100m.tile %>% 
@@ -53,19 +56,21 @@ a.true.vec <- census.de.100m.tile %>%
   dplyr::select(internal.id, pop) %>% 
   arrange(internal.id) %>% 
   deframe()
+saveRDS(a.true.vec, file = "C:/Users/ramljak/Desktop/marco/working objects/a.true.vec.rds")
 
 
 # C vector, adding antennas that have 0 phones to complete the vector
 C.vec.df.final <- C.vec.df %>% 
   right_join(coverage.areas, by = "antenna.ID") %>% 
   mutate(phones.sum = case_when(is.na(phones.sum) ~ 0,
-                                TRUE ~ phones.sum)) %>% 
-  filter(!antenna.ID == "RT6.A.1")
+                                TRUE ~ phones.sum)) 
+
 # final c vector
 c.vec <- C.vec.df.final %>%
   arrange(antenna.ID) %>% 
   dplyr::select(antenna.ID, phones.sum) %>% 
   deframe()
+saveRDS(c.vec, file = "C:/Users/ramljak/Desktop/marco/working objects/c.vec.rds")
 
 
 # P matrix oracle (P)
@@ -73,6 +78,8 @@ P.oracle.summ <- summary(P.orcale.mat)
 P.oracle.dt <- data.table(i = P.oracle.summ$i,
                           j = P.oracle.summ$j,
                           pij = P.oracle.summ$x)
+saveRDS(P.oracle.dt, file = "C:/Users/ramljak/Desktop/marco/working objects/P.oracle.dt.rds")
+
 
 # P matrix equal prob (P')
 P.prime.mat.helper <- P.orcale.mat
@@ -83,6 +90,7 @@ p.helper.dt <- data.table(i = P.prime.summ$i,
                           pij = P.prime.summ$x)
 P.prime.dt <- p.helper.dt[, .(i = i, pij = pij / sum(pij)), by = "j"]
 setcolorder(P.prime.dt, c("i", "j", "pij"))
+saveRDS(P.prime.dt, file = "C:/Users/ramljak/Desktop/marco/working objects/P.prime.dt.rds")
 
 
 
@@ -95,27 +103,71 @@ u.true.oracle <- SB_u_est_EM_mat(c.vec, P.oracle.dt, a.true.vec, n.iter = 1)
 u.true.oracle$u.true <- a.true.vec
 
 # MLE model 1 (non.informative prior, P = P')
-u.est.non.inf.P.equal <- SB_u_est_EM_mat(c.vec, P.prime.dt, a.non.inf.vec, n.iter = 100)
-u.est.non.inf.P.equal$u.true <- a.true.vec
-# saveRDS(u.est.non.inf.P.equal, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/u.est.non.inf.P.equal.rds")
-u.est.non.inf.P.equal <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/u.est.non.inf.P.equal.rds")
+a.non.inf.vec <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/a.non.inf.vec.rds")
+P.prime.dt <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/P.prime.dt.rds")
+c.vec <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/c.vec.rds")
 
-names.p.equal.old <- c("j", paste0("u", 0:100), "u.true")
-names.p.equal.new <- c("internal.id", paste0("u.P.equal", 0:100), "u.true")
-u.est.non.inf.P.equal.final <- u.est.non.inf.P.equal %>% 
-  rename_at(vars(names.p.equal.old), ~names.p.equal.new) %>% 
-  mutate(internal.id = as.numeric(internal.id)) %>% 
-  left_join(census.de.100m.tile, by = "internal.id")
+u.est.non.inf.P.equal <- SB_u_est_EM_mat(c.vec, P.prime.dt, a.non.inf.vec, n.iter = 400)
+saveRDS(u.est.non.inf.P.equal, "C:/Users/ramljak/Desktop/marco/Estimates/u.est.non.inf.P.equal.part1_400.rds")
+non.inf.P.equal.prior_400 <- u.est.non.inf.P.equal$u400
+rm(u.est.non.inf.P.equal)
 
-u.est.non.inf.P.equal.geo <- u.est.non.inf.P.equal.final %>% 
-  select(internal.id, u.P.equal1, u.P.equal2, u.P.equal10, u.P.equal20, u.P.equal50, u.P.equal100, u.true, geometry)
+u.est.non.inf.P.equal.part401_800 <- SB_u_est_EM_mat(c.vec, P.prime.dt, non.inf.P.equal.prior_400, n.iter = 400)
+saveRDS(u.est.non.inf.P.equal.part401_800, "C:/Users/ramljak/Desktop/marco/Estimates/u.est.non.inf.P.equal.part401_800.rds")
+non.inf.P.equal.prior_800 <- u.est.non.inf.P.equal.part401_800$u400
+rm(u.est.non.inf.P.equal.part401_800)
 
+u.est.non.inf.P.equal.part801_1000 <- SB_u_est_EM_mat(c.vec, P.prime.dt, non.inf.P.equal.prior_800, n.iter = 200)
+saveRDS(u.est.non.inf.P.equal.part801_1000, "C:/Users/ramljak/Desktop/marco/Estimates/u.est.non.inf.P.equal.part801_1000.rds")
+
+# 
+# names.p.equal.old <- c("j", paste0("u", 0:400), "u.true")
+# names.p.equal.new <- c("internal.id", paste0("u.P.equal", 0:400), "u.true")
+# u.est.non.inf.P.equal.final <- u.est.non.inf.P.equal %>% 
+#   rename_at(vars(names.p.equal.old), ~names.p.equal.new) %>% 
+#   mutate(internal.id = as.numeric(internal.id)) %>% 
+#   left_join(census.de.100m.tile, by = "internal.id")
+# 
+# u.est.non.inf.P.equal.final.sample <- u.est.non.inf.P.equal.final %>% 
+#   dplyr::select(-geometry) %>% 
+#   group_by(pop.area.kind) %>% 
+#   sample_n(50)
+# saveRDS(u.est.non.inf.P.equal.final.sample, "C:/Users/ramljak/Desktop/marco/working objects/u.est.non.inf.P.equal.sample.rds")
+# 
+# 
+# u.est.non.inf.P.equal.geo <- u.est.non.inf.P.equal.final %>% 
+#   select(internal.id, u.P.equal1, u.P.equal2, u.P.equal20, u.P.equal50, u.P.equal100, u.P.equal200, u.P.equal300, u.P.equal400, u.true, geometry)
+# 
+# saveRDS(u.est.non.inf.P.equal.geo, "C:/Users/ramljak/Desktop/marco/working objects/u.est.non.inf.P.equal.geo.rds")
+
+
+
+# var.all.equal <- names(u.est.non.inf.P.equal.final)
+# var.select.equal <- var.all.equal[seq(1, length(var.all.equal), 3)]
+
+# u.est.non.inf.P.equal.selected <- u.est.non.inf.P.equal.final %>% 
+#   select(var.select.equal, u.true)
+# saveRDS(u.est.non.inf.P.equal.selected, "C:/Users/ramljak/Desktop/marco/working objects/u.est.non.inf.P.equal.selected.rds")
+# u.est.non.inf.P.equal.selected <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/u.est.non.inf.P.equal.selected.rds")
 
 # MLE model 2 (non.informative prior, P = P)
-u.est.non.inf.P.oracle <- SB_u_est_EM_mat(c.vec, P.oracle.dt, a.non.inf.vec, n.iter = 100)
-u.est.non.inf.P.oracle$u.true <- a.true.vec
-# saveRDS(u.est.non.inf.P.oracle, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/u.est.non.inf.P.oracle.rds")
-u.est.non.inf.P.oracle <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/u.est.non.inf.P.oracle.rds")
+a.non.inf.vec <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/a.non.inf.vec.rds")
+P.oracle.dt <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/P.oracle.dt.rds")
+c.vec <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/c.vec.rds")
+
+u.est.non.inf.P.oracle <- SB_u_est_EM_mat(c.vec, P.oracle.dt, a.non.inf.vec, n.iter = 400)
+saveRDS(u.est.non.inf.P.oracle, "C:/Users/ramljak/Desktop/marco/working objects/u.est.non.inf.P.oracle.part1_400.rds")
+non.inf.P.oracle.prior_400 <- u.est.non.inf.P.oracle$u400
+rm(u.est.non.inf.P.oracle)
+
+u.est.non.inf.P.oracle.part401_800 <- SB_u_est_EM_mat(c.vec, P.oracle.dt, non.inf.P.oracle.prior_400, n.iter = 400)
+saveRDS(u.est.non.inf.P.oracle.part401_800, "C:/Users/ramljak/Desktop/marco/Estimates/u.est.non.inf.P.oracle.part401_800.rds")
+non.inf.P.oracle.prior_800 <- u.est.non.inf.P.oracle.part401_800$u400
+rm(u.est.non.inf.P.oracle.part401_800)
+
+u.est.non.inf.P.oracle.part801_1000 <- SB_u_est_EM_mat(c.vec, P.oracle.dt, non.inf.P.oracle.prior_800, n.iter = 200)
+saveRDS(u.est.non.inf.P.oracle.part801_1000, "C:/Users/ramljak/Desktop/marco/Estimates/u.est.non.inf.P.oracle.part801_1000.rds")
+
 
 names.p.oracle.old <- c("j", paste0("u", 0:100), "u.true")
 names.p.oracle.new <- c("internal.id", paste0("u.P.oracle", 0:100), "u.true")
@@ -144,8 +196,8 @@ estimations.new <- estimations.geo %>%
   left_join(census.de.100m.tile, by = "internal.id") %>% 
   filter(!pop.area.kind == "Rural") %>%
   # filter(u.true.x > 10) %>%
-  mutate(u.lower = u.true.x - (u.true.x/2)) %>% 
-  mutate(u.upper = u.true.x + (u.true.x/2)) %>% 
+  mutate(u.lower = u.true.x - (u.true.x * 0.5)) %>% 
+  mutate(u.upper = u.true.x + (u.true.x * 0.5)) %>% 
   summarise_at(vars(starts_with("u.P.")), ~mean(. >= u.lower & . <= u.upper))
 
 
