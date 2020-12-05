@@ -862,11 +862,44 @@ plot_grid(est.plot.list[[7]], est.plot.list[[8]],
 
 ## Statistical/Distributional Evaluation
 
-!!! Also under construction table for selected iterations will be added for next meeting
-
 -   Average Absolute Discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
 
 -   Maximum Absolute Discrepancy: $D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |$
+
+```{r voronoi vs MLE}
+
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/aad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/mad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+
+plot_grid(aad.plot, mad.plot,
+          labels = "Voronoi Estimation vs MLE", 
+          label_size = 12, align = "hv", hjust = -0.1) 
+```
+By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. It is important to note that the MLE estimates are calculated from the 1000th iteration. In general, the Voronoi estimations results in less discrepancy compared to MLE estimations. Between the two MLE estimations, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimations, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.
+
+```{r}
+
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+
+plot_grid(aad.plot, mad.plot,
+          labels = "Discrepancy Over Time, Equal Pop. Matrix", 
+          label_size = 12, align = "hv", hjust = -0.1)
+```
+For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 700th iteration, the discrepancy values are largely the same. 
+
+```{r}
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+
+plot_grid(aad.plot, mad.plot,
+          labels = "Discrepancy Over Time, True Pop. Matrix", 
+          label_size = 12, align = "hv", hjust = -0.1)
+```
+For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same. 
 
 # References
 
