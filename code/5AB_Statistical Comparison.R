@@ -25,7 +25,9 @@ aad.comp.plot = aadl %>%
   ggplot(aes(x = type,y = aad, fill = type)) + 
   geom_bar(stat="identity") + 
   labs(x = "Estimation Type", y = "Average Absolute Discrepancy",title = "Comparison Across Different Estimation Strategies ~ AAD") + 
-  theme(axis.text.x = element_text(angle = 45),legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") +
+  scale_fill_ptol()
+  
 
 saveRDS(aad.comp.plot, file = "aad.comp.plot.rds")
 
@@ -41,6 +43,7 @@ mad.comp.plot = madl %>%
   ggplot(aes(x = type,y = mad, fill = type)) + 
   geom_bar(stat="identity") + 
   labs(x = "Estimation Type", y = "Maximum Absolute Discrepancy",title = "Comparison Across Different Estimation Strategies ~ MAD") + 
-  theme(axis.text.x = element_text(angle = 45),legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") +
+  scale_fill_ptol()
 
 saveRDS(mad.comp.plot, file = "mad.comp.plot.rds")
