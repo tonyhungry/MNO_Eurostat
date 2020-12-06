@@ -98,10 +98,13 @@ p.equal <- estimations.equal.geo %>%
   ggplot(aes(label = paste("Iteration:", new_var_iter ))) +
   geom_sf(aes(fill = factor(mobile), color = factor(mobile))) +
   geom_text(aes( 4470000, 2700000,), size = 6, color = "black")+
-  labs(x = "", y = "",title = "Geographical evaluation (equal P.matrix)", size = 20) +
+  labs(x = "", y = "", title = "", subtitle = "Geographical evaluation (equal P.matrix)", size = 20) +
   scale_fill_ptol(name = "Mobile phones") +
   scale_color_ptol(guide = F) +
   transition_manual(iteration)
+
+saveRDS(p.equal, "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/equal_map.rds")
+
 p.equal.anim <- animate(p.equal, fps = 10)
 
 anim_save(filename = "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/equal_map.gif", animation = p.equal.anim)
@@ -125,10 +128,12 @@ p.true <- estimations.true.geo %>%
   ggplot(aes(label = paste("Iteration:", new_var_iter ))) +
   geom_sf(aes(fill = factor(mobile), color = factor(mobile))) +
   geom_text(aes( 4470000, 2700000,), size = 6, color = "black")+
-  labs(x = "", y = "",title = "Geographical evaluation (true P.matrix)", size = 20) +
+  labs(x = "", y = "", title = "", subtitle = "Geographical evaluation (true P.matrix)", size = 20) +
   scale_fill_ptol(name = "Mobile phones") +
   scale_color_ptol(guide = F) +
   transition_manual(iteration)
+saveRDS(p.true, "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/true_map.rds")
+
 p.true.anim <- animate(p.true, fps = 10)
 
 anim_save(filename = "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/true_map.gif", animation = p.true.anim)
