@@ -18,6 +18,13 @@ output:
 knit: (function(input_file, encoding) { out_dir <- 'docs'; rmarkdown::render(input_file,
   encoding=encoding, output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 ---
+<style>
+p.caption {
+  font-size: 0.7em;
+  color: gray;
+}
+</style>
+
 
 ```{r, setup}
 # change accordingly
@@ -35,52 +42,46 @@ library(knitr)
 library(kableExtra)
 library(ggthemes)
 library(cowplot)
+library(transformr)
+library(gganimate)
 set.seed(762)
-```
 
-Mobile phones are an essential part of modern life. From going on Twitter to complain about politics to texting with friends about the latest and hottest gossip and live streaming on Facebook about an underground party to sharing immediate information in the front of the battle lines. Mobile phones have revolutionized the way we communicate with each other and how we lead our daily lives. From the point of view in Official Statistics, mobile phones present an opportunity like no other: a fast and immediate calculation of present population. Present population "is composed by all individuals who are physically present in the geographic area of interest at a selected reference time" [1]. In this study, we will evaluate and compare different estimation techniques to infer the present population in a specific region. We will particularly focus on the quality of the estimation when simulating hotspots (high population density) in low signal density areas. This is the case for example on holidays where people go on vacation in less urbanized areas.
-
-This exercise will be a simulation study partly based on real and simulated data from either official sources or from our own calculations. The notebook relies on multiple scripts that follow a methodological/technical chain. Each chain element can be considered as an independent module which makes it easy to change parameters in a module and follow through with the remaining chain. Therefore, multiple objects are created in advance (in an efficient manner because of parallelization) and loaded into the notebook. The objects will be explained, their parameters presented and the source code hyperlinked in this notebook.
-
-Currently three modules are implemented:
-
--   Generating a population based on real census data and spatial demographic clustering
-
--   Generating a radio cell network with multiple parameters
-
--   Creating the device-to-cell association
-
-# Generating a semi-synthetic population based on real census data
-
-We have retrieved population census data from the German Federal Statistical Office on Germany [2] (<https://www.destatis.de/EN/Home/_node.html>). This data entails population count categories on the 100m\*100m tile level. For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises both urban, suburban, and rural areas. The underlying code is written in a modular way in order to have the possibility to re-purpose our models for other regions. Furthermore, once a high computing machine is available, we could easily scale this notebook to the entirety of Germany.
-
-The sample population value is used as the number of mobile phones in a specific tile and throughout in this current version of the notebook. This sample population is a direct reference to the u vector in the working paper. In subsequent versions, this original population value could be adjusted based on additional variables to get a more realistic count of people with mobile phones in each tile.
-
-The link to the source code for the census.de.100.m.tile object is [here](https://github.com/R-ramljak/MNO_GM/blob/master/1_Read%20in%20data.R).
-
-```{r exploration census, message=FALSE}
 census.de.100m.tile <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds") 
-
-
-dim(census.de.100m.tile)
-class(census.de.100m.tile) 
-census.de.100m.tile %>% 
-  st_drop_geometry() %>%  
-  sample_n(10) %>%  
-  # head() %>% 
-  kbl(caption = "Exploration of the dataset on the tile level (focus area)") %>% 
-  kable_minimal() 
 ```
+Mobile phones are an essential part of modern life. From going on Twitter to complain about politics to texting with friends about the latest and hottest gossip and live streaming on Facebook about an underground party to sharing immediate information in the front of the battle lines. Mobile phones have revolutionized the way we communicate with each other and how we lead our daily lives. 
 
-\#\#Exploration of the dataset about tiles of South Bavaria
+Mobile phone data  EUROSTAT Coding Lab contributes to a fundamental topic of official statistics: the estimation of present population through mobile phones data (MNO). While the resident population takes into consideration only the individuals who permanently reside in a certain geographical area, the present population or **de facto population** "is composed by all individuals who are physically present in the geographic area of interest at a selected reference time" [1].
 
-Important features and parameters:
+The concept of the **de facto population** allows us to better highlight the dynamic of change (e.g. movement) in the population in different periods. This is the reason why not only official statistics but also the general population and private companies are interested in this new hot topic. 
 
--   Our focus areas entails `r dim(census.de.100m.tile)[1]` tiles on a regular grid (South Bavaria)
+The research goal of this Coding Lab is to evaluate and compare different cutting edge estimation techniques of present population. 
 
--   We have a continuous and a `r dim(census.de.100m.tile)[2]` level ordinal variable representing the population density for each tile
+Thanks to this project we had the opportunity to dig deeper into the world of spatial analysis as well as simulation studies in R. Throughout this notebook, we faced multiple challenges; the main difficulty for us was approaching to geo-spatial analysis managing a huge amount of data. This made coding even more tough. Moreover, the interpretation of the numerical results and charts was very complex. 
 
-In order to imitate the real life situation where only one mobile carrier will provide us with their data, we have first randomly extracted a third of the population vector. Continuing with that, in the following section we then proceed to classify the tiles based on the number of populations per tile as well its proximity to neighboring tiles in order identify groups of tiles into different categories of urbanization. In this section we will be using the `cca` function from the `OSC` package. After the classification, we then proceed to look at the overall distribution of the tiles based on the categories of urbanization.
+The notebook at relies on multiple scripts that follow a methodological chain. They are conceptualized and written in a modular fashion, making further use of the code for different parameters very easy.
+
+In the *Generating a semi-synthetic population based on real census data* section we have retrieved population census data from the German Federal Statistical Office [2] (https://www.destatis.de/EN/Home/_node.html). This data entails population count categories on the 100m\*100m tile level. For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises both urban, suburban, and rural areas.
+
+Important features, definition and  parameters we used:
+- DEFINITIONS OF EVEYTHING  [ TILES, TOWER, ANTENNAS, LAYERS, OVERLAPPING/NON OVERLAPPING] -->TO DO 
+
+- Our focus areas entails `r dim(census.de.100m.tile)[1]` tiles on a regular grid (South Bavaria);
+
+- The layers follow a hexagon shape with cell towers located in the respective centroid of each hexagon
+
+- Towers vary in distance to each other of the same layer, i.e. how far/close are towers of the same layer located to each other: layer 1 = 27,000m; layer 2 = 7000m; layer 3 = 900m (-\> the more urbanized, the closer the towers are too each other -\> denser coverage). Furthermore, hexagon independent rotation in terms of the first layer is executed: layer 2 = 35 degrees; layer 3 = 70 degrees
+
+- Each cell tower location is jittered in order to break the symmetry. The jitter amount depends on the layer: layer 1 = 5000m, layer 2 = 1000m, layer 3 = 400m.
+
+- Each tower contains three antennas pointing into 120 degree differing directions.
+
+- The layer determines the coverage diameter of an antenna: layer 1 = 15,000m; layer 2 = 2500m; layer 3 = 500m
+
+- Each tile of the focus area is sufficiently covered by at least one antenna and the antennas coverage areas are allowed to overlap.
+
+
+
+The tiles are classified based on the number of population per tile as well its proximity to neighboring tiles in order to identify groups of tiles into different categories of urbanization.
 
 ```{r focus area, fig.width = 7, fig.cap="We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas" }
 # Bounding box of focus area
@@ -116,7 +117,7 @@ plot_grid(focus.area.plot,
 # Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation
 # ECCDF of population distribution 
 ECCDF.pop.data <- census.de.100m.tile %>% 
-  # sample_n(1000) %>%
+  sample_n(1000) %>%
   mutate(pop.plot = pop + 1) %>%  
   arrange(pop.plot) %>%  
   mutate(prob = 1 / n()) %>%  
@@ -167,7 +168,7 @@ The stacked bar plot shows the proportions of the tiles according to the four ca
 ```{r pop distribution 2, fig.cap= "The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." }
 
 pop.dist.map.plot <- ECCDF.pop.data %>% 
-  # sample_n(10000) %>%
+  # sample_n(1000) %>%
   ggplot() + 
   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
@@ -175,7 +176,6 @@ pop.dist.map.plot <- ECCDF.pop.data %>%
   theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
  
 ECCDF.pop.plot <- ECCDF.pop.data %>%   
-  # sample_n(1000) %>% 
   ggplot() + 
   geom_point(aes(x = log10.pop, y = log10.cum.prob.comp, 
                  color = pop.area.kind)) + 
@@ -191,7 +191,6 @@ ECCDF.pop.plot <- ECCDF.pop.data %>%
   theme(legend.position = "bottom") 
  
 ECDF.pop.plot <- ECCDF.pop.data %>%   
-  # sample_n(1000) %>% 
   ggplot() + 
   geom_point(aes(x = pop.plot, y = cum.prob.comp, color = pop.area.kind)) + 
   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban"), guide = FALSE, expand = c(0, 0)) +
@@ -355,6 +354,8 @@ Figure 6 presents the full network structure. By comparing the network structure
 ```{r coverage intensity, fig.width = 7, fig.cap= paste0("The distribution is right skewed with a mean of ", round(mean(coverage.intensity$count), 2),", a minimum of ", min(coverage.intensity$count),", and a maximum of ", max(coverage.intensity$count)," antenna(s) per tile.")}
 tiles.cat <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage intensity.rds")
 coverage.intensity <- tiles.cat %>%
+  # left_join(census.de.100m.tile, by = "internal.id") %>% 
+  # dplyr::select(internal.id, count, pop.area.kind) %>% 
   arrange(count) %>%
   mutate(prob = 1 / n()) %>%
   mutate(cum.prob = cumsum(prob))
@@ -369,6 +370,7 @@ coverage.intensity.plot <- coverage.intensity %>%
   annotate("text", x = round(mean(coverage.intensity$count), 2) + 2, y = 5e+05, color = "#117733", 
            label = paste("Mean =", round(mean(coverage.intensity$count), 2))) +
   labs(y = "Count of tiles", x = "Covered by ... antennas", colour = "", title = "")
+  # facet_grid(~pop.area.kind)
   
   
 plot_grid(coverage.intensity.plot, labels = "Fig. 7: Number of antennas covering a tile",
@@ -422,6 +424,7 @@ ECCDF.phones.plot <- ECCDF.phones.data %>%
   geom_text(x = 4, y = -0.15, label = "50% of the data") + 
   geom_text(x = 4, y = -0.85, label = "90% of the data") + 
   scale_color_ptol(breaks = c("Layer 1", "Layer 2", "Layer 3")) + 
+  ylim(-4, 0) +
   ggtitle("") +
   labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)", colour = "")+
   theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
@@ -431,7 +434,7 @@ ECDF.phones.plot <- ECCDF.phones.data %>%
   geom_point(aes(x = phones.sum, y = cum.prob.comp, color = layer)) + 
   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban"), guide = FALSE, expand = c(0, 0)) +
   labs(y = "", x = "") +
-  xlim(0, 10000) +
+  xlim(0, 8000) +
   theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
         plot.subtitle = element_text(size = 9, hjust = 0.5),
         axis.title.x = element_blank(),
@@ -439,7 +442,7 @@ ECDF.phones.plot <- ECCDF.phones.data %>%
 pop.dist.ecdf.insert <- ECCDF.phones.plot +
   annotation_custom(ggplotGrob(ECDF.phones.plot), 
                     xmin = 0, xmax = 2, 
-                    ymin = -3.5, ymax = -1)
+                    ymin = -4, ymax = -1.5)
     
 plot_grid(pop.dist.ecdf.insert, labels = "Fig. 8: ECCDF Device-to-cell association",  hjust = -0.1, label_size = 14)
 ```
@@ -466,34 +469,17 @@ plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
 
 Currently three specific estimation strategies are implemented:
 
--   Voronoi tesselation (tower locations as seeds)
+-   Voronoi tesselation (tower locations OR coverage area centroids as seeds)
 
--   Bayes rule: $\hat{u}_{j} = a_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} a_{k}}$
+-   Simple Bayes
 
--   MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
+-   MLE Poisson
+
+All three of these estimation techniques produce a tile specific estimand. The sum of these estimands always exactly equals the sum of the c.vector, i.e. all registered mobile phones. This characteristic explains the strategy of all of these estimators: Taking the complete number of registered phones in the c.vector and allocating them across all the tiles. 
+
+OVERLAP and no OVERLAP
 
 ## Voronoi tesselation
-
-```{r, Voronoi prep}
-# adding to the coverage areas the results of the c vector
-coverage.areas.comp <- coverage.areas %>% 
-  left_join(c.vec, by = "antenna.ID") %>% 
-  mutate(phones.sum = case_when(is.na(phones.sum) ~ 0,
-                                TRUE ~ phones.sum))
-
-## derive the shape of the focus area
-# census.geo.body <- census.de.100m.tile %>% 
-#   select(internal.id) %>% 
-#   summarise(geometry = st_union(geometry))
-# saveRDS(census.geo.body, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
-census.geo.body <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
-
-
-# select only the internal id and the mobile phone population per tile
-census.de.100m.tile.pop <- census.de.100m.tile %>% 
-  select(internal.id, pop)
-
-```
 
 Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed there is one Voronoi region that contains the area that is closest to the particular seed. There are two seed specifications we are interested in:
 
@@ -503,116 +489,14 @@ Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed ther
 
 Below we specify the tower locations as seed points. These are then used to compute the Voronoi regions. Before we do that we need to make sure that the corresponding c.vector is aggregated on the toer level. We then join the Voronoi regions with the tiles to create an object that links tiles within respective Voronoi regions.
 
-```{r voronoi tower prep}
-# aggregating the antennas to towers (and corresponding values) and identifying problematic tower locations (outside of focus area)
-tower.aggr <- coverage.areas.comp %>% 
-  st_drop_geometry() %>% 
-  group_by(tower.ID) %>% 
-  mutate(phones.sum = sum(phones.sum)) %>% 
-  distinct(tower.ID, .keep_all = T) %>% 
-  ungroup() %>% 
-  select(tower.ID, X.tow, Y.tow, phones.sum) %>%
-  st_as_sf(coords = c("X.tow", "Y.tow")) %>% 
-  st_sf(crs = 3035) %>%  
-  mutate(within.fa = lengths(st_within(., census.geo.body))) # find seeds outside the focus area
-
-# saving towerIDs of problematic towers
-towers.outside.ID <- tower.aggr %>% 
-  filter(within.fa == 0) %>% 
-  select(tower.ID) %>% 
-  deframe()
-
-# filtering unproblematic towers
-towers.inside <- tower.aggr %>% 
-  filter(within.fa == 1)
-
-# Finding respective nearest point on focus area border for every problematic tower location and binding the unproblematic towers back
-# this object contains the final seed locations in the geometry
-towers.final.data <- tower.aggr %>% 
-  filter(within.fa == 0) %>%
-  st_nearest_points(., census.geo.body) %>% 
-  st_cast("POINT") %>% 
-  .[seq(2, length(.), 2)] %>% # 
-  st_as_sf() %>% 
-  mutate(tower.ID = towers.outside.ID) %>% 
-  mutate(geometry = x) %>% 
-  st_sf(sf_column_name = "geometry") %>% 
-  select(-x) %>% 
-  bind_rows(towers.inside)
-
-sum(unlist(st_intersects(towers.final.data, census.geo.body))) == length(tower.aggr$tower.ID) # check if all are within now
-
-# Using the seed object to calculate the Voronoi regions
-tower.seed.voronoi <- towers.final.data %>%  
-  st_geometry() %>% 
-  st_union() %>% 
-  st_voronoi() %>% 
-  st_collection_extract(type = "POLYGON") %>% 
-  st_sf(crs = 3035) %>% 
-  st_join(tower.aggr) %>%  # rejoin with seed object to retain seed id
-  st_intersection(census.geo.body)
-```
-
-And now the same preparation for the coverage area centroids (here also just "antennas" even though this is imprecise).
-
 ```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions."}
-### antennas
-# aggregating the antennas to towers (and corresponding values) and identifying problematic tower locations (outside of focus area)
-antenna.aggr <- coverage.areas.comp %>% 
-  st_drop_geometry() %>% 
-  select(antenna.ID, geometry = antenna.centroid, phones.sum) %>%
-  st_sf() %>% 
-  st_sf(crs = 3035) %>%  
-  mutate(within.fa = lengths(st_within(., census.geo.body))) # find seeds outside the focus area
 
-# saving towerIDs of problematic antennas
-antennas.outside.ID <- antenna.aggr %>% 
-  filter(within.fa == 0) %>% 
-  select(antenna.ID) %>% 
-  deframe()
+# Plot read in
+VT.plot <- readRDS("soká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds")
+VA.plot <- readRDS("soká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds")
 
-# filtering unproblematic antennas
-antennas.inside <- antenna.aggr %>% 
-  filter(within.fa == 1)
+plot_grid(VT.plot, VA.plot, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
 
-# Finding respective nearest point on focus area border for every problematic antenna location and binding the unproblematic towers back
-# this object contains the final seed locations in the geometry
-antennas.final.data <- antenna.aggr %>% 
-  filter(within.fa == 0) %>%
-  st_nearest_points(., census.geo.body) %>% 
-  st_cast("POINT") %>% 
-  .[seq(2, length(.), 2)] %>% # 
-  st_as_sf() %>% 
-  mutate(antenna.ID = antennas.outside.ID) %>% 
-  mutate(geometry = x) %>% 
-  st_sf(sf_column_name = "geometry") %>% 
-  select(-x) %>% 
-  bind_rows(antennas.inside)
-
-# sum(unlist(st_intersects(antennas.final.data, census.geo.body))) == length(antenna.aggr$antenna.ID) # check if all are within now
-
-# Using the seed object to calculate the Voronoi regions
-antenna.seed.voronoi <- antennas.final.data %>%  
-  st_geometry() %>% 
-  st_union() %>% 
-  st_voronoi() %>% 
-  st_collection_extract(type = "POLYGON") %>% 
-  st_sf(crs = 3035) %>% 
-  st_join(antenna.aggr) %>%  # rejoin with seed object to retain seed id
-  st_intersection(census.geo.body)
-
-# Visualizing the Vornoi regions with respective phone count
-VT.plot.1 <- tower.seed.voronoi %>% 
-  ggplot() +
-  geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
-  ggtitle("", subtitle = "Tower locations as seeds")
-
-VA.plot1 <- antenna.seed.voronoi %>% 
-  ggplot() +
-  geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
-  ggtitle("", subtitle = "Coverage area centroid locations as seeds")
-
-plot_grid(VT.plot.1, VA.plot1, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
 ```
 
 
@@ -631,132 +515,32 @@ This region specific estimate corresponds to the tile estimate for a tile that i
 For the first case, the tile specific estimate corresponds to $d_{k}$. For the second case we will calculate a weighted mean of the relevant Voronoi region estimates by using the corresponding tile area within each Voronoi region as weights. 
 
 ```{r Voronoi tower multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator."}
-# spatial densities per Voronoi region
-tower.voronoi.est <- tower.seed.voronoi %>% 
-  mutate(area = as.numeric(st_area(.$geometry))) %>% 
-  mutate(voronoi.est = phones.sum / area) # the sum of the product of this and the area is the total pop
 
+VT.bird.example.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.bird.example.plot.rds")
 
-# Joining the regions with the tile specific data
-tower.seed.voronoi.join <- tower.voronoi.est %>% 
-  st_join(census.de.100m.tile.pop) %>% # & re-connect the data items
-  st_set_agr("aggregate") %>% # clean up
-  group_by(internal.id) %>% 
-  mutate(count = n()) %>% 
-  ungroup()
-
-# identifiying tiles intersecting with multiple Voronoi regions
-tower.multiple <- tower.seed.voronoi.join %>%
-  st_drop_geometry() %>% 
-  filter(count > 1) %>% 
-  distinct(internal.id) %>% 
-  deframe()
-
-# calculate area within competing voronoi regions of "multiple" tiles
-tower.intersect.tiles <- census.de.100m.tile.pop %>% 
-  filter(internal.id %in% tower.multiple) %>%
-  st_intersection(tower.voronoi.est) %>% 
-  st_collection_extract(type = "POLYGON") %>% # select the polygons
-  mutate(amount.tiles = as.numeric(st_area(.$geometry)) / 10000) # checked if it adds up to 1
-
-
-example.helper <- tower.intersect.tiles %>%
-  filter(internal.id == "342403") %>% 
-  select(tower.ID) %>% 
-  deframe()
-
-# example plot
-VT.bird.example.plot <- tower.intersect.tiles %>%
-  filter(internal.id == "342403") %>%
-  ggplot() +
-  geom_sf(color = "black") +
-  geom_sf(data = (census.de.100m.tile %>% filter(internal.id == "342403")), color = "red", fill = NA) +
-  geom_sf(data = (tower.seed.voronoi %>% filter(tower.ID %in% example.helper)), fill = NA) +
-  ggtitle("", subtitle = "Birds view of a tile that intersects with 
-multiple regions")
-
-VT.example.plot <- tower.intersect.tiles %>% 
-  filter(internal.id == "342403") %>% 
-  ggplot() +
-  geom_sf() + # add description and scales
-  geom_sf_label(aes(label = tower.ID)) +
-  geom_sf_text(aes(label = paste0("(", round(amount.tiles, 2), ")")), nudge_y = -7) +
-  geom_sf(data = (census.de.100m.tile.pop %>% 
-  filter(internal.id == "342403")), color = "red", fill = NA) +
-  ggtitle("", subtitle = "Area within each Voronoi region")
+VT.example.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.example.plot.rds")
 
 plot_grid(VT.bird.example.plot, VT.example.plot, 
           labels = "Fig. 11: Example multiple tile",  hjust = -0.1, label_size = 14)
 ```
 
-And now the same again for the antennas.
-```{r Voronoi antenna multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator."}
-# spatial densities per Voronoi region
-antenna.voronoi.est <- antenna.seed.voronoi %>% 
-  mutate(area = as.numeric(st_area(.$geometry))) %>% 
-  mutate(voronoi.est = phones.sum / area) # the sum of the product of this and the area is the total pop
+Here we visualize the second case with an example tile and example Voronoi regions from the Voronoi with tower locations as seeds. In the left plot we can see a small tile that is indicated in red. This tile is at the intersection of 4 Voronoi regions. The corresponding relative tile area intersecting with each Voronoi region can be seen in the right plot. The labels correspond to the Voronoi region ID and the below in brackets indicate the proportional weight that should be considered in calculting the tile specific weighted mean estimate. To compare this to the first case - where a tile is fully contained only in one region - the weight for the particular Voronoi region is 1. The same methodogolgy is pursued for the Voronoi antenna case.
 
+We will now explain our workflow for the Simple Bayes estimate.
 
-# Joining the regions with the tile specific data
-antenna.seed.voronoi.join <- antenna.voronoi.est %>% 
-  st_join(census.de.100m.tile.pop) %>% # & re-connect the data items
-  st_set_agr("aggregate") %>% # clean up
-  group_by(internal.id) %>% 
-  mutate(count = n()) %>% 
-  ungroup()
+## (Simple Bayes)
 
-# identifiying tiles intersecting with multiple Voronoi regions
-antenna.multiple <- antenna.seed.voronoi.join %>%
-  st_drop_geometry() %>% 
-  filter(count > 1) %>% 
-  distinct(internal.id) %>% 
-  deframe()
-
-# calculate area within competing voronoi regions of "multiple" tiles
-antenna.intersect.tiles <- census.de.100m.tile.pop %>% 
-  filter(internal.id %in% antenna.multiple) %>%
-  st_intersection(antenna.voronoi.est) %>% 
-  st_collection_extract(type = "POLYGON") %>% # select the polygons
-  mutate(amount.tiles = as.numeric(st_area(.$geometry)) / 10000) # checked if it adds up to 1
-
-```
-We can now calculate the estimated spatial density per tile.
-
-```{r VT and VA estimate}
-#### Towers
-
-# final datatset to calculate spatial density
-tower.voronoi.final <- tower.intersect.tiles %>% 
-  st_drop_geometry() %>% 
-  select(internal.id, tower.ID, amount.tiles) %>% 
-  right_join(tower.seed.voronoi.join, by = c("internal.id", "tower.ID")) %>% 
-  mutate(amount.tiles = case_when(is.na(amount.tiles) ~ 1,
-                                  TRUE ~ amount.tiles)) %>% 
-  group_by(internal.id) %>% 
-  mutate(voronoi.est.corrected = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
-  distinct(internal.id, voronoi.est.corrected, pop) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
-
-
-#### antennas
-
-# final datatset to calculate spatial density
-antenna.voronoi.final <- antenna.intersect.tiles %>% 
-  st_drop_geometry() %>% 
-  select(internal.id, antenna.ID, amount.tiles) %>% 
-  right_join(antenna.seed.voronoi.join, by = c("internal.id", "antenna.ID")) %>% 
-  mutate(amount.tiles = case_when(is.na(amount.tiles) ~ 1,
-                                  TRUE ~ amount.tiles)) %>% 
-  group_by(internal.id) %>% 
-  mutate(voronoi.est.corrected = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
-  distinct(internal.id, voronoi.est.corrected, pop) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
-
-
+```{r}
+# We are unsure if we should implement this as an estimator because we are using it to our understanding not to its full potential: We are not defining an informative prior. Therefore we thought of mentioning it and saying that it is the base of the MLE estimators however we did not focus on the generation of good prior.
 ```
 
 
-## Simple Bayes
+Simple Bayes $\hat{u}_{j} = a_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} a_{k}}$`
+
 
 ## MLE Poisson
+
+MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
 
 ```{r estimations 1.1}
 equal.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
@@ -791,17 +575,137 @@ ematrix %>%
   kable_minimal() 
 ```
 
-# Evaluation of the MLE Poisson estimator
+# Evaluation of all estimates
+
+We created 4 final estimates:
+
+-   Voronoi tesselation with tower locations as seeds
+
+-   Voronoi tesselation with coverage area locations (antennas) as seeds
+
+-   MLE uniform prior equal probability P.matrix after 1000 iterations
+
+-   MLE uniform prior oracle probability P.matrix after 1000 iterations
+
+In this section we want to evaluate the 4 estimates by comparing them with different perspectives in mind to the actual true population. Each subsection defines the perspective-respective performance measure:
 
 This section is still under construction. We will evaluate the estimators and their convergence behaviour from three perspectives:
 
-1.  Distributional evaluation based on a stratified sample: We will visualize the convergence behaviour/the evolution of the estimands up to 1000 iterations. This is executed based on a stratified sample (strata: three level `pop.area.kind` variable), n = 150)
+1.  Geographical evaluation
 
-2.  Geographical evaluation: !Still under construction! We will visualize the potential resemblance between the true values and the estimands' values for selected iterations. This is executed for the complete number of tiles in the focus area.
+2.  Statistical evaluation
 
-3.  Statistical evaluation: !Still under construction! We will compute global metrics for the estimators performance such as the average absolute discrepancy between the estimands and the true values.
 
-## Convergence Evaluation
+## Geographical Evaluation
+
+For the geographical evaluation we use the following performance measure: The visual resemblance of fixed tile categories from the respective estimate and the actual true population on a map.    
+
+We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.
+
+```{r Voronoi tower geo eval}
+true.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/true.pop_map.rds")
+
+VT.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VT.estimate_map.rds")
+
+
+plot_grid(true.geo.eval.plot, VT.geo.eval.plot,
+          labels = "Comparing Voronoi tower estimate", label_size = 12,
+          align = "hv", hjust = -0.1)
+
+```
+
+```{r Voronoi antenna geo eval}
+VA.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VA.estimate_map.rds")
+
+plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
+          labels = "Comparing Voronoi antenna estimate", label_size = 12,
+          align = "hv", hjust = -0.1)
+```
+
+```{r MLE equal geo eval}
+# MLE.equal.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.rds")
+# animate(MLE.equal.geo.eval.plot, fps = 10)
+
+# plot_grid(true.geo.eval.plot, MLE.equal.geo.eval.plot,
+#           labels = "Comparing MLE equal P.matrix estimate", label_size = 12,
+#           align = "hv", hjust = -0.1)
+
+knitr::include_graphics("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.equal.estimate_map.gif")
+
+
+```
+
+```{r MLE true geo eval}
+# MLE.true.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.rds")
+# MLE.true.geo.eval.plot <- animate(MLE.true.geo.eval.plot, fps = 10)
+# 
+# 
+# plot_grid(true.geo.eval.plot, MLE.true.geo.eval.plot,
+#           labels = "Comparing MLE true P.matrix estimate", label_size = 12,
+#           align = "hv", hjust = -0.1)
+
+knitr::include_graphics("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.gif")
+```
+
+```{r}
+# @all: Should we implement here the SB estimator as well? We figured it is maybe not a valid evaluation because the SB estimator assumes an informative prior and this is not the case here
+```
+
+## Statistical/Distributional Evaluation
+
+In order to actually compare the numerical resemblance between the estimates and the actual true population we introduce two discrepancy performance measures. 
+
+-   Average Absolute Discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
+
+-   Maximum Absolute Discrepancy: $D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |$
+
+```{r voronoi vs MLE}
+
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/aad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/mad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+
+plot_grid(aad.plot, mad.plot,
+          labels = "Voronoi Estimation vs MLE", 
+          label_size = 12, align = "hv", hjust = -0.1) 
+```
+By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. In general, the Voronoi estimates result in less discrepancy compared to both of the MLE estimates. Between the two MLE estimates, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimates, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.
+
+
+
+# Excurse Evaluation: Looking deeper into the convergence behavior
+
+In the course of our work we thought it was particularly interesting to further focus on the actual convergence behavior of the MLE-based estimators. 
+
+We will visualize the convergence behaviour/the evolution of the estimands up to 1000 iterations. This is executed based on a stratified sample (strata: three level `pop.area.kind` variable), n = 150)
+
+## Discrepancy measures
+
+```{r}
+
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+
+plot_grid(aad.plot, mad.plot,
+          labels = "Discrepancy Over Time, Equal Pop. Matrix", 
+          label_size = 12, align = "hv", hjust = -0.1)
+```
+For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 700th iteration, the discrepancy values are largely the same. 
+
+```{r}
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+
+plot_grid(aad.plot, mad.plot,
+          labels = "Discrepancy Over Time, True Pop. Matrix", 
+          label_size = 12, align = "hv", hjust = -0.1)
+```
+For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same. 
+
+## Convergence behavior
+
 
 ```{r distributionl eval 1, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached."}
 
@@ -830,76 +734,6 @@ plot_grid(true.plot, true.resid.plot,
 
 Using the true population matrix, the estimated population stabilizes faster over time in comparison to the equal population matrix. However, there are a few tiles that do not stabilize as fast as we hoped. This is particularly evident in the urban tiles. The residual plot (right) shows the error of prediction over time by the type of tile. There seems to be a trend of increasing prediction error as the degree of urbanization increases as well. We can see that the range of error for suburban tiles range from 30 to -10 and the range of error for urban tiles are between 100 and -75. The suburban tiles seems to underestimate and the urban tiles seems to overestimate.
 
-## Geographical Evaluation
-
-*!!! The plots with a 4 level scale and more iterations will be added until friday. They need to be rendered before for faster load in.*
-
-```{r geo eval 1}
-# comparison
-iter.title <- c("1 iteration", "2 iterations", "10 iterations", "20 iterations", "50 iterations", "100 iterations",
-                "1 iteration", "2 iterations", "10 iterations", "20 iterations", "50 iterations", "100 iterations")
-
-est.plot.list <- list.files("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/estimation plots/", 
-                            pattern = "*.rds", full.names = TRUE) %>% 
-  map(readRDS) %>% 
-  map2(., iter.title, ~.x + labs(title = "", subtitle = .y) + theme_void())
-  
-plot_grid(est.plot.list[[1]], est.plot.list[[2]],
-          est.plot.list[[3]], est.plot.list[[4]], 
-          est.plot.list[[5]], est.plot.list[[6]], 
-          labels = "Equal prob P.matrix, constant prior", label_size = 12,
-          align = "hv", hjust = -0.1)
-
-```
-
-```{r geo eval 2}
-plot_grid(est.plot.list[[7]], est.plot.list[[8]],
-          est.plot.list[[9]], est.plot.list[[10]], 
-          est.plot.list[[11]], est.plot.list[[12]], 
-          labels = "True prob P.matrix, constant prior", label_size = 12,
-          align = "hv", hjust = -0.1)
-```
-
-## Statistical/Distributional Evaluation
-
--   Average Absolute Discrepancy: $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
-
--   Maximum Absolute Discrepancy: $D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |$
-
-```{r voronoi vs MLE}
-
-aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/aad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
-
-mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/mad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
-
-plot_grid(aad.plot, mad.plot,
-          labels = "Voronoi Estimation vs MLE", 
-          label_size = 12, align = "hv", hjust = -0.1) 
-```
-By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. It is important to note that the MLE estimates are calculated from the 1000th iteration. In general, the Voronoi estimations results in less discrepancy compared to MLE estimations. Between the two MLE estimations, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimations, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.
-
-```{r}
-
-aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
-
-mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
-
-plot_grid(aad.plot, mad.plot,
-          labels = "Discrepancy Over Time, Equal Pop. Matrix", 
-          label_size = 12, align = "hv", hjust = -0.1)
-```
-For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 700th iteration, the discrepancy values are largely the same. 
-
-```{r}
-aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
-
-mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
-
-plot_grid(aad.plot, mad.plot,
-          labels = "Discrepancy Over Time, True Pop. Matrix", 
-          label_size = 12, align = "hv", hjust = -0.1)
-```
-For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same. 
 
 # References
 
