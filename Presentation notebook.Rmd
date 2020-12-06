@@ -5,9 +5,6 @@ author: "Stefania, Giulia, Tony, Marco"
 date: "`r Sys.Date()`"
 output:
   html_document:
-    toc: yes
-    df_print: paged
-  bookdown::html_document2:
     code_download: true
     theme: lumen
     toc: true
@@ -20,7 +17,7 @@ knit: (function(input_file, encoding) { out_dir <- 'docs'; rmarkdown::render(inp
 ---
 <style>
 p.caption {
-  font-size: 0.7em;
+  font-size: 0.9em;
   color: gray;
 }
 </style>
@@ -492,8 +489,8 @@ Below we specify the tower locations as seed points. These are then used to comp
 ```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions."}
 
 # Plot read in
-VT.plot <- readRDS("soká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds")
-VA.plot <- readRDS("soká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds")
+VT.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds")
+VA.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds")
 
 plot_grid(VT.plot, VA.plot, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
 
@@ -630,7 +627,7 @@ plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
 #           labels = "Comparing MLE equal P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.equal.estimate_map.gif")
+knitr::include_graphics("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.equal.estimate_map.gif")
 
 
 ```
@@ -644,7 +641,7 @@ knitr::include_graphics("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - 
 #           labels = "Comparing MLE true P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.gif")
+knitr::include_graphics("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.gif")
 ```
 
 ```{r}
