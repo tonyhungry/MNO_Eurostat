@@ -8,22 +8,22 @@ library(transformr)
 
 setwd("C:/Users/Marco/")
 
-census.de.100m.tile <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds") 
+census.de.100m.tile <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/census.tile.final.rds") 
 census.geo <- census.de.100m.tile %>% 
   dplyr::select(internal.id)
 
-estimations.equal.part1 <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.equal/u.est.non.inf.P.equal.part1_400.rds") 
+estimations.equal.part1 <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/P.equal/u.est.non.inf.P.equal.part1_400.rds") 
 estimations.equal1 <- estimations.equal.part1 %>% 
   select(j, u0, u1, u5, u10, u20, u100, u400)  %>% 
   arrange(j)
 rm(estimations.equal.part1)
-estimations.equal.part2 <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.equal/u.est.non.inf.P.equal.part401_800.rds") 
+estimations.equal.part2 <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/P.equal/u.est.non.inf.P.equal.part401_800.rds") 
 estimations.equal2 <- estimations.equal.part2 %>% 
   select(j, u600 = u200, u800 = u400) %>% 
   arrange(j) %>% 
   select(-j)
 rm(estimations.equal.part2)
-estimations.equal.part3 <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.equal/u.est.non.inf.P.equal.part401_800.rds") 
+estimations.equal.part3 <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/P.equal/u.est.non.inf.P.equal.part401_800.rds") 
 estimations.equal3 <- estimations.equal.part3 %>% 
   select(j, u1000 = u200) %>% 
   arrange(j) %>% 
@@ -41,22 +41,22 @@ estimations.equal.long <- melt(data = estimations.equal.final, id.vars = c("j", 
 
 estimations.equal.geo <- estimations.equal.long[, .(geom = st_union(geometry)), by = list(variable, value)]
 
-saveRDS(estimations.equal.geo, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/estimations.long.equal.rds")
-# estimations.equal.geo <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/estimations.long.equal.rds")
+saveRDS(estimations.equal.geo, "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/estimations.long.equal.rds")
+# estimations.equal.geo <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/estimations.long.equal.rds")
 
 
-estimations.true.part1 <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.oracle/u.est.non.inf.P.true.part1_400.rds") 
+estimations.true.part1 <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/P.oracle/u.est.non.inf.P.true.part1_400.rds") 
 estimations.true1 <- estimations.true.part1 %>% 
   select(j, u0, u1, u5, u10, u20, u100, u400)  %>% 
   arrange(j)
 rm(estimations.true.part1)
-estimations.true.part2 <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.oracle/u.est.non.inf.P.true.part401_800.rds") 
+estimations.true.part2 <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/P.oracle/u.est.non.inf.P.true.part401_800.rds") 
 estimations.true2 <- estimations.true.part2 %>% 
   select(j, u600 = u200, u800 = u400) %>% 
   arrange(j) %>% 
   select(-j)
 rm(estimations.true.part2)
-estimations.true.part3 <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.oracle/u.est.non.inf.P.true.part401_800.rds") 
+estimations.true.part3 <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/P.oracle/u.est.non.inf.P.true.part401_800.rds") 
 estimations.true3 <- estimations.true.part3 %>% 
   select(j, u1000 = u200) %>% 
   arrange(j) %>% 
@@ -74,8 +74,8 @@ estimations.true.long <- melt(data = estimations.true.final, id.vars = c("j", "g
 
 estimations.true.geo <- estimations.true.long[, .(geom = st_union(geometry)), by = list(variable, value)]
 
-saveRDS(estimations.true.geo, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/estimations.long.true.rds")
-# estimations.true.geo <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/estimations.long.true.rds")
+saveRDS(estimations.true.geo, "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/estimations.long.true.rds")
+# estimations.true.geo <- readRDS("C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/estimations.long.true.rds")
 
 
 ##### Plots and animationns
@@ -104,7 +104,7 @@ p.equal <- estimations.equal.geo %>%
   transition_manual(iteration)
 p.equal.anim <- animate(p.equal, fps = 10)
 
-anim_save(filename = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/equal_map.gif", animation = p.equal.anim)
+anim_save(filename = "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/equal_map.gif", animation = p.equal.anim)
 
 
 p.true <- estimations.true.geo %>%
@@ -131,7 +131,7 @@ p.true <- estimations.true.geo %>%
   transition_manual(iteration)
 p.true.anim <- animate(p.true, fps = 10)
 
-anim_save(filename = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/true_map.gif", animation = p.true.anim)
+anim_save(filename = "C:/Users/ramljak/Desktop/marco/Estimates/Plot.files/true_map.gif", animation = p.true.anim)
 
 # census picture
 
