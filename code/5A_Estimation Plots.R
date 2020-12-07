@@ -2,6 +2,124 @@ require(tidyverse)
 require(kableExtra)
 require(ggthemes)
 
+#### 100 iterations EQUAL ####
+
+esample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.equal.sample.rds")[,1:104]
+iters = as.character(0:100)
+colnames(esample)[4:104] = iters
+
+equal = esample %>% 
+  pivot_longer(-c(internal.id, pop.area.kind,pop), names_to = "iter", values_to = "sim")
+
+equal$iter = as.numeric(equal$iter)
+
+# Iterations over time plot
+equal.100.plot = equal %>% 
+  ggplot(aes(x = iter, y = sim, group = internal.id)) + 
+  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Estimated Population", title = "Equal Probability Matrix") + theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + 
+  scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
+  facet_grid(vars(pop.area.kind),scales="free") +
+  scale_x_continuous(breaks=seq(0, 100, 5))
+
+saveRDS(equal.100.plot, file = "equal.100.plot.rds")
+
+# residual plot
+
+esample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.equal.sample.rds")[,1:104]
+riters = c() 
+for (x in 0:9) {
+  riters = c(riters, paste("u00",x,sep = ""))
+}
+for (x in 10:99) {
+  riters = c(riters, paste("u0",x,sep = ""))
+}  
+riters = c(riters,"u100")
+colnames(esample)[4:104] = riters
+
+# esample = as.data.frame(esample)
+
+equalr100 = esample %>% 
+  mutate(r001 = pop - u001, r002 = pop - u002, r005 = pop - u005,
+         r010 = pop - u010, r020 = pop - u020, r050 = pop - u050,
+         r100 = pop - u100
+  ) %>%
+  select(pop.area.kind,internal.id,r001,r002,r005,r010,r020,r050,r100) %>%
+  pivot_longer(-c(internal.id, pop.area.kind), names_to = "iter", values_to = "resid")
+
+equal.resid.100.plot = equalr100 %>%
+  ggplot(aes(x = iter, y = resid, group = internal.id)) + 
+  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Residual = Actual - Predicted", title = "Equal Probability Matrix ~ Residual") + theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
+  facet_grid(vars(pop.area.kind),scales = "free") 
+
+saveRDS(equal.resid.100.plot, file = "equal.resid.100.plot.rds")
+
+equalc100 = esample %>% 
+  mutate(r001 = (pop - u001)^2, r002 = (pop - u002)^2, r005 = (pop - u005)^2,
+         r010 = (pop - u010)^2, r020 = (pop - u020)^2, r050 = (pop - u050)^2,
+         r100 = (pop - u100)^2
+  ) %>%
+  group_by(pop.area.kind) %>% 
+  summarise(i001 = sqrt(mean(r001)), i002 = sqrt(mean(r002)), i005 = sqrt(mean(r005)),
+            i010 = sqrt(mean(r010)), i020 = sqrt(mean(r020)), i050 = sqrt(mean(r050)),
+            i100 = sqrt(mean(r100))
+  )
+
+saveRDS(equalc100, file = "100.equal.rmspe.rds")
+
+#### 100 iterations True ####
+
+tsample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.true.sample.rds")[,1:104]
+iters = as.character(0:100)
+colnames(tsample)[4:104] = iters
+
+tequal = tsample %>%
+  pivot_longer(-c(internal.id, pop.area.kind,pop), names_to = "iter", values_to = "sim")
+
+tequal$iter = as.numeric(tequal$iter)
+
+# Iterations over time plot
+tequal.100.plot = tequal %>% 
+  ggplot(aes(x = iter, y = sim, group = internal.id)) + 
+  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Estimated Population", title = "True Probability Matrix") + theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + 
+  scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
+  facet_grid(vars(pop.area.kind),scales="free") +
+  scale_x_continuous(breaks=seq(0, 100, 5))
+
+saveRDS(tequal.100.plot, file = "true.100.plot.rds")
+
+# residual plot
+
+tsample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.true.sample.rds")[,1:104]
+colnames(tsample)[4:104] = riters
+
+tequalr100 = tsample %>% 
+  mutate(r001 = pop - u001, r002 = pop - u002, r005 = pop - u005,
+         r010 = pop - u010, r020 = pop - u020, r050 = pop - u050,
+         r100 = pop - u100
+  ) %>%
+  select(pop.area.kind,internal.id,r001,r002,r005,r010,r020,r050,r100) %>%
+  pivot_longer(-c(internal.id, pop.area.kind), names_to = "iter", values_to = "resid")
+
+true.resid.100.plot = tequalr100 %>%
+  ggplot(aes(x = iter, y = resid, group = internal.id)) + 
+  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Residual = Actual - Predicted", title = "true Probability Matrix ~ Residual") + theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
+  facet_grid(vars(pop.area.kind),scales = "free") 
+
+saveRDS(true.resid.100.plot, file = "true.resid.100.plot.rds")
+
+tequalc100 = tsample %>% 
+  mutate(r001 = (pop - u001)^2, r002 = (pop - u002)^2, r005 = (pop - u005)^2,
+         r010 = (pop - u010)^2, r020 = (pop - u020)^2, r050 = (pop - u050)^2,
+         r100 = (pop - u100)^2
+  ) %>%
+  group_by(pop.area.kind) %>% 
+  summarise(i001 = sqrt(mean(r001)), i002 = sqrt(mean(r002)), i005 = sqrt(mean(r005)),
+            i010 = sqrt(mean(r010)), i020 = sqrt(mean(r020)), i050 = sqrt(mean(r050)),
+            i100 = sqrt(mean(r100))
+  )
+
+saveRDS(tequalc100, file = "100.true.rmspe.rds")
+
 #### EQUAL POPULATION MATRIX ####
 # sample <- readRDS("~/Desktop/Eurostat/est.equal.1000iter.sample.rds")
 esample <- readRDS("~/Desktop/Eurostat/est.equal.1000iter.sample.rds")
