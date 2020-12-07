@@ -4,13 +4,12 @@ require(ggthemes)
 
 #### 100 iterations EQUAL ####
 
-esample <- readRDS("~/Desktop/Eurostat/u.est.non.inf.P.equal.sample.rds")
+esample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.equal.sample.rds")[,1:104]
 iters = as.character(0:100)
-colnames(esample)[2:102] = iters
+colnames(esample)[4:104] = iters
 
 equal = esample %>% 
-  select(-urban.dummy) %>%
-  pivot_longer(-c(internal.id, pop.area.kind,u.true), names_to = "iter", values_to = "sim")
+  pivot_longer(-c(internal.id, pop.area.kind,pop), names_to = "iter", values_to = "sim")
 
 equal$iter = as.numeric(equal$iter)
 
@@ -26,7 +25,7 @@ saveRDS(equal.100.plot, file = "equal.100.plot.rds")
 
 # residual plot
 
-esample <- readRDS("~/Desktop/Eurostat/u.est.non.inf.P.equal.sample.rds")
+esample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.equal.sample.rds")[,1:104]
 riters = c() 
 for (x in 0:9) {
   riters = c(riters, paste("u00",x,sep = ""))
@@ -35,12 +34,14 @@ for (x in 10:99) {
   riters = c(riters, paste("u0",x,sep = ""))
 }  
 riters = c(riters,"u100")
-colnames(esample)[2:102] = riters
+colnames(esample)[4:104] = riters
+
+# esample = as.data.frame(esample)
 
 equalr100 = esample %>% 
-  mutate(r001 = u.true - u001, r002 = u.true - u002, r005 = u.true - u005,
-         r010 = u.true - u010, r020 = u.true - u020, r050 = u.true - u050,
-         r100 = u.true - u100
+  mutate(r001 = pop - u001, r002 = pop - u002, r005 = pop - u005,
+         r010 = pop - u010, r020 = pop - u020, r050 = pop - u050,
+         r100 = pop - u100
   ) %>%
   select(pop.area.kind,internal.id,r001,r002,r005,r010,r020,r050,r100) %>%
   pivot_longer(-c(internal.id, pop.area.kind), names_to = "iter", values_to = "resid")
@@ -53,9 +54,9 @@ equal.resid.100.plot = equalr100 %>%
 saveRDS(equal.resid.100.plot, file = "equal.resid.100.plot.rds")
 
 equalc100 = esample %>% 
-  mutate(r001 = (u.true - u001)^2, r002 = (u.true - u002)^2, r005 = (u.true - u005)^2,
-         r010 = (u.true - u010)^2, r020 = (u.true - u020)^2, r050 = (u.true - u050)^2,
-         r100 = (u.true - u100)^2
+  mutate(r001 = (pop - u001)^2, r002 = (pop - u002)^2, r005 = (pop - u005)^2,
+         r010 = (pop - u010)^2, r020 = (pop - u020)^2, r050 = (pop - u050)^2,
+         r100 = (pop - u100)^2
   ) %>%
   group_by(pop.area.kind) %>% 
   summarise(i001 = sqrt(mean(r001)), i002 = sqrt(mean(r002)), i005 = sqrt(mean(r005)),
@@ -67,13 +68,12 @@ saveRDS(equalc100, file = "100.equal.rmspe.rds")
 
 #### 100 iterations True ####
 
-tsample <- readRDS("~/Desktop/Eurostat/u.est.non.inf.P.oracle.sample.rds")
+tsample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.true.sample.rds")[,1:104]
 iters = as.character(0:100)
-colnames(tsample)[2:102] = iters
+colnames(tsample)[4:104] = iters
 
-tequal = tsample %>% 
-  select(-urban.dummy) %>%
-  pivot_longer(-c(internal.id, pop.area.kind,u.true), names_to = "iter", values_to = "sim")
+tequal = tsample %>%
+  pivot_longer(-c(internal.id, pop.area.kind,pop), names_to = "iter", values_to = "sim")
 
 tequal$iter = as.numeric(tequal$iter)
 
@@ -89,14 +89,13 @@ saveRDS(tequal.100.plot, file = "true.100.plot.rds")
 
 # residual plot
 
-tsample <- readRDS("~/Desktop/Eurostat/u.est.non.inf.P.equal.sample.rds")
-
-colnames(tsample)[2:102] = riters
+tsample <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/P.true.sample.rds")[,1:104]
+colnames(tsample)[4:104] = riters
 
 tequalr100 = tsample %>% 
-  mutate(r001 = u.true - u001, r002 = u.true - u002, r005 = u.true - u005,
-         r010 = u.true - u010, r020 = u.true - u020, r050 = u.true - u050,
-         r100 = u.true - u100
+  mutate(r001 = pop - u001, r002 = pop - u002, r005 = pop - u005,
+         r010 = pop - u010, r020 = pop - u020, r050 = pop - u050,
+         r100 = pop - u100
   ) %>%
   select(pop.area.kind,internal.id,r001,r002,r005,r010,r020,r050,r100) %>%
   pivot_longer(-c(internal.id, pop.area.kind), names_to = "iter", values_to = "resid")
@@ -109,9 +108,9 @@ true.resid.100.plot = tequalr100 %>%
 saveRDS(true.resid.100.plot, file = "true.resid.100.plot.rds")
 
 tequalc100 = tsample %>% 
-  mutate(r001 = (u.true - u001)^2, r002 = (u.true - u002)^2, r005 = (u.true - u005)^2,
-         r010 = (u.true - u010)^2, r020 = (u.true - u020)^2, r050 = (u.true - u050)^2,
-         r100 = (u.true - u100)^2
+  mutate(r001 = (pop - u001)^2, r002 = (pop - u002)^2, r005 = (pop - u005)^2,
+         r010 = (pop - u010)^2, r020 = (pop - u020)^2, r050 = (pop - u050)^2,
+         r100 = (pop - u100)^2
   ) %>%
   group_by(pop.area.kind) %>% 
   summarise(i001 = sqrt(mean(r001)), i002 = sqrt(mean(r002)), i005 = sqrt(mean(r005)),
