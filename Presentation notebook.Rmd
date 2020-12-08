@@ -4,12 +4,11 @@ title: Estimating present population based on Mobile Network Operator data - a s
 author: "Stefania, Giulia, Tony, Marco"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  bookdown::html_document2:
     code_download: true
-    theme: lumen
     toc: true
-    toc_float:
-      collapsed: false
+    toc_float: true
+    theme: readable
     number_sections: yes
     fig_caption: yes
 knit: (function(input_file, encoding) { out_dir <- 'docs'; rmarkdown::render(input_file,
@@ -23,10 +22,31 @@ p.caption {
 </style>
 
 
+# Preface
+Mobile phones have revolutionized the way we communicate with each other and how we lead our daily lives. In particular smart phones introduce new usage ideas everyday, many of them relying on simple sensors in the phone. The GPS sensor for example can locate the phone whenever it has sufficient signal and apps provide their users with detailed location histories (if the user allows for this data collection). Using this kind of data to estimate how many people are at a certain location at a given time could be very informative, however, it requires for research to have the consent of all people - leading most likely to biased estimations for different reasons. A more effective way and privacy-securing way is the usage of Mobile Network Operator (MNO) data. Here MNO provider (e.g. Telecom, Vodafone,...) gives access to the their radio cell network and the numbers of phones logged to every cell/antenna. This means a chosen data analyst would not need access to detailed and highly personal location data but only receives a dataset containig the location of cells, their estimated coverage range and the number of phones logged to the respective antenna at a certain moment. EUROSTAT and the European National Statistical Institutes are experimenting with the potential usage and especially necessary methods and workflows for implementing such a data source into the general production of Official Statistics. Knowing when and where how many people are approximately corresponds to the statistical indicator called *present population* or *de facto population*. While the resident population takes into consideration only the individuals who permanently reside in a certain geographical area, the present population "is composed by all individuals who are physically present in the geographic area of interest at a selected reference time" [1].
+    
+EUROSTAT has organized in 2020 for the first time the EUROSTAT Coding Lab, offering EMOS students a chance in getting to know the production of Official Statistics on the European level with a particular focus on coding. This particular Coding Lab introduced the concepts of using MNO data for estimating present population statistics.    
+
+Thanks to this project and our mentors, we - a group of 4 international students from all over Europe - had the opportunity to dig deeper into the world of spatial analysis as well as simulation studies in R. Throughout this notebook, we faced multiple challenges: Developing code in a team, applying (almost) Big Data methods and concepts such as parallizing code, developing modular and fully reproducible code, or just working together from 4 different countries in times of Covid-19. 
+
+The notebook at hand relies on multiple scripts that follow a methodological chain. They are conceptualized and written in a modular fashion, making further use of the code for different parameters very easy. Many solutiones need to run for quite a while therefore certain objects are pre-built and only loaded into the notebook.
+
+Our concrete research goal is to evaluate and compare different cutting edge estimation techniques of present population with MNO data. Because MNO data, even though aggregated, is very secure, we did not work with real data. Instead we needed to completely build our own toy world, aiming at a very realistic scenario which could be the base of our evaluation. This simulation setting gives us the unique opportunity to actually test the performance of different estimators because we are in control of the true values. The notebook is structured as follows: In the next section we introduce the generation of the toy world, consisting of a geographical area with a mobile phone population and a corresponding radio cell network. We mention most important features and parameters as well as explain how mobile phones are logged to radio cells (device-to-cell association). Following this we introduce two of the currently existing estimation strategies, explain their most important characteristics and assumptions and apply them to our toy world. In the final section we undertake a detailed evaluation of each estimator, focusing on statistical as well as geographical-distributional performance measures. We end this evaluation with further exploring the convergence behavior of one of the estimators and formulating further potential research goals in this area.
+
+# Toy world generation
+
+Our toy world bases on population census data from the German Federal Statistical Office [2] (https://www.destatis.de/EN/Home/_node.html). This data entails continous population counts on a 100m * 100m grid. *For our project we reduce the population count to a third to mimic the process of receiving data from an MNO provider - therefore we assume that the population count resembles the number of mobile phones in this area.* For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises a high diversity of urban, suburban, and rural areas.
+
+*Terminology used in this project:*
+Due to various definitions out there, it is imperial to define the different terminologies used in this project before going further to reduce unnecessary confusion.
+- When we talk about *tiles*, we mean any square on the regular 100 * 100 m2 grid.
+- An *antenna* is a device facilitating between radio transmission and reception. Specifically in our case, an antenna transmits and receives cell phone signals. This is also known as a *cell*.
+- A (radio) *tower* or commonly referred to as a *cell tower, cellular site, or cellular base station* is a tower equipped with antennas.
+
 ```{r, setup}
 # change accordingly
 knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Marco/")) 
-knitr::opts_chunk$set(fig.width = 10)
+knitr::opts_chunk$set(fig.width = 9)
 knitr::opts_knit$set(eval.after = "fig.cap")
 ```
 
@@ -45,40 +65,7 @@ set.seed(762)
 
 census.de.100m.tile <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds") 
 ```
-Mobile phones are an essential part of modern life. From going on Twitter to complain about politics to texting with friends about the latest and hottest gossip and live streaming on Facebook about an underground party to sharing immediate information in the front of the battle lines. Mobile phones have revolutionized the way we communicate with each other and how we lead our daily lives. 
 
-Mobile phone data  EUROSTAT Coding Lab contributes to a fundamental topic of official statistics: the estimation of present population through mobile phones data (MNO). While the resident population takes into consideration only the individuals who permanently reside in a certain geographical area, the present population or **de facto population** "is composed by all individuals who are physically present in the geographic area of interest at a selected reference time" [1].
-
-The concept of the **de facto population** allows us to better highlight the dynamic of change (e.g. movement) in the population in different periods. This is the reason why not only official statistics but also the general population and private companies are interested in this new hot topic. 
-
-The research goal of this Coding Lab is to evaluate and compare different cutting edge estimation techniques of present population. 
-
-Thanks to this project we had the opportunity to dig deeper into the world of spatial analysis as well as simulation studies in R. Throughout this notebook, we faced multiple challenges; the main difficulty for us was approaching to geo-spatial analysis managing a huge amount of data. This made coding even more tough. Moreover, the interpretation of the numerical results and charts was very complex. 
-
-The notebook at relies on multiple scripts that follow a methodological chain. They are conceptualized and written in a modular fashion, making further use of the code for different parameters very easy.
-
-In the *Generating a semi-synthetic population based on real census data* section we have retrieved population census data from the German Federal Statistical Office [2] (https://www.destatis.de/EN/Home/_node.html). This data entails population count categories on the 100m\*100m tile level. For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises both urban, suburban, and rural areas.
-
-Important features, definition and  parameters we used:
-- DEFINITIONS OF EVEYTHING  [ TILES, TOWER, ANTENNAS, LAYERS, OVERLAPPING/NON OVERLAPPING] -->TO DO 
-
-- Our focus areas entails `r dim(census.de.100m.tile)[1]` tiles on a regular grid (South Bavaria);
-
-- The layers follow a hexagon shape with cell towers located in the respective centroid of each hexagon
-
-- Towers vary in distance to each other of the same layer, i.e. how far/close are towers of the same layer located to each other: layer 1 = 27,000m; layer 2 = 7000m; layer 3 = 900m (-\> the more urbanized, the closer the towers are too each other -\> denser coverage). Furthermore, hexagon independent rotation in terms of the first layer is executed: layer 2 = 35 degrees; layer 3 = 70 degrees
-
-- Each cell tower location is jittered in order to break the symmetry. The jitter amount depends on the layer: layer 1 = 5000m, layer 2 = 1000m, layer 3 = 400m.
-
-- Each tower contains three antennas pointing into 120 degree differing directions.
-
-- The layer determines the coverage diameter of an antenna: layer 1 = 15,000m; layer 2 = 2500m; layer 3 = 500m
-
-- Each tile of the focus area is sufficiently covered by at least one antenna and the antennas coverage areas are allowed to overlap.
-
-
-
-The tiles are classified based on the number of population per tile as well its proximity to neighboring tiles in order to identify groups of tiles into different categories of urbanization.
 
 ```{r focus area, fig.width = 7, fig.cap="We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas" }
 # Bounding box of focus area
@@ -109,12 +96,14 @@ plot_grid(focus.area.plot,
           hjust = -0.1, label_size = 13)
 ```
 
+
+As mentioned above this area is very heterogeneous in urban-rural intensity. Knowing the location of urban centers is very important for the corresponding radio cell network as there are differences in cell coverage between these different area kinds. We are aiming at developing a 3-category classification for each tile: Rural, Suburban and Urban. Based on the census data on the tile level we cannot locate urban centers just yet. Classifying tiles on such a low spatial resolution into one of these categories independent from each other (i.e. based on their population numbers) would not lead to the true location of urban centers. Therefore we apply a spatial clustering algorithm to account for the spatial dependence. The plots below present our classification results:
 ```{r pop distribution 1, fig.cap= "Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering."}
 
 # Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation
 # ECCDF of population distribution 
 ECCDF.pop.data <- census.de.100m.tile %>% 
-  sample_n(1000) %>%
+  # sample_n(1000) %>%
   mutate(pop.plot = pop + 1) %>%  
   arrange(pop.plot) %>%  
   mutate(prob = 1 / n()) %>%  
@@ -158,7 +147,7 @@ plot_grid(cluster.plot, tile.prop.plot, labels = "Fig.2 : Population Classificat
             hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1)) 
 ```
 
-Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working on this very low spatial resolution, one cannot just classify tiles independently based on their respective continuous population value but ones needs to take spatial dependence into consideration in order to classify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 15 people per tile. Tiles below 15 are either classified as Uninhabited or Rural, from the start (uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 15 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 15 people.
+Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working at this low spatial resolution, it is discouraged to classify tiles independently based on their respective population value - one needs to take spatial dependence into consideration in order to identify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 15 people per tile. Tiles below 15 are either classified as Uninhabited or Rural, from the start (uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 15 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 15 people.
 
 The stacked bar plot shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, `r prop.class$prop[1]`% of the tiles are urban areas. `r prop.class$prop[2]`% of the tiles are uninhabited areas. `r prop.class$prop[3]`% of the tiles are suburban areas, and `r prop.class$prop[4]`% of the tiles are rural areas.
 
@@ -209,13 +198,13 @@ plot_grid(pop.dist.map.plot, pop.dist.ecdf.insert, labels = "Fig. 3: Mobile phon
 
 Figure 3 shows the mobile phone density per tile in the focus area. In particular, we have 4 different colors representing the clusters: Uninhabited, Rural, Suburban and Urban.
 
-However, to have a deeper look of the mobile phone density per tile, in the figure (write the figure number of the first ECCDF) we choose to represent data with an empirical cumulative complementary distribution function [using a log base 10 transformation].
+However, to have a deeper look of the mobile phone density per tile, we choose to represent the data with an empirical cumulative complementary distribution function (ECCDF) (using a log base 10 transformation).
 
-The ECCDF is a step function with jumps `i/n` at observation values, where `i` is the number of tied observations at that value. Moreover, missing values are ignored and the objective "complementary" means that we need to subtract 1 - the cumulative probability. It is commonly used with variables that a have highly skewed distribution ??? as expected the population variable on this low spatial resolution at hand is heavily right skewed.
+The ECCDF is a step function with jumps `i/n` at observation values, where `i` is the number of tied observations at that value. Moreover, missing values are ignored and the objective "complementary" means that we need to subtract 1 - the cumulative probability. It is commonly used with variables that have a highly skewed distribution. We can see that this is the case - the population on this low spatial resolution is heavily right skewed.
 
 As the figure suggests, 50% of the data are represented by uninhabited tiles with no phones; furthermore, 90% of the tiles contain less than half of the mobile phones in our focus area. One can also see the tiles' classification based on the clustering results. Some tiles classified as Rural have higher values for their mobile phone population - this is because they are not considered as an Urban or Suburban cluster, as mentioned above. 10% left are tiles both urban and rural containing 0.5 and above mobile phones.
 
-# Generation of a synthetic Radio Network
+## Generation of a synthetic Radio Network
 
 We generate a radio network, which is composed of three layers. The layers follow the pop.area.kind variable - layer 1 (Rural) spans over the rural, suburban and urban tiles, layer 2 (Suburban) spans over the suburban and urban tiles and layer 3 (Urban) is spanned over the urban tiles.
 
@@ -310,7 +299,7 @@ coverage.areas %>%
   footnote(general = "`area.in.sq.km` reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.")
 ```
 
-As described in the parameter list above, rural areas are covered only by layer 1, suburban areas are covered by layer 1 and 2 and the urbanized areas are covered by all three layers. The distances between towers of the same layer decrease in layer 2 and layer 3 compared to layer 1. This leads to denser networks within these layers represented by the higher numbers of towers and therefore higher numbers of antennas in layer 2 and 3, given their area. The reason for this is that any generic antenna can only offer signal service to a limited amount of number of mobile phones. To cover all cell phones in more urbanized areas a denser radio cell network is needed in these areas. This feature will be later introduced as the *capacity* parameter.
+As described in the parameter list above, rural areas are covered only by layer 1, suburban areas are covered by layer 1 and 2 and the urbanized areas are covered by all three layers. The average distance between multiple towers of the same layer decrease in layer 2 and layer 3 compared to layer 1. This leads to denser networks within these layers represented by the higher numbers of towers and therefore higher numbers of antennas in layer 2 and 3, given their area. The reason for this is that any generic antenna can only offer signal service to a limited amount of number of mobile phones. To cover all cell phones in more urbanized areas a denser radio cell network is needed in these areas.
 
 The following figures present the actual coverage of each layer for the focus area.
 
@@ -376,7 +365,7 @@ plot_grid(coverage.intensity.plot, labels = "Fig. 7: Number of antennas covering
 
 Figure 7 shows a histogram representing the number of antennas per tile. The distribution is right skewed with a mean of `r round(mean(coverage.intensity$count), 2)`, a minimum of `r min(coverage.intensity$count)` and a maximum of `r max(coverage.intensity$count)` antenna(s) per tile. Even though the coverage areas were generated synthetically, this distribution mimics a realistic layout.
 
-# Device-to-cell association
+## Device-to-cell association
 
 At this stage we have added to the geographically distributed mobile phone population a radio network, which is setup in three layers, spanning respectively across tiles that correspond to specific tile classification. (`pop.area.kind`).
 
@@ -464,17 +453,13 @@ plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
 
 # Estimation strategies
 
-Currently three specific estimation strategies are implemented:
+We have implemented two specific estimation strategies:
 
 -   Voronoi tesselation (tower locations OR coverage area centroids as seeds)
 
--   Simple Bayes
-
 -   MLE Poisson
 
-All three of these estimation techniques produce a tile specific estimand. The sum of these estimands always exactly equals the sum of the c.vector, i.e. all registered mobile phones. This characteristic explains the strategy of all of these estimators: Taking the complete number of registered phones in the c.vector and allocating them across all the tiles. 
-
-OVERLAP and no OVERLAP
+All three of these estimation techniques produce a tile specific estimand. The sum of these estimands always exactly equals the sum of the c.vector, i.e. all registered mobile phones. This characteristic explains the strategy of all of these estimators: Taking the complete number of registered phones in the c.vector and allocating them across all the tiles. There is however a fundamental difference between the two estimators: The second one allows for the realistic setting of overlapping antenna coverage. As shown above there are many tiles that are covered by multiple antennas. Current research suggests that this can result in more accurate estimations.
 
 ## Voronoi tesselation
 
@@ -522,17 +507,6 @@ plot_grid(VT.bird.example.plot, VT.example.plot,
 ```
 
 Here we visualize the second case with an example tile and example Voronoi regions from the Voronoi with tower locations as seeds. In the left plot we can see a small tile that is indicated in red. This tile is at the intersection of 4 Voronoi regions. The corresponding relative tile area intersecting with each Voronoi region can be seen in the right plot. The labels correspond to the Voronoi region ID and the below in brackets indicate the proportional weight that should be considered in calculting the tile specific weighted mean estimate. To compare this to the first case - where a tile is fully contained only in one region - the weight for the particular Voronoi region is 1. The same methodogolgy is pursued for the Voronoi antenna case.
-
-We will now explain our workflow for the Simple Bayes estimate.
-
-## (Simple Bayes)
-
-```{r}
-# We are unsure if we should implement this as an estimator because we are using it to our understanding not to its full potential: We are not defining an informative prior. Therefore we thought of mentioning it and saying that it is the base of the MLE estimators however we did not focus on the generation of good prior.
-```
-
-
-Simple Bayes $\hat{u}_{j} = a_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} a_{k}}$`
 
 
 ## MLE Poisson
@@ -644,10 +618,6 @@ knitr::include_graphics("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony 
 knitr::include_graphics("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.gif")
 ```
 
-```{r}
-# @all: Should we implement here the SB estimator as well? We figured it is maybe not a valid evaluation because the SB estimator assumes an informative prior and this is not the case here
-```
-
 ## Statistical/Distributional Evaluation
 
 In order to actually compare the numerical resemblance between the estimates and the actual true population we introduce two discrepancy performance measures. 
@@ -668,15 +638,13 @@ plot_grid(aad.plot, mad.plot,
 ```
 By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. In general, the Voronoi estimates result in less discrepancy compared to both of the MLE estimates. Between the two MLE estimates, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimates, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.
 
-
-
 # Excurse Evaluation: Looking deeper into the convergence behavior
 
 In the course of our work we thought it was particularly interesting to further focus on the actual convergence behavior of the MLE-based estimators. 
 
 We will visualize the convergence behaviour/the evolution of the estimands up to 1000 iterations. This is executed based on a stratified sample (strata: three level `pop.area.kind` variable), n = 150)
 
-## Discrepancy measures
+## Discrepancy measures per iteration
 
 ```{r}
 
@@ -702,7 +670,6 @@ plot_grid(aad.plot, mad.plot,
 For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same. 
 
 ## Convergence behavior
-
 
 ```{r distributionl eval 1, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached."}
 
