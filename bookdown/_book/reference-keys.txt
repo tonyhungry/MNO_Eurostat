@@ -14,3 +14,6 @@ home
 cover
 executive-summary
 making-a-toy-world
+a-final-note
+estimation-of-mno-population
+evaluation-of-our-estimation
