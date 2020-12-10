@@ -433,22 +433,22 @@ pop.dist.ecdf.insert <- ECCDF.phones.plot +
 plot_grid(pop.dist.ecdf.insert, labels = "Fig. 8: ECCDF Device-to-cell association",  hjust = -0.1, label_size = 14)
 ```
 
-```{r c.vector special cases, fig.width = 7, fig.cap = "These antennas have more than 10,000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers."}
+```{r c.vector special cases, fig.width = 7, fig.cap = "These antennas have more than 1000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers."}
 
-extreme.antennas.plot <- C.vec.df %>%  
-  filter(phones.sum >= 10000) %>% 
-  left_join(coverage.areas, by = "antenna.ID") %>% 
-  st_as_sf() %>% 
-  ggplot() + 
-  geom_sf(aes(col = area.kind), fill = NA) + 
-  ggtitle("") + 
+extreme.antennas.plot <- C.vec.df %>%
+  filter(phones.sum >= 1000) %>%
+  left_join(coverage.areas, by = "antenna.ID") %>%
+  st_as_sf() %>%
+  ggplot() +
+  geom_sf(aes(col = area.kind), fill = NA) +
+  ggtitle("") +
   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
   labs(x = NULL, y = NULL) +
   theme(axis.text.x=element_text(angle=90, hjust=1),plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
   plot.subtitle = element_text(size = 9, hjust = 0.5))
 
 plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
-          hjust = -0.1, label_size = 14) 
+          hjust = -0.1, label_size = 14)
 ```
 
 # Estimation strategies
