@@ -1,3 +1,4 @@
-publish_book() # use this command to publish to the website
+require(bookdown)
 
-render_book()
+bookdown::publish_book() # use this command to publish to the website
+
