@@ -355,7 +355,7 @@ coverage.intensity.plot <- coverage.intensity %>%
            label = paste("Median =", median(coverage.intensity$count))) +
   annotate("text", x = round(mean(coverage.intensity$count), 2) + 2, y = 5e+05, color = "#117733", 
            label = paste("Mean =", round(mean(coverage.intensity$count), 2))) +
-  labs(y = "Count of tiles", x = "Covered by ... antennas", colour = "", title = "")
+  labs(y = "Count of tiles", x = "Covered by # antennas", colour = "", title = "")
   # facet_grid(~pop.area.kind)
   
   
