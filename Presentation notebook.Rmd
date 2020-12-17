@@ -153,13 +153,15 @@ The stacked bar plot shows the proportions of the tiles according to the four ca
 
 ```{r pop distribution 2, fig.cap= "The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." }
 
-pop.dist.map.plot <- ECCDF.pop.data %>% 
-  # sample_n(1000) %>%
-  ggplot() + 
-  geom_sf(aes(color = pop.area.kind), show.legend = F) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-  ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
+# pop.dist.map.plot <- ECCDF.pop.data %>% 
+#   # sample_n(1000) %>%
+#   ggplot() + 
+#   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
+#   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
+#   ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
+#   theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
+
+true.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/true.pop_map.rds")
  
 ECCDF.pop.plot <- ECCDF.pop.data %>%   
   ggplot() + 
@@ -192,7 +194,7 @@ pop.dist.ecdf.insert <- ECCDF.pop.plot +
                     xmin = 0, xmax = 1.5, 
                     ymin = -7, ymax = -3)
 
-plot_grid(pop.dist.map.plot, pop.dist.ecdf.insert, labels = "Fig. 3: Mobile phone density per tile",  
+plot_grid(true.geo.eval.plot, pop.dist.ecdf.insert, labels = "Fig. 3: Mobile phone density per tile",  
           hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1))
 ```
 
@@ -434,20 +436,9 @@ plot_grid(pop.dist.ecdf.insert, labels = "Fig. 8: ECCDF Device-to-cell associati
 ```
 
 ```{r c.vector special cases, fig.width = 7, fig.cap = "These antennas have more than 1000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers."}
+signal.strength.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Plots/signal.strength.dist.plot.rds")
 
-extreme.antennas.plot <- C.vec.df %>%
-  filter(phones.sum >= 1000) %>%
-  left_join(coverage.areas, by = "antenna.ID") %>%
-  st_as_sf() %>%
-  ggplot() +
-  geom_sf(aes(col = area.kind), fill = NA) +
-  ggtitle("") +
-  scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-  labs(x = NULL, y = NULL) +
-  theme(axis.text.x=element_text(angle=90, hjust=1),plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-  plot.subtitle = element_text(size = 9, hjust = 0.5))
-
-plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
+plot_grid(signal.strength.plot, labels = "Signal strength distribution (Synthetic)",
           hjust = -0.1, label_size = 14)
 ```
 
