@@ -23,7 +23,7 @@ Due to various definitions out there, it is imperial to define the different ter
 
 ```{r, setup}
 # change accordingly
-knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Marco/")) 
+knitr::opts_knit$set(root.dir = normalizePath("/Users/tonyhung/OneDrive - Vysoká škola ekonomická v Praze/YAY")) 
 knitr::opts_chunk$set(fig.width = 9)
 knitr::opts_knit$set(eval.after = "fig.cap")
 ```
@@ -41,7 +41,7 @@ library(transformr)
 library(gganimate)
 set.seed(762)
 
-census.de.100m.tile <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds") 
+census.de.100m.tile <- readRDS("working objects/census.tile.final.rds") 
 ```
 
 
@@ -52,7 +52,7 @@ bb.focus.dat <- data.frame(xmin = 4400000, xmax = 4500000,
 bb.focus.vec <- c(xmin = 4400000, xmax = 4500000,
                   ymin = 2700000, ymax = 2900000)
 # Download data from : https://gadm.org/download_country_v3.html --> R(sf) level 1
-germany.raw <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/gadm36_DEU_1_sf.rds") 
+germany.raw <- readRDS("working objects/gadm36_DEU_1_sf.rds") 
 germany <- germany.raw %>%  
   st_transform(crs = 3035)
 focus.area.plot <- germany %>%  
@@ -207,8 +207,8 @@ The link to the source code for the layers.1 object as well as the coverage.area
 The link to the source code for the layers object as well as the coverage.areas object is [here] (<https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R>).
 
 ```{r network layers, fig.width = 7, fig.cap = "The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented."}
-layers <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/radio cell layers.rds") 
-coverage.areas <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage.areas.rds") 
+layers <- readRDS("working objects/radio cell layers.rds") 
+coverage.areas <- readRDS("working objects/coverage.areas.rds") 
  
 coverage.layer1 <- coverage.areas %>%  
   filter(area.kind == "Rural") %>%  
@@ -316,7 +316,7 @@ plot_grid(pop.dist.map.plot, coverage.area.full.plot, labels = "Fig. 6: Full cov
 Figure 6 presents the full network structure. By comparing the network structure to the tile density one can see that full, partially overlapping coverage is granted for all areas and that the network layering structure follows suit with the true geographical population density.
 
 ```{r coverage intensity, fig.width = 7, fig.cap= paste0("The distribution is right skewed with a mean of ", round(mean(coverage.intensity$count), 2),", a minimum of ", min(coverage.intensity$count),", and a maximum of ", max(coverage.intensity$count)," antenna(s) per tile.")}
-tiles.cat <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage intensity.rds")
+tiles.cat <- readRDS("working objects/coverage intensity.rds")
 coverage.intensity <- tiles.cat %>%
   # left_join(census.de.100m.tile, by = "internal.id") %>% 
   # dplyr::select(internal.id, count, pop.area.kind) %>% 
@@ -366,7 +366,7 @@ $$
 where $s_{ij}$ describes the signal intensity of a particular cell $i$ associated with a particular tile $j$, and $\mathcal{L}_{j}$ describes the subset of radio cells that are covering the tile $j$. We then simulate the tile specific experiments - every mobile phone within a tile will be independently assigned to relevant radio cell with the probability $p_{ij}$. The result is the column vector $c$ which will act as a reference for the later on introduced estimation strategies.
 
 ```{r c.vector.distribution, fig.cap= "Mobile devices are predominately associated with Layer 1 antennas."}
-C.vec.df <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.df.final.new.rds")
+C.vec.df <- readRDS("working objects/C.vec.df.final.new.rds")
 # ECCDF of population distribution 
 ECCDF.phones.data <- C.vec.df %>% 
   mutate(layer = case_when(str_detect(antenna.ID, "RT") ~ "Layer 1",
@@ -452,8 +452,8 @@ Below we specify the tower locations as seed points. These are then used to comp
 ```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions."}
 
 # Plot read in
-VT.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
-VA.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
+VT.plot <- readRDS("working objects/VT.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
+VA.plot <- readRDS("working objects/VA.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
 
 plot_grid(VT.plot, VA.plot, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
 
@@ -476,9 +476,9 @@ For the first case, the tile specific estimate corresponds to $d_{k}$. For the s
 
 ```{r Voronoi tower multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator."}
 
-VT.bird.example.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.bird.example.plot.rds")
+VT.bird.example.plot <- readRDS("working objects/VT.bird.example.plot.rds")
 
-VT.example.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.example.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
+VT.example.plot <- readRDS("working objects/VT.example.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
 
 plot_grid(VT.bird.example.plot, VT.example.plot, 
           labels = "Fig. 11: Example multiple tile",  hjust = -0.1, label_size = 14)
@@ -552,9 +552,9 @@ For the geographical evaluation we use the following performance measure: The vi
 We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.
 
 ```{r Voronoi tower geo eval}
-true.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/true.pop_map.rds")
+true.geo.eval.plot <- readRDS("Estimates/Plot.files/true.pop_map.rds")
 
-VT.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VT.estimate_map.rds")
+VT.geo.eval.plot <- readRDS("Estimates/Plot.files/VT.estimate_map.rds")
 
 
 plot_grid(true.geo.eval.plot, VT.geo.eval.plot,
@@ -564,7 +564,7 @@ plot_grid(true.geo.eval.plot, VT.geo.eval.plot,
 ```
 
 ```{r Voronoi antenna geo eval}
-VA.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VA.estimate_map.rds")
+VA.geo.eval.plot <- readRDS("Estimates/Plot.files/VA.estimate_map.rds")
 
 plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
           labels = "Fig. 15 Comparing Voronoi antenna estimate", label_size = 12,
@@ -572,20 +572,20 @@ plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
 ```
 
 ```{r MLE equal geo eval}
-# MLE.equal.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.rds")
+# MLE.equal.geo.eval.plot <- readRDS("Estimates/Plot.files/MLE.oracle.estimate_map.rds")
 # animate(MLE.equal.geo.eval.plot, fps = 10)
 
 # plot_grid(true.geo.eval.plot, MLE.equal.geo.eval.plot,
 #           labels = "Comparing MLE equal P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.equal.estimate_map.gif")
+knitr::include_graphics("Estimates/Plot.files/MLE.equal.estimate_map.gif")
 
 
 ```
 
 ```{r MLE true geo eval}
-# MLE.true.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.rds")
+# MLE.true.geo.eval.plot <- readRDS("Estimates/Plot.files/MLE.oracle.estimate_map.rds")
 # MLE.true.geo.eval.plot <- animate(MLE.true.geo.eval.plot, fps = 10)
 # 
 # 
@@ -593,7 +593,7 @@ knitr::include_graphics("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony 
 #           labels = "Comparing MLE true P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/MLE.oracle.estimate_map.gif")
+knitr::include_graphics("Estimates/Plot.files/MLE.oracle.estimate_map.gif")
 ```
 
 ### Statistical/Distributional Evaluation

@@ -698,6 +698,13 @@ plot_grid(true.plot, true.resid.plot,
 
 Using the true population matrix, the estimated population stabilizes faster over time in comparison to the equal population matrix. However, there are a few tiles that do not stabilize as fast as we hoped. This is particularly evident in the urban tiles. The residual plot (right) shows the error of prediction over time by the type of tile. There seems to be a trend of increasing prediction error as the degree of urbanization increases as well. We can see that the range of error for suburban tiles range from 30 to -10 and the range of error for urban tiles are between 100 and -75. The suburban tiles seems to underestimate and the urban tiles seems to overestimate.
 
+# Final Remarks
+
+Throughout this notebook we have first created the toy world, where we have generated semi-synthetic population data and a synthetic cell towers. After that, we then linked each person in the population to cell tower. We then estimated the population based on the cell-device association from the towers and then finally evaluated how well these estimation strategies perform in comparison with each other. 
+
+However, this is not the end of MNO. Rather this is the beginning of further explorations. There are still a lot more to discover. Topics such as the convergence behavior of MLE estimations or simulating an event based example such as people going on holiday where the towers would then be overloaded with users are all in the works. Other estimations should be used as well, such as the Earth Mover's Distance or different evaluation metrics.
+
+Up until now, we have found that the MLE estimations are not as accurate as the Voronoi estimations, but we believe this is only temporary. Further varied testing should be carried out to verify the different characteristics of each estimation strategy. 
 
 # References
 
