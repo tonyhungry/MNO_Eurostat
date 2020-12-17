@@ -3,18 +3,21 @@ library(data.table)
 library(sf)
 library(furrr)
 library(Matrix)
+library(ggthemes)
+
+setwd("C:/Users/Marco/")
 
 set.seed(2)
 
-census.de.100m.tile <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/census.tile.final.rds") %>% 
+census.de.100m.tile <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds") %>% 
   dplyr::select(-c(pop.true, cluster_id, pop.raster, cluster.tile.n))
 
-coverage.areas <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/coverage.areas.rds")
+coverage.areas <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage.areas.rds")
 
 
 
 
-signal_strength <- Vectorize(function(distance, loss.exp, max.equal = 0.75, min.threshold = 0.001) {
+signal_strength <- Vectorize(function(distance, loss.exp, max.equal = 0.85, min.threshold = 0.001) {
   sij.calc <- 1 - ((-10 * loss.exp * log10(distance))/ - 200)
   
   if (sij.calc < min.threshold) { # min.threshold (nu)
@@ -29,6 +32,28 @@ signal_strength <- Vectorize(function(distance, loss.exp, max.equal = 0.75, min.
 })
 
 
+coverage.radius <- c("Rural" = 12000, "Suburban" = 2500, "Urban" = 500)
+
+sim <- tibble(id = 1:15000, dist.sij = c(1:12000, 1:2500, 1:500), loss.exp = c(rep(5, 12000), rep(3, 2500), rep(2, 500)),
+              area.kind = c(rep("Layer 1", 12000), rep("Layer 2", 2500), rep("Layer 3", 500))) %>% 
+  mutate(signal.sij = signal_strength(distance = dist.sij, loss.exp = loss.exp))
+
+labels <- data.frame(mpg = mtcars[which(mtcars$hp == max(mtcars$hp)), "mpg"]+7, 
+                     hp = mtcars[which(mtcars$hp == max(mtcars$hp)), "hp"],
+                     text = paste0("Max value at mpg = ", mtcars[which(mtcars$hp == max(mtcars$hp)), "mpg"], " and hp = ", max(mtcars$hp)))
+
+signal.strength.plot <- sim %>% 
+  ggplot() +
+  geom_line(aes(x = dist.sij, y = signal.sij, color = factor(loss.exp)), size = 1) +
+  facet_grid(~area.kind, scales = "free") +
+  scale_color_ptol() +
+  labs(y = "Received signal strength (sij)", x = "Distance between cell and tile in m", color = "Path loss\nexponent") +
+  ggtitle("") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5))
+saveRDS(signal.strength.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Plots/signal.strength.dist.plot.rds")
+
 
 
 dev.to.cell.join <- census.de.100m.tile %>% 
@@ -39,8 +64,8 @@ dev.to.cell.join <- census.de.100m.tile %>%
   mutate(dist.sij = as.numeric(st_distance(tile.centroid, antenna.centroid, by_element = T)))
 
 
-saveRDS(dev.to.cell.join, "C:/Users/ramljak/Desktop/marco/working objects/dev.to.cell.join.rds")
-dev.to.cell.join <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/dev.to.cell.join.rds")
+saveRDS(dev.to.cell.join, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/dev.to.cell.join.rds")
+dev.to.cell.join <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/dev.to.cell.join.rds")
 
 dev.to.cell.metric <- dev.to.cell.join %>% 
   # st_drop_geometry() %>% 
@@ -51,8 +76,8 @@ dev.to.cell.metric <- dev.to.cell.join %>%
                                 TRUE ~ as.numeric(signal.sij / sum(signal.sij, na.rm = T)))) %>% 
   ungroup()
 
-saveRDS(dev.to.cell.metric, "C:/Users/ramljak/Desktop/marco/working objects/dev.to.cell.metric.rds")
-dev.to.cell.metric <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/dev.to.cell.metric.rds")
+saveRDS(dev.to.cell.metric, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/dev.to.cell.metric.rds")
+dev.to.cell.metric <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/dev.to.cell.metric.rds")
 
 
 dev.to.cell.classified <- dev.to.cell.metric %>% 
@@ -64,8 +89,8 @@ dev.to.cell.classified <- dev.to.cell.metric %>%
 
 
 
-saveRDS(dev.to.cell.classified, "C:/Users/ramljak/Desktop/marco/working objects/dev.to.cell.classified.final.rds")
-dev.to.cell.classified <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/dev.to.cell.classified.final.rds")
+saveRDS(dev.to.cell.classified, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/dev.to.cell.classified.final.rds")
+dev.to.cell.classified <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/dev.to.cell.classified.final.rds")
 
 #### Plots
 
@@ -108,8 +133,8 @@ C.vec.fixed.helper <- dev.to.cell.classified %>%
   filter(coverage.kind == "covered completely by one tile") %>%
   dplyr::select(antenna.ID, pop)
 
-saveRDS(C.vec.fixed.helper, "C:/Users/ramljak/Desktop/marco/working objects/C.vec.fixed.helper.rds")
-# C.vec.fixed.helper <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/C.vec.fixed.helper.rds")
+saveRDS(C.vec.fixed.helper, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.fixed.helper.rds")
+# C.vec.fixed.helper <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.fixed.helper.rds")
 
 # One object where tiles are covered by multiple cells
 C.vec.multiple.helper <- dev.to.cell.classified %>% 
@@ -119,8 +144,8 @@ C.vec.multiple.helper <- dev.to.cell.classified %>%
 
 # Dropping associations for tiles with 0 population and tiles which are not sufficiently covered (in this case the coverage network was optimized that every tile is sufficiently covered)
 
-saveRDS(C.vec.multiple.helper, "C:/Users/ramljak/Desktop/marco/working objects/C.vec.multiple.helper.rds")
-# C.vec.multiple.helper <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/C.vec.multiple.helper.rds")
+saveRDS(C.vec.multiple.helper, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.multiple.helper.rds")
+# C.vec.multiple.helper <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.multiple.helper.rds")
 
 # Calculate the number of cores
 no_cores <- availableCores() - 1
@@ -135,8 +160,8 @@ C.vec.multiple <- C.vec.multiple.helper %>%
   future_map(~group_by(., value), .progress = T) %>% 
   future_map(~summarise(., pop.count.rand = n(), .groups = "drop"), .progress = T)
 
-saveRDS(C.vec.multiple, "C:/Users/ramljak/Desktop/marco/working objects/C.vec.multiple.rds")
-# C.vec.multiple <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/C.vec.multiple.rds")
+saveRDS(C.vec.multiple, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.multiple.rds")
+# C.vec.multiple <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.multiple.rds")
 
 C.vec.df <- C.vec.multiple %>% 
   bind_rows() %>% 
@@ -145,8 +170,8 @@ C.vec.df <- C.vec.multiple %>%
   group_by(antenna.ID) %>% 
   summarise(phones.sum = sum(pop))
 
-saveRDS(C.vec.df, "C:/Users/ramljak/Desktop/marco/working objects/C.vec.df.final.new.rds")
-# C.vec.df <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/C.vec.df.final.new.rds")
+saveRDS(C.vec.df, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.df.final.new.rds")
+# C.vec.df <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.df.final.new.rds")
 
 
 # sparse P matrix of device to cell
@@ -155,14 +180,14 @@ P.helper <- dev.to.cell.classified %>%
   mutate_at(vars(c("internal.id", "antenna.ID")), factor) %>% 
   mutate(weight.pij = round(weight.pij, 4))
 
-saveRDS(P.helper, file = "C:/Users/ramljak/Desktop/marco/working objects/P.helper.new.rds")
-# P.helper <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/P.helper.new.rds")
+saveRDS(P.helper, file = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/P.helper.new.rds")
+# P.helper <- readRDS(file = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/P.helper.new.rds")
 
 P.helper.missing <- P.helper %>% 
   st_drop_geometry()
 
-saveRDS(P.helper.missing, file = "C:/Users/ramljak/Desktop/marco/working objects/P.helper.missing.rds")
-# P.helper.missing <- readRDS(file = "C:/Users/ramljak/Desktop/marco/working objects/P.helper.missing.rds")
+saveRDS(P.helper.missing, file = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/P.helper.missing.rds")
+# P.helper.missing <- readRDS(file = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/P.helper.missing.rds")
 
 
 P.mat <- sparseMatrix(i = as.numeric(P.helper$antenna.ID), 
@@ -171,7 +196,7 @@ P.mat <- sparseMatrix(i = as.numeric(P.helper$antenna.ID),
                       dimnames = list(levels(P.helper$antenna.ID), levels(P.helper$internal.id)))
 
 
-saveRDS(P.mat, file = "C:/Users/ramljak/Desktop/marco/working objects/P.mat.rds")
+saveRDS(P.mat, file = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/P.mat.rds")
 
 
 
@@ -180,4 +205,4 @@ saveRDS(P.mat, file = "C:/Users/ramljak/Desktop/marco/working objects/P.mat.rds"
 U.vec <- census.de.100m.tile %>% 
   dplyr::select(internal.id, pop)
 
-saveRDS(U.vec, file = "C:/Users/ramljak/Desktop/marco/working objects/U.vec.rds")
+saveRDS(U.vec, file = "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/U.vec.rds")
