@@ -504,38 +504,6 @@ Here we visualize the second case with an example tile and example Voronoi regio
 
 MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
 
-```{r estimations 1.1}
-equal.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
-equal.resid.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.resid.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
-
-plot_grid(equal.100.plot, equal.resid.100.plot, 
-          labels = "Fig. 12 Equal P.matrix, 100 iterations",  hjust = -0.1, label_size = 12,
-          ncol = 2, nrow = 1)
-```
-```{r estimations 1.2}
-ematrix = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.equal.rmspe.rds", method = "libcurl"))
-
-ematrix %>% 
-  kbl(caption = "Equal prob P.matrix, constant prior: RMSE") %>% 
-  kable_minimal() 
-```
-
-```{r estimations 2.1}
-true.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
-true.resid.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.resid.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
-
-plot_grid(true.100.plot, true.resid.100.plot, 
-          labels = "Fig. 13 True P. Matrix, 100 iterations",  hjust = -0.1, label_size = 12,
-          ncol = 2, nrow = 1)
-```
-
-```{r estimations 2.2}
-tmatrix = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.true.rmspe.rds", method = "libcurl"))
-
-ematrix %>% 
-  kbl(caption = "Equal prob P.matrix, constant prior: RMSE") %>% 
-  kable_minimal() 
-```
 
 # Evaluation of all estimates
 
