@@ -32,6 +32,11 @@ coverage.areas <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung 
 
 c.vec <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.df.final.new.rds") 
 
+## derive the shape of the focus area
+# census.geo.body <- census.de.100m.tile %>% 
+#   select(internal.id) %>% 
+#   summarise(geometry = st_union(geometry))
+# saveRDS(census.geo.body, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
 census.geo.body <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
 
 
@@ -44,16 +49,9 @@ coverage.areas.comp <- coverage.areas %>%
   mutate(phones.sum = case_when(is.na(phones.sum) ~ 0,
                                 TRUE ~ phones.sum))
 
-## derive the shape of the focus area
-# census.geo.body <- census.de.100m.tile %>% 
-#   select(internal.id) %>% 
-#   summarise(geometry = st_union(geometry))
-# saveRDS(census.geo.body, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds")
-
-
 # select only the internal id and the mobile phone population per tile
 census.de.100m.tile.pop <- census.de.100m.tile %>% 
-  select(internal.id, pop)
+  dplyr::select(internal.id, pop)
 
 ```
 
@@ -75,7 +73,7 @@ tower.aggr <- coverage.areas.comp %>%
   mutate(phones.sum = sum(phones.sum)) %>% 
   distinct(tower.ID, .keep_all = T) %>% 
   ungroup() %>% 
-  select(tower.ID, X.tow, Y.tow, phones.sum) %>%
+  dplyr::select(tower.ID, X.tow, Y.tow, phones.sum) %>%
   st_as_sf(coords = c("X.tow", "Y.tow")) %>% 
   st_sf(crs = 3035) %>%  
   mutate(within.fa = lengths(st_within(., census.geo.body))) # find seeds outside the focus area
@@ -83,7 +81,7 @@ tower.aggr <- coverage.areas.comp %>%
 # saving towerIDs of problematic towers
 towers.outside.ID <- tower.aggr %>% 
   filter(within.fa == 0) %>% 
-  select(tower.ID) %>% 
+  dplyr::select(tower.ID) %>% 
   deframe()
 
 # filtering unproblematic towers
@@ -101,7 +99,7 @@ towers.final.data <- tower.aggr %>%
   mutate(tower.ID = towers.outside.ID) %>% 
   mutate(geometry = x) %>% 
   st_sf(sf_column_name = "geometry") %>% 
-  select(-x) %>% 
+  dplyr::select(-x) %>% 
   bind_rows(towers.inside)
 
 sum(unlist(st_intersects(towers.final.data, census.geo.body))) == length(tower.aggr$tower.ID) # check if all are within now
@@ -124,7 +122,7 @@ And now the same preparation for the coverage area centroids (here also just "an
 # aggregating the antennas to towers (and corresponding values) and identifying problematic tower locations (outside of focus area)
 antenna.aggr <- coverage.areas.comp %>% 
   st_drop_geometry() %>% 
-  select(antenna.ID, geometry = antenna.centroid, phones.sum) %>%
+  dplyr::select(antenna.ID, geometry = antenna.centroid, phones.sum) %>%
   st_sf() %>% 
   st_sf(crs = 3035) %>%  
   mutate(within.fa = lengths(st_within(., census.geo.body))) # find seeds outside the focus area
@@ -132,7 +130,7 @@ antenna.aggr <- coverage.areas.comp %>%
 # saving towerIDs of problematic antennas
 antennas.outside.ID <- antenna.aggr %>% 
   filter(within.fa == 0) %>% 
-  select(antenna.ID) %>% 
+  dplyr::select(antenna.ID) %>% 
   deframe()
 
 # filtering unproblematic antennas
@@ -150,7 +148,7 @@ antennas.final.data <- antenna.aggr %>%
   mutate(antenna.ID = antennas.outside.ID) %>% 
   mutate(geometry = x) %>% 
   st_sf(sf_column_name = "geometry") %>% 
-  select(-x) %>% 
+  dplyr::select(-x) %>% 
   bind_rows(antennas.inside)
 
 # sum(unlist(st_intersects(antennas.final.data, census.geo.body))) == length(antenna.aggr$antenna.ID) # check if all are within now
@@ -163,20 +161,29 @@ antenna.seed.voronoi <- antennas.final.data %>%
   st_collection_extract(type = "POLYGON") %>% 
   st_sf(crs = 3035) %>% 
   st_join(antenna.aggr) %>%  # rejoin with seed object to retain seed id
-  st_intersection(census.geo.body)
+  st_intersection(census.geo.body) %>% 
+  mutate(category = phones.sum / as.numeric(st_area(geometry)))
+
+antenna.seed.voronoi %>% 
+  ggplot() +
+  geom_histogram(aes(x = category))
 
 # Visualizing the Vornoi regions with respective phone count
-VT.plot.1 <- tower.seed.voronoi %>% 
+VT.plot <- tower.seed.voronoi %>% 
   ggplot() +
   geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
   ggtitle("", subtitle = "Tower locations as seeds")
 
-VA.plot1 <- antenna.seed.voronoi %>% 
+saveRDS(VT.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds")
+
+VA.plot <- antenna.seed.voronoi %>% 
   ggplot() +
   geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
   ggtitle("", subtitle = "Coverage area centroid locations as seeds")
 
-plot_grid(VT.plot.1, VA.plot1, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
+saveRDS(VA.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds")
+
+plot_grid(VT.plot, VA.plot, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
 ```
 
 
@@ -223,13 +230,23 @@ tower.intersect.tiles <- census.de.100m.tile.pop %>%
   st_collection_extract(type = "POLYGON") %>% # select the polygons
   mutate(amount.tiles = as.numeric(st_area(.$geometry)) / 10000) # checked if it adds up to 1
 
+
+example.helper <- tower.intersect.tiles %>%
+  filter(internal.id == "342403") %>% 
+  select(tower.ID) %>% 
+  deframe()
+
 # example plot
-# VT.bird.example.plot <- tower.intersect.tiles %>% 
-#   filter(internal.id == "342403") %>% 
-#   ggplot() +
-#   geom_sf(color = "red") +
-#   geom_sf(data = census.geo.body, fill = NA) +
-#   ggtitle("")
+VT.bird.example.plot <- tower.intersect.tiles %>%
+  filter(internal.id == "342403") %>%
+  ggplot() +
+  geom_sf(color = "black") +
+  geom_sf(data = (census.de.100m.tile %>% filter(internal.id == "342403")), color = "red", fill = NA) +
+  geom_sf(data = (tower.seed.voronoi %>% filter(tower.ID %in% example.helper)), fill = NA) +
+  ggtitle("", subtitle = "Birds view of a tile that intersects with 
+multiple regions")
+
+saveRDS(VT.bird.example.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.bird.example.plot.rds")
 
 VT.example.plot <- tower.intersect.tiles %>% 
   filter(internal.id == "342403") %>% 
@@ -239,10 +256,12 @@ VT.example.plot <- tower.intersect.tiles %>%
   geom_sf_text(aes(label = paste0("(", round(amount.tiles, 2), ")")), nudge_y = -7) +
   geom_sf(data = (census.de.100m.tile.pop %>% 
   filter(internal.id == "342403")), color = "red", fill = NA) +
-  ggtitle("")
+  ggtitle("", subtitle = "Relative area per Voronoi region")
 
-plot_grid(#VT.bird.example.plot,
-  VT.example.plot, labels = "Fig. 11: Example multiple tile",  hjust = -0.1, label_size = 14)
+saveRDS(VT.example.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.example.plot.rds")
+
+plot_grid(VT.bird.example.plot, VT.example.plot, 
+          labels = "Fig. 11: Example multiple tile",  hjust = -0.1, label_size = 14)
 ```
 
 And now the same again for the antennas.
@@ -290,8 +309,10 @@ tower.voronoi.final <- tower.intersect.tiles %>%
   mutate(amount.tiles = case_when(is.na(amount.tiles) ~ 1,
                                   TRUE ~ amount.tiles)) %>% 
   group_by(internal.id) %>% 
-  mutate(voronoi.est.corrected = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
-  distinct(internal.id, voronoi.est.corrected, pop) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
+  mutate(voronoi.est.tower = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
+  distinct(internal.id, voronoi.est.tower) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
+
+
 
 
 #### antennas
@@ -307,5 +328,13 @@ antenna.voronoi.final <- antenna.intersect.tiles %>%
   mutate(voronoi.est.corrected = weighted.mean(x = voronoi.est, w = amount.tiles) * 10000) %>% 
   distinct(internal.id, voronoi.est.corrected, pop) # should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec
 
+
+voronoi.final.both <- antenna.voronoi.final %>% 
+  mutate(voronoi.est.antenna = voronoi.est.corrected) %>% 
+  select(-voronoi.est.corrected) %>% 
+  left_join(tower.voronoi.final, by = "internal.id")
+
+saveRDS(voronoi.final.both, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Voronoi both/Voronoi.estimates.rds")
+              
 
 ```
