@@ -462,11 +462,11 @@ Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed ther
 
 Below we specify the tower locations as seed points. These are then used to compute the Voronoi regions. Before we do that we need to make sure that the corresponding c.vector is aggregated on the toer level. We then join the Voronoi regions with the tiles to create an object that links tiles within respective Voronoi regions.
 
-```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions."}
+```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions. The color scale is defined by the log with base 10 local density i.e. the absolute number of mobile phones within a Voronoi region divided by absolute area of the respecitve Voronoi region."}
 
 # Plot read in
-VT.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
-VA.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
+VT.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds")
+VA.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds")
 
 plot_grid(VT.plot, VA.plot, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
 
