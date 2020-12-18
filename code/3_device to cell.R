@@ -32,23 +32,22 @@ signal_strength <- Vectorize(function(distance, loss.exp, max.equal = 0.85, min.
 })
 
 
-coverage.radius <- c("Rural" = 12000, "Suburban" = 2500, "Urban" = 500)
-
 sim <- tibble(id = 1:15000, dist.sij = c(1:12000, 1:2500, 1:500), loss.exp = c(rep(5, 12000), rep(3, 2500), rep(2, 500)),
               area.kind = c(rep("Layer 1", 12000), rep("Layer 2", 2500), rep("Layer 3", 500))) %>% 
   mutate(signal.sij = signal_strength(distance = dist.sij, loss.exp = loss.exp))
 
-labels <- data.frame(mpg = mtcars[which(mtcars$hp == max(mtcars$hp)), "mpg"]+7, 
-                     hp = mtcars[which(mtcars$hp == max(mtcars$hp)), "hp"],
-                     text = paste0("Max value at mpg = ", mtcars[which(mtcars$hp == max(mtcars$hp)), "mpg"], " and hp = ", max(mtcars$hp)))
+labels <- c("Path Loss Exp. = 5", "Path Loss Exp. = 3", "Path Loss Exp. = 2")
+names(labels) <- c("Layer 1", "Layer 2", "Layer 3")
 
 signal.strength.plot <- sim %>% 
   ggplot() +
-  geom_line(aes(x = dist.sij, y = signal.sij, color = factor(loss.exp)), size = 1) +
-  facet_grid(~area.kind, scales = "free") +
+  geom_line(aes(x = dist.sij, y = signal.sij, color = area.kind), size = 1) +
+  facet_grid(~area.kind, scales = "free",
+            labeller = as_labeller(labels)) +
   scale_color_ptol() +
-  labs(y = "Received signal strength (sij)", x = "Distance between cell and tile in m", color = "Path loss\nexponent") +
-  ggtitle("") +
+  guides(color = F) +
+  labs(y = "Received signal strength (sij)", x = "Distance between cell and tile in m") +
+  ggtitle("", subtitle = "Synthetic distribution sij") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
         plot.subtitle = element_text(size = 9, hjust = 0.5))
