@@ -389,7 +389,12 @@ $$
 
 where $s_{ij}$ describes the signal intensity of a particular cell $i$ associated with a particular tile $j$, and $\mathcal{L}_{j}$ describes the subset of radio cells that are covering the tile $j$. We then simulate the tile specific experiments - every mobile phone within a tile will be independently assigned to relevant radio cell with the probability $p_{ij}$. The result is the column vector $c$ which will act as a reference for the later on introduced estimation strategies.
 
-```{r c.vector.distribution, fig.cap= "Mobile devices are predominately associated with Layer 1 antennas."}
+
+
+```{r c.vector.distribution, fig.cap= "On the left one can see the synthetic distribution of the sij parameter depending on the network layer. The specified Path loss exponent controls sij in a way that it favors Layer 3 antennas and sanctions Layer 1 antennas in order to balance the resulting c.vector. On the right one can see that mobile devices are predominately associated with Layer 1 antennas."}
+
+signal.strength.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Plots/signal.strength.dist.plot.rds")
+
 C.vec.df <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.df.final.new.rds")
 # ECCDF of population distribution 
 ECCDF.phones.data <- C.vec.df %>% 
@@ -409,14 +414,14 @@ ECCDF.phones.plot <- ECCDF.phones.data %>%
                  color = layer)) + 
   geom_hline(yintercept = -0.3010300, linetype = "dotted") + 
   geom_hline(yintercept = -1, linetype = "dotted") + 
-  geom_text(x = 4, y = -0.15, label = "50% of the data") + 
-  geom_text(x = 4, y = -0.85, label = "90% of the data") + 
+  geom_text(x = 0.8, y = -0.2, label = "50% of the data") + 
+  geom_text(x = 0.8, y = -0.9, label = "90% of the data") + 
   scale_color_ptol(breaks = c("Layer 1", "Layer 2", "Layer 3")) + 
   ylim(-4, 0) +
-  ggtitle("") +
+  ggtitle("", subtitle = "ECCDF and ECDF") +
   labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)", colour = "")+
-  theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
-        plot.subtitle = element_text(size=9,hjust = 0.5))
+  theme(plot.title = element_text(size =10, face="bold", hjust = 0.5),
+        plot.subtitle = element_text(size =9,hjust = 0.5))
 ECDF.phones.plot <- ECCDF.phones.data %>%   
   ggplot() + 
   geom_point(aes(x = phones.sum, y = cum.prob.comp, color = layer)) + 
@@ -429,18 +434,13 @@ ECDF.phones.plot <- ECCDF.phones.data %>%
         axis.title.y = element_blank())
 pop.dist.ecdf.insert <- ECCDF.phones.plot +
   annotation_custom(ggplotGrob(ECDF.phones.plot), 
-                    xmin = 0, xmax = 2, 
+                    xmin = 0, xmax = 3, 
                     ymin = -4, ymax = -1.5)
     
-plot_grid(pop.dist.ecdf.insert, labels = "Fig. 8: ECCDF Device-to-cell association",  hjust = -0.1, label_size = 14)
+plot_grid(signal.strength.plot, pop.dist.ecdf.insert, labels = "Device-to-cell association",  hjust = -0.1, label_size = 14)
 ```
 
-```{r c.vector special cases, fig.width = 7, fig.cap = "These antennas have more than 1000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers."}
-signal.strength.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Plots/signal.strength.dist.plot.rds")
 
-plot_grid(signal.strength.plot, labels = "Signal strength distribution (Synthetic)",
-          hjust = -0.1, label_size = 14)
-```
 
 # Estimation strategies
 
