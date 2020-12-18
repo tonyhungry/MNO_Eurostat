@@ -112,7 +112,9 @@ tower.seed.voronoi <- towers.final.data %>%
   st_collection_extract(type = "POLYGON") %>% 
   st_sf(crs = 3035) %>% 
   st_join(tower.aggr) %>%  # rejoin with seed object to retain seed id
-  st_intersection(census.geo.body)
+  st_intersection(census.geo.body) %>% 
+  mutate(category.log = log10(phones.sum / as.numeric(st_area(geometry)))) %>% 
+  mutate(category = cut(category.log, c(-6, -4, -2, -1), right = F, ordered_result = T))
 ```
 
 And now the same preparation for the coverage area centroids (here also just "antennas" even though this is imprecise).
@@ -162,24 +164,40 @@ antenna.seed.voronoi <- antennas.final.data %>%
   st_sf(crs = 3035) %>% 
   st_join(antenna.aggr) %>%  # rejoin with seed object to retain seed id
   st_intersection(census.geo.body) %>% 
-  mutate(category = phones.sum / as.numeric(st_area(geometry)))
+  mutate(category.log = log10(phones.sum / as.numeric(st_area(geometry)))) %>% 
+  mutate(category = cut(category.log, c(-6, -4, -2, -1), right = F, ordered_result = T))
 
-antenna.seed.voronoi %>% 
-  ggplot() +
-  geom_histogram(aes(x = category))
+# check density values
+# antenna.seed.voronoi %>% 
+#   ggplot() +
+#   geom_density(aes(category.log))
 
 # Visualizing the Vornoi regions with respective phone count
 VT.plot <- tower.seed.voronoi %>% 
   ggplot() +
-  geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
-  ggtitle("", subtitle = "Tower locations as seeds")
+  geom_sf(aes(fill = category, col = category)) + 
+  scale_fill_ptol(na.translate = FALSE) +
+  scale_color_ptol(na.translate = FALSE) +
+  guides(color = F) +
+  labs(fill = "Local density\n(log10)") +
+  ggtitle("", subtitle = "Tower locations as seeds") +   
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5))
 
 saveRDS(VT.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds")
 
 VA.plot <- antenna.seed.voronoi %>% 
   ggplot() +
-  geom_sf(aes(fill = phones.sum, col = phones.sum)) + # add 4 level factor scale
-  ggtitle("", subtitle = "Coverage area centroid locations as seeds")
+  geom_sf(aes(fill = category, col = category)) + 
+  scale_fill_ptol(na.translate = FALSE) +
+  scale_color_ptol(na.translate = FALSE) +
+  guides(color = F) +
+  labs(fill = "Local density\n(log10)") +
+  ggtitle("", subtitle = "Coverage area centroid locations as seeds") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5))
 
 saveRDS(VA.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds")
 
