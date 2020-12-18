@@ -24,7 +24,7 @@
 <meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
 
 
-<meta name="date" content="2020-11-30" />
+<meta name="date" content="2020-12-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,8 @@
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -120,7 +122,6 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
-<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -133,22 +134,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">MNO Eurostat Summer Coding Lab 2020</a></li>
-
-<li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Cover</a></li>
 <li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
-<li class="chapter" data-level="3" data-path="executive-summary.html"><a href="executive-summary.html"><i class="fa fa-check"></i><b>3</b> Executive Summary</a></li>
-<li class="chapter" data-level="4" data-path="making-a-toy-world.html"><a href="making-a-toy-world.html"><i class="fa fa-check"></i><b>4</b> Making a Toy World</a></li>
-<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
-<li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
-<li class="chapter" data-level="5.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>5.2</b> Example two</a></li>
+<li class="chapter" data-level="3" data-path="executive-summary.html"><a href="executive-summary.html"><i class="fa fa-check"></i><b>3</b> Executive Summary</a><ul>
+<li class="chapter" data-level="3.1" data-path="executive-summary.html"><a href="executive-summary.html#preface"><i class="fa fa-check"></i><b>3.1</b> Preface</a></li>
+<li class="chapter" data-level="3.2" data-path="executive-summary.html"><a href="executive-summary.html#toy-world-generation"><i class="fa fa-check"></i><b>3.2</b> Toy world generation</a></li>
+<li class="chapter" data-level="3.3" data-path="executive-summary.html"><a href="executive-summary.html#generation-of-a-synthetic-radio-network"><i class="fa fa-check"></i><b>3.3</b> Generation of a synthetic Radio Network</a></li>
+<li class="chapter" data-level="3.4" data-path="executive-summary.html"><a href="executive-summary.html#device-to-cell-association"><i class="fa fa-check"></i><b>3.4</b> Device-to-cell association</a></li>
+<li class="chapter" data-level="3.5" data-path="executive-summary.html"><a href="executive-summary.html#estimation-strategies"><i class="fa fa-check"></i><b>3.5</b> Estimation strategies</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="executive-summary.html"><a href="executive-summary.html#voronoi-tesselation"><i class="fa fa-check"></i><b>3.5.1</b> Voronoi tesselation</a></li>
+<li class="chapter" data-level="3.5.2" data-path="executive-summary.html"><a href="executive-summary.html#mle-poisson"><i class="fa fa-check"></i><b>3.5.2</b> MLE Poisson</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
-<li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-
+<li class="chapter" data-level="3.6" data-path="executive-summary.html"><a href="executive-summary.html#evaluation-of-all-estimates"><i class="fa fa-check"></i><b>3.6</b> Evaluation of all estimates</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="executive-summary.html"><a href="executive-summary.html#geographical-evaluation"><i class="fa fa-check"></i><b>3.6.1</b> Geographical Evaluation</a></li>
+<li class="chapter" data-level="3.6.2" data-path="executive-summary.html"><a href="executive-summary.html#statisticaldistributional-evaluation"><i class="fa fa-check"></i><b>3.6.2</b> Statistical/Distributional Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="executive-summary.html"><a href="executive-summary.html#excurse-evaluation-looking-deeper-into-the-convergence-behavior"><i class="fa fa-check"></i><b>3.7</b> Excurse Evaluation: Looking deeper into the convergence behavior</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="executive-summary.html"><a href="executive-summary.html#discrepancy-measures-per-iteration"><i class="fa fa-check"></i><b>3.7.1</b> Discrepancy measures per iteration</a></li>
+<li class="chapter" data-level="3.7.2" data-path="executive-summary.html"><a href="executive-summary.html#convergence-behavior"><i class="fa fa-check"></i><b>3.7.2</b> Convergence behavior</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="executive-summary.html"><a href="executive-summary.html#references"><i class="fa fa-check"></i><b>3.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="making-a-toy-world.html"><a href="making-a-toy-world.html"><i class="fa fa-check"></i><b>4</b> Making a Toy World</a></li>
+<li class="chapter" data-level="5" data-path="estimation-of-mno-population.html"><a href="estimation-of-mno-population.html"><i class="fa fa-check"></i><b>5</b> Estimation of MNO Population</a><ul>
+<li class="chapter" data-level="5.1" data-path="estimation-of-mno-population.html"><a href="estimation-of-mno-population.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
+<li class="chapter" data-level="5.2" data-path="estimation-of-mno-population.html"><a href="estimation-of-mno-population.html#example-two"><i class="fa fa-check"></i><b>5.2</b> Example two</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="evaluation-of-our-estimation.html"><a href="evaluation-of-our-estimation.html"><i class="fa fa-check"></i><b>6</b> Evaluation of our Estimation</a></li>
+<li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
+<li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
       </nav>
@@ -168,7 +182,935 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="executive-summary" class="section level1">
 <h1><span class="header-section-number">3</span> Executive Summary</h1>
+<div id="preface" class="section level2">
+<h2><span class="header-section-number">3.1</span> Preface</h2>
+<p>Mobile phones have revolutionized the way we communicate with each other and how we lead our daily lives. In particular smart phones introduce new usage ideas everyday, many of them relying on simple sensors in the phone. The GPS sensor for example can locate the phone whenever it has sufficient signal and apps provide their users with detailed location histories (if the user allows for this data collection). Using this kind of data to estimate how many people are at a certain location at a given time could be very informative, however, it requires for research to have the consent of all people - leading most likely to biased estimations for different reasons. A more effective way and privacy-securing way is the usage of Mobile Network Operator (MNO) data. Here MNO provider (e.g. Telecom, Vodafone,…) gives access to the their radio cell network and the numbers of phones logged to every cell/antenna. This means a chosen data analyst would not need access to detailed and highly personal location data but only receives a dataset containig the location of cells, their estimated coverage range and the number of phones logged to the respective antenna at a certain moment. EUROSTAT and the European National Statistical Institutes are experimenting with the potential usage and especially necessary methods and workflows for implementing such a data source into the general production of Official Statistics. Knowing when and where how many people are approximately corresponds to the statistical indicator called <em>present population</em> or <em>de facto population</em>. While the resident population takes into consideration only the individuals who permanently reside in a certain geographical area, the present population “is composed by all individuals who are physically present in the geographic area of interest at a selected reference time” [1].</p>
+<p>EUROSTAT has organized in 2020 for the first time the EUROSTAT Coding Lab, offering EMOS students a chance in getting to know the production of Official Statistics on the European level with a particular focus on coding. This particular Coding Lab introduced the concepts of using MNO data for estimating present population statistics.</p>
+<p>Thanks to this project and our mentors, we - a group of 4 international students from all over Europe - had the opportunity to dig deeper into the world of spatial analysis as well as simulation studies in R. Throughout this notebook, we faced multiple challenges: Developing code in a team, applying (almost) Big Data methods and concepts such as parallizing code, developing modular and fully reproducible code, or just working together from 4 different countries in times of Covid-19.</p>
+<p>The notebook at hand relies on multiple scripts that follow a methodological chain. They are conceptualized and written in a modular fashion, making further use of the code for different parameters very easy. Many solutiones need to run for quite a while therefore certain objects are pre-built and only loaded into the notebook.</p>
+<p>Our concrete research goal is to evaluate and compare different cutting edge estimation techniques of present population with MNO data. Because MNO data, even though aggregated, is very secure, we did not work with real data. Instead we needed to completely build our own toy world, aiming at a very realistic scenario which could be the base of our evaluation. This simulation setting gives us the unique opportunity to actually test the performance of different estimators because we are in control of the true values. The notebook is structured as follows: In the next section we introduce the generation of the toy world, consisting of a geographical area with a mobile phone population and a corresponding radio cell network. We mention most important features and parameters as well as explain how mobile phones are logged to radio cells (device-to-cell association). Following this we introduce two of the currently existing estimation strategies, explain their most important characteristics and assumptions and apply them to our toy world. In the final section we undertake a detailed evaluation of each estimator, focusing on statistical as well as geographical-distributional performance measures. We end this evaluation with further exploring the convergence behavior of one of the estimators and formulating further potential research goals in this area.</p>
+</div>
+<div id="toy-world-generation" class="section level2">
+<h2><span class="header-section-number">3.2</span> Toy world generation</h2>
+<p>Our toy world bases on population census data from the German Federal Statistical Office [2] (<a href="https://www.destatis.de/EN/Home/_node.html" class="uri">https://www.destatis.de/EN/Home/_node.html</a>). This data entails continous population counts on a 100m * 100m grid. <em>For our project we reduce the population count to a third to mimic the process of receiving data from an MNO provider - therefore we assume that the population count resembles the number of mobile phones in this area.</em> For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises a high diversity of urban, suburban, and rural areas.</p>
+<p><em>Terminology used in this project:</em>
+Due to various definitions out there, it is imperial to define the different terminologies used in this project before going further to reduce unnecessary confusion.
+- When we talk about <em>tiles</em>, we mean any square on the regular 100 * 100 m2 grid.
+- An <em>antenna</em> is a device facilitating between radio transmission and reception. Specifically in our case, an antenna transmits and receives cell phone signals. This is also known as a <em>cell</em>.
+- A (radio) <em>tower</em> or commonly referred to as a <em>cell tower, cellular site, or cellular base station</em> is a tower equipped with antennas.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="executive-summary.html#cb1-1"></a><span class="co"># change accordingly</span></span>
+<span id="cb1-2"><a href="executive-summary.html#cb1-2"></a>knitr<span class="op">::</span>opts_knit<span class="op">$</span><span class="kw">set</span>(<span class="dt">root.dir =</span> <span class="kw">normalizePath</span>(<span class="st">&quot;/Users/tonyhung/OneDrive - Vysoká škola ekonomická v Praze/YAY&quot;</span>)) </span>
+<span id="cb1-3"><a href="executive-summary.html#cb1-3"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">fig.width =</span> <span class="dv">9</span>)</span>
+<span id="cb1-4"><a href="executive-summary.html#cb1-4"></a>knitr<span class="op">::</span>opts_knit<span class="op">$</span><span class="kw">set</span>(<span class="dt">eval.after =</span> <span class="st">&quot;fig.cap&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="executive-summary.html#cb2-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="executive-summary.html#cb2-2"></a><span class="kw">library</span>(sf)</span>
+<span id="cb2-3"><a href="executive-summary.html#cb2-3"></a><span class="kw">library</span>(raster)</span>
+<span id="cb2-4"><a href="executive-summary.html#cb2-4"></a><span class="kw">library</span>(Matrix)</span>
+<span id="cb2-5"><a href="executive-summary.html#cb2-5"></a><span class="kw">library</span>(knitr)</span>
+<span id="cb2-6"><a href="executive-summary.html#cb2-6"></a><span class="kw">library</span>(kableExtra)</span>
+<span id="cb2-7"><a href="executive-summary.html#cb2-7"></a><span class="kw">library</span>(ggthemes)</span>
+<span id="cb2-8"><a href="executive-summary.html#cb2-8"></a><span class="kw">library</span>(cowplot)</span>
+<span id="cb2-9"><a href="executive-summary.html#cb2-9"></a><span class="kw">library</span>(transformr)</span>
+<span id="cb2-10"><a href="executive-summary.html#cb2-10"></a><span class="kw">library</span>(gganimate)</span>
+<span id="cb2-11"><a href="executive-summary.html#cb2-11"></a><span class="kw">set.seed</span>(<span class="dv">762</span>)</span>
+<span id="cb2-12"><a href="executive-summary.html#cb2-12"></a></span>
+<span id="cb2-13"><a href="executive-summary.html#cb2-13"></a>census.de<span class="fl">.100</span>m.tile &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/census.tile.final.rds&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="executive-summary.html#cb3-1"></a><span class="co"># Bounding box of focus area</span></span>
+<span id="cb3-2"><a href="executive-summary.html#cb3-2"></a>bb.focus.dat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xmin =</span> <span class="dv">4400000</span>, <span class="dt">xmax =</span> <span class="dv">4500000</span>,</span>
+<span id="cb3-3"><a href="executive-summary.html#cb3-3"></a>                           <span class="dt">ymin =</span> <span class="dv">2700000</span>, <span class="dt">ymax =</span> <span class="dv">2900000</span>)</span>
+<span id="cb3-4"><a href="executive-summary.html#cb3-4"></a>bb.focus.vec &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">xmin =</span> <span class="dv">4400000</span>, <span class="dt">xmax =</span> <span class="dv">4500000</span>,</span>
+<span id="cb3-5"><a href="executive-summary.html#cb3-5"></a>                  <span class="dt">ymin =</span> <span class="dv">2700000</span>, <span class="dt">ymax =</span> <span class="dv">2900000</span>)</span>
+<span id="cb3-6"><a href="executive-summary.html#cb3-6"></a><span class="co"># Download data from : https://gadm.org/download_country_v3.html --&gt; R(sf) level 1</span></span>
+<span id="cb3-7"><a href="executive-summary.html#cb3-7"></a>germany.raw &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/gadm36_DEU_1_sf.rds&quot;</span>) </span>
+<span id="cb3-8"><a href="executive-summary.html#cb3-8"></a>germany &lt;-<span class="st"> </span>germany.raw <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb3-9"><a href="executive-summary.html#cb3-9"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="dv">3035</span>)</span>
+<span id="cb3-10"><a href="executive-summary.html#cb3-10"></a>focus.area.plot &lt;-<span class="st"> </span>germany <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb3-11"><a href="executive-summary.html#cb3-11"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-12"><a href="executive-summary.html#cb3-12"></a><span class="st">  </span><span class="kw">geom_sf</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-13"><a href="executive-summary.html#cb3-13"></a><span class="st">  </span><span class="kw">geom_rect</span>(<span class="dt">data =</span> bb.focus.dat, <span class="kw">aes</span>(<span class="dt">ymin =</span> ymin, <span class="dt">ymax =</span> ymax,  </span>
+<span id="cb3-14"><a href="executive-summary.html#cb3-14"></a>                                      <span class="dt">xmin =</span> xmin, <span class="dt">xmax =</span> xmax,  </span>
+<span id="cb3-15"><a href="executive-summary.html#cb3-15"></a>                                     <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>),  </span>
+<span id="cb3-16"><a href="executive-summary.html#cb3-16"></a>            <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-17"><a href="executive-summary.html#cb3-17"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-18"><a href="executive-summary.html#cb3-18"></a><span class="st">  </span><span class="kw">scale_color_identity</span>(<span class="dt">name =</span> <span class="st">&quot;&quot;</span>, </span>
+<span id="cb3-19"><a href="executive-summary.html#cb3-19"></a>                       <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Focus area&quot;</span>), </span>
+<span id="cb3-20"><a href="executive-summary.html#cb3-20"></a>                       <span class="dt">guide =</span> <span class="st">&quot;legend&quot;</span>) <span class="op">+</span></span>
+<span id="cb3-21"><a href="executive-summary.html#cb3-21"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>,</span>
+<span id="cb3-22"><a href="executive-summary.html#cb3-22"></a>       <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb3-23"><a href="executive-summary.html#cb3-23"></a> </span>
+<span id="cb3-24"><a href="executive-summary.html#cb3-24"></a><span class="kw">plot_grid</span>(focus.area.plot, </span>
+<span id="cb3-25"><a href="executive-summary.html#cb3-25"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig.1: Focusing on a part of South Bavaria&quot;</span>,</span>
+<span id="cb3-26"><a href="executive-summary.html#cb3-26"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">13</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/focus%20area-1.png" alt="We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas" width="672" />
+<p class="caption">
+(#fig:focus area)We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas
+</p>
+</div>
+<p>As mentioned above this area is very heterogeneous in urban-rural intensity. Knowing the location of urban centers is very important for the corresponding radio cell network as there are differences in cell coverage between these different area kinds. We are aiming at developing a 3-category classification for each tile: Rural, Suburban and Urban. Based on the census data on the tile level we cannot locate urban centers just yet. Classifying tiles on such a low spatial resolution into one of these categories independent from each other (i.e. based on their population numbers) would not lead to the true location of urban centers. Therefore we apply a spatial clustering algorithm to account for the spatial dependence. The plots below present our classification results:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="executive-summary.html#cb4-1"></a><span class="co"># Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation</span></span>
+<span id="cb4-2"><a href="executive-summary.html#cb4-2"></a><span class="co"># ECCDF of population distribution </span></span>
+<span id="cb4-3"><a href="executive-summary.html#cb4-3"></a>ECCDF.pop.data &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-4"><a href="executive-summary.html#cb4-4"></a><span class="st">  </span><span class="co"># sample_n(1000) %&gt;%</span></span>
+<span id="cb4-5"><a href="executive-summary.html#cb4-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop.plot =</span> pop <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-6"><a href="executive-summary.html#cb4-6"></a><span class="st">  </span><span class="kw">arrange</span>(pop.plot) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-7"><a href="executive-summary.html#cb4-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prob =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-8"><a href="executive-summary.html#cb4-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob =</span> <span class="kw">cumsum</span>(prob)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-9"><a href="executive-summary.html#cb4-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10.cum.prob.comp =</span> <span class="kw">log10</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>cum.prob)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-10"><a href="executive-summary.html#cb4-10"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10.pop =</span> <span class="kw">log10</span>(pop.plot)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-11"><a href="executive-summary.html#cb4-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob.comp =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>cum.prob) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-12"><a href="executive-summary.html#cb4-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop.area.kind =</span> <span class="kw">case_when</span>(pop <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> &quot;Uninhabitated&quot;</span>, </span>
+<span id="cb4-13"><a href="executive-summary.html#cb4-13"></a>                                   <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>pop.area.kind))</span></code></pre></div>
+<pre><code>## Warning: Problem with `mutate()` input `log10.cum.prob.comp`.
+## ℹ NaNs produced
+## ℹ Input `log10.cum.prob.comp` is `log10(1 - cum.prob)`.</code></pre>
+<pre><code>## Warning in mask$eval_all_mutate(dots[[i]]): NaNs produced</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="executive-summary.html#cb7-1"></a>prop.class &lt;-<span class="st"> </span><span class="kw">data.frame</span>( </span>
+<span id="cb7-2"><a href="executive-summary.html#cb7-2"></a>  <span class="dt">class =</span> <span class="kw">c</span>(<span class="st">&quot;Rural&quot;</span>,<span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Uninhabitated&quot;</span>,<span class="st">&quot;Urban&quot;</span>), </span>
+<span id="cb7-3"><a href="executive-summary.html#cb7-3"></a>  <span class="dt">n =</span> <span class="kw">summary</span>(<span class="kw">as.factor</span>(ECCDF.pop.data<span class="op">$</span>pop.area.kind)), </span>
+<span id="cb7-4"><a href="executive-summary.html#cb7-4"></a>  <span class="dt">prop =</span> <span class="kw">round</span>(<span class="kw">summary</span>(<span class="kw">as.factor</span>(ECCDF.pop.data<span class="op">$</span>pop.area.kind)) <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(census.de<span class="fl">.100</span>m.tile<span class="op">$</span>internal.id), <span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>)  <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-5"><a href="executive-summary.html#cb7-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">class =</span> <span class="kw">factor</span>(class)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-6"><a href="executive-summary.html#cb7-6"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(class)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-7"><a href="executive-summary.html#cb7-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lab.ypos =</span> <span class="kw">cumsum</span>(prop) <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>prop) </span>
+<span id="cb7-8"><a href="executive-summary.html#cb7-8"></a> </span>
+<span id="cb7-9"><a href="executive-summary.html#cb7-9"></a>tile.prop.plot &lt;-<span class="st"> </span>prop.class <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-10"><a href="executive-summary.html#cb7-10"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> prop, <span class="dt">fill =</span> class)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-11"><a href="executive-summary.html#cb7-11"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">width =</span> <span class="dv">1</span>, <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-12"><a href="executive-summary.html#cb7-12"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">+</span></span>
+<span id="cb7-13"><a href="executive-summary.html#cb7-13"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">y =</span> lab.ypos, <span class="dt">label =</span> <span class="kw">paste0</span>(prop, <span class="st">&quot;%&quot;</span>)), <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
+<span id="cb7-14"><a href="executive-summary.html#cb7-14"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Class&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Number of tiles&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb7-15"><a href="executive-summary.html#cb7-15"></a>    <span class="dt">subtitle =</span> <span class="st">&quot;Fig. 2a: Tile proportion&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-16"><a href="executive-summary.html#cb7-16"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-17"><a href="executive-summary.html#cb7-17"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb7-18"><a href="executive-summary.html#cb7-18"></a> </span>
+<span id="cb7-19"><a href="executive-summary.html#cb7-19"></a>cluster.plot &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span></span>
+<span id="cb7-20"><a href="executive-summary.html#cb7-20"></a><span class="st">  </span><span class="kw">filter</span>(pop.area.kind <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-21"><a href="executive-summary.html#cb7-21"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st">  </span></span>
+<span id="cb7-22"><a href="executive-summary.html#cb7-22"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> <span class="kw">factor</span>(pop.area.kind)), <span class="dt">show.legend =</span> F) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-23"><a href="executive-summary.html#cb7-23"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Clustering Results&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-24"><a href="executive-summary.html#cb7-24"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.margin =</span> <span class="kw">unit</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="st">&quot;mm&quot;</span>)) <span class="op">+</span><span class="st">  </span></span>
+<span id="cb7-25"><a href="executive-summary.html#cb7-25"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;#117733&quot;</span>, <span class="st">&quot;#CC6677&quot;</span>)) <span class="op">+</span></span>
+<span id="cb7-26"><a href="executive-summary.html#cb7-26"></a><span class="st">   </span><span class="kw">labs</span>(<span class="dt">subtitle =</span> <span class="st">&quot;Fig. 2b: Clustering results&quot;</span>) <span class="op">+</span></span>
+<span id="cb7-27"><a href="executive-summary.html#cb7-27"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-28"><a href="executive-summary.html#cb7-28"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb7-29"><a href="executive-summary.html#cb7-29"></a></span>
+<span id="cb7-30"><a href="executive-summary.html#cb7-30"></a><span class="kw">plot_grid</span>(cluster.plot, tile.prop.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig.2 : Population Classification&quot;</span>,  </span>
+<span id="cb7-31"><a href="executive-summary.html#cb7-31"></a>            <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>, <span class="dt">rel_widths =</span> <span class="kw">c</span>(<span class="fl">0.8</span>, <span class="dv">1</span>)) </span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/pop%20distribution%201-1.png" alt="Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering." width="864" />
+<p class="caption">
+(#fig:pop distribution 1)Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering.
+</p>
+</div>
+<p>Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working at this low spatial resolution, it is discouraged to classify tiles independently based on their respective population value - one needs to take spatial dependence into consideration in order to identify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 15 people per tile. Tiles below 15 are either classified as Uninhabited or Rural, from the start (uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 15 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 15 people.</p>
+<p>The stacked bar plot shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, 1.49% of the tiles are urban areas. 71.35% of the tiles are uninhabited areas. 2.29% of the tiles are suburban areas, and 24.87% of the tiles are rural areas.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="executive-summary.html#cb8-1"></a>pop.dist.map.plot &lt;-<span class="st"> </span>ECCDF.pop.data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="executive-summary.html#cb8-2"></a><span class="st">  </span><span class="co"># sample_n(1000) %&gt;%</span></span>
+<span id="cb8-3"><a href="executive-summary.html#cb8-3"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-4"><a href="executive-summary.html#cb8-4"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">color =</span> pop.area.kind), <span class="dt">show.legend =</span> F) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-5"><a href="executive-summary.html#cb8-5"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-6"><a href="executive-summary.html#cb8-6"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot; Fig. 3a : Geographic distribution&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-7"><a href="executive-summary.html#cb8-7"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.margin =</span> <span class="kw">unit</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="st">&quot;mm&quot;</span>), <span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>)) </span>
+<span id="cb8-8"><a href="executive-summary.html#cb8-8"></a> </span>
+<span id="cb8-9"><a href="executive-summary.html#cb8-9"></a>ECCDF.pop.plot &lt;-<span class="st"> </span>ECCDF.pop.data <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb8-10"><a href="executive-summary.html#cb8-10"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-11"><a href="executive-summary.html#cb8-11"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> log10.pop, <span class="dt">y =</span> log10.cum.prob.comp, </span>
+<span id="cb8-12"><a href="executive-summary.html#cb8-12"></a>                 <span class="dt">color =</span> pop.area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-13"><a href="executive-summary.html#cb8-13"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">-0.3010300</span>, <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-14"><a href="executive-summary.html#cb8-14"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">-1</span>, <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-15"><a href="executive-summary.html#cb8-15"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> <span class="fl">1.5</span>, <span class="dt">y =</span> <span class="fl">-0.2</span>, <span class="dt">label =</span> <span class="st">&quot;50% of the data&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-16"><a href="executive-summary.html#cb8-16"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> <span class="fl">1.5</span>, <span class="dt">y =</span> <span class="fl">-0.9</span>, <span class="dt">label =</span> <span class="st">&quot;90% of the data&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-17"><a href="executive-summary.html#cb8-17"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-18"><a href="executive-summary.html#cb8-18"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Fig. 3b: Empirical cumulative complementary</span><span class="ch">\n</span><span class="st">distribution function&quot;</span>) <span class="op">+</span><span class="st">  </span></span>
+<span id="cb8-19"><a href="executive-summary.html#cb8-19"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;log10(Prob(Y &gt; x))&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;log10(Mobile phones)&quot;</span>,  </span>
+<span id="cb8-20"><a href="executive-summary.html#cb8-20"></a>        <span class="dt">colour =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-21"><a href="executive-summary.html#cb8-21"></a><span class="st">  </span><span class="kw">ylim</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb8-22"><a href="executive-summary.html#cb8-22"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) </span>
+<span id="cb8-23"><a href="executive-summary.html#cb8-23"></a> </span>
+<span id="cb8-24"><a href="executive-summary.html#cb8-24"></a>ECDF.pop.plot &lt;-<span class="st"> </span>ECCDF.pop.data <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb8-25"><a href="executive-summary.html#cb8-25"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-26"><a href="executive-summary.html#cb8-26"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pop.plot, <span class="dt">y =</span> cum.prob.comp, <span class="dt">color =</span> pop.area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-27"><a href="executive-summary.html#cb8-27"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="dt">guide =</span> <span class="ot">FALSE</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb8-28"><a href="executive-summary.html#cb8-28"></a><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">30</span>) <span class="op">+</span></span>
+<span id="cb8-29"><a href="executive-summary.html#cb8-29"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></span>
+<span id="cb8-30"><a href="executive-summary.html#cb8-30"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-31"><a href="executive-summary.html#cb8-31"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-32"><a href="executive-summary.html#cb8-32"></a>        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb8-33"><a href="executive-summary.html#cb8-33"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>())</span>
+<span id="cb8-34"><a href="executive-summary.html#cb8-34"></a></span>
+<span id="cb8-35"><a href="executive-summary.html#cb8-35"></a>pop.dist.ecdf.insert &lt;-<span class="st"> </span>ECCDF.pop.plot <span class="op">+</span></span>
+<span id="cb8-36"><a href="executive-summary.html#cb8-36"></a><span class="st">  </span><span class="kw">annotation_custom</span>(<span class="kw">ggplotGrob</span>(ECDF.pop.plot), </span>
+<span id="cb8-37"><a href="executive-summary.html#cb8-37"></a>                    <span class="dt">xmin =</span> <span class="dv">0</span>, <span class="dt">xmax =</span> <span class="fl">1.5</span>, </span>
+<span id="cb8-38"><a href="executive-summary.html#cb8-38"></a>                    <span class="dt">ymin =</span> <span class="dv">-7</span>, <span class="dt">ymax =</span> <span class="dv">-3</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 8923 rows containing missing values (geom_point).</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="executive-summary.html#cb10-1"></a><span class="kw">plot_grid</span>(pop.dist.map.plot, pop.dist.ecdf.insert, <span class="dt">labels =</span> <span class="st">&quot;Fig. 3: Mobile phone density per tile&quot;</span>,  </span>
+<span id="cb10-2"><a href="executive-summary.html#cb10-2"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>, <span class="dt">rel_widths =</span> <span class="kw">c</span>(<span class="fl">0.8</span>, <span class="dv">1</span>))</span></code></pre></div>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<div class="figure">
+<img src="bookdown_files/figure-html/pop%20distribution%202-1.png" alt="The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." width="864" />
+<p class="caption">
+(#fig:pop distribution 2)The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF.
+</p>
+</div>
+<p>Figure 3 shows the mobile phone density per tile in the focus area. In particular, we have 4 different colors representing the clusters: Uninhabited, Rural, Suburban and Urban.</p>
+<p>However, to have a deeper look of the mobile phone density per tile, we choose to represent the data with an empirical cumulative complementary distribution function (ECCDF) (using a log base 10 transformation).</p>
+<p>The ECCDF is a step function with jumps <code>i/n</code> at observation values, where <code>i</code> is the number of tied observations at that value. Moreover, missing values are ignored and the objective “complementary” means that we need to subtract 1 - the cumulative probability. It is commonly used with variables that have a highly skewed distribution. We can see that this is the case - the population on this low spatial resolution is heavily right skewed.</p>
+<p>As the figure suggests, 50% of the data are represented by uninhabited tiles with no phones; furthermore, 90% of the tiles contain less than half of the mobile phones in our focus area. One can also see the tiles’ classification based on the clustering results. Some tiles classified as Rural have higher values for their mobile phone population - this is because they are not considered as an Urban or Suburban cluster, as mentioned above. 10% left are tiles both urban and rural containing 0.5 and above mobile phones.</p>
+</div>
+<div id="generation-of-a-synthetic-radio-network" class="section level2">
+<h2><span class="header-section-number">3.3</span> Generation of a synthetic Radio Network</h2>
+<p>We generate a radio network, which is composed of three layers. The layers follow the pop.area.kind variable - layer 1 (Rural) spans over the rural, suburban and urban tiles, layer 2 (Suburban) spans over the suburban and urban tiles and layer 3 (Urban) is spanned over the urban tiles.</p>
+<p><strong>Important features and parameters of the generated radio network are:</strong></p>
+<ul>
+<li><p>The layers follow a hexagon shape with cell towers located in the respective centroid of each hexagon</p></li>
+<li><p>Towers vary in distance to each other of the same layer, i.e. how far/close are towers of the same layer located to each other: layer 1 = 27,000m; layer 2 = 7000m; layer 3 = 900m (-&gt; the more urbanized, the closer the towers are too each other -&gt; denser coverage). Furthermore, hexagon independent rotation in terms of the first layer is executed: layer 2 = 35 degrees; layer 3 = 70 degrees</p></li>
+<li><p>Each cell tower location is jittered in order to break the symmetry. The jitter amount depends on the layer: layer 1 = 5000m, layer 2 = 1000m, layer 3 = 400m.</p></li>
+<li><p>Each tower contains three antennas pointing into 120 degree differing directions.</p></li>
+<li><p>The layer determines the coverage diameter of an antenna: layer 1 = 15,000m; layer 2 = 2500m; layer 3 = 500m</p></li>
+<li><p>Each tile of the focus area is sufficiently covered by at least one antenna and the antennas’ coverage areas are allowed to overlap.</p></li>
+<li><p>Parameters concerning the device to cell association are specified in the next section</p></li>
+</ul>
+<p>The link to the source code for the layers.1 object as well as the coverage.areas.1 object is <a href="https://github.com/R-ramljak/MNO_GM/blob/master/2_Radio%20cell%20generation.R">here</a>.</p>
+<p>The link to the source code for the layers object as well as the coverage.areas object is [here] (<a href="https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R" class="uri">https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R</a>).</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="executive-summary.html#cb12-1"></a>layers &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/radio cell layers.rds&quot;</span>) </span>
+<span id="cb12-2"><a href="executive-summary.html#cb12-2"></a>coverage.areas &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/coverage.areas.rds&quot;</span>) </span>
+<span id="cb12-3"><a href="executive-summary.html#cb12-3"></a> </span>
+<span id="cb12-4"><a href="executive-summary.html#cb12-4"></a>coverage.layer1 &lt;-<span class="st"> </span>coverage.areas <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-5"><a href="executive-summary.html#cb12-5"></a><span class="st">  </span><span class="kw">filter</span>(area.kind <span class="op">==</span><span class="st"> &quot;Rural&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-6"><a href="executive-summary.html#cb12-6"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-7"><a href="executive-summary.html#cb12-7"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>antenna.centroid) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-8"><a href="executive-summary.html#cb12-8"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;X.tow&quot;</span>, <span class="st">&quot;Y.tow&quot;</span>), <span class="dt">crs =</span> <span class="dv">3035</span>) </span>
+<span id="cb12-9"><a href="executive-summary.html#cb12-9"></a> </span>
+<span id="cb12-10"><a href="executive-summary.html#cb12-10"></a>layers.plot &lt;-<span class="st"> </span>layers[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb12-11"><a href="executive-summary.html#cb12-11"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">crs =</span> <span class="dv">3035</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-12"><a href="executive-summary.html#cb12-12"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-13"><a href="executive-summary.html#cb12-13"></a><span class="st">    </span><span class="co"># geom_rect(data = bb.focus.dat, aes(ymin = ymin, ymax = ymax,  </span></span>
+<span id="cb12-14"><a href="executive-summary.html#cb12-14"></a><span class="st">    </span><span class="co">#                                   xmin = xmin, xmax = xmax),  </span></span>
+<span id="cb12-15"><a href="executive-summary.html#cb12-15"></a><span class="st">    </span><span class="co">#         color = &quot;black&quot;, size = 0.3, alpha = 0.5, fill = alpha(&quot;grey&quot;, 0)) + </span></span>
+<span id="cb12-16"><a href="executive-summary.html#cb12-16"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-17"><a href="executive-summary.html#cb12-17"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> coverage.layer1, <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;#4273C5&quot;</span>), <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-18"><a href="executive-summary.html#cb12-18"></a><span class="st">  </span><span class="kw">scale_color_identity</span>(<span class="dt">name =</span> <span class="st">&quot;&quot;</span>, </span>
+<span id="cb12-19"><a href="executive-summary.html#cb12-19"></a>                       <span class="co"># breaks = c(&quot;Focus area&quot;), </span></span>
+<span id="cb12-20"><a href="executive-summary.html#cb12-20"></a>                       <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Jittered tower location&quot;</span>), </span>
+<span id="cb12-21"><a href="executive-summary.html#cb12-21"></a>                       <span class="dt">guide =</span> <span class="st">&quot;legend&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-22"><a href="executive-summary.html#cb12-22"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>,</span>
+<span id="cb12-23"><a href="executive-summary.html#cb12-23"></a>       <span class="dt">title =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb12-24"><a href="executive-summary.html#cb12-24"></a>    <span class="dt">subtitle =</span> <span class="st">&quot;Towers are located in the centroid of a hexagon.&quot;</span>) <span class="op">+</span></span>
+<span id="cb12-25"><a href="executive-summary.html#cb12-25"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">10</span>, <span class="dt">face=</span><span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb12-26"><a href="executive-summary.html#cb12-26"></a>  <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">9</span>,<span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb12-27"><a href="executive-summary.html#cb12-27"></a>   </span>
+<span id="cb12-28"><a href="executive-summary.html#cb12-28"></a><span class="kw">plot_grid</span>(layers.plot,</span>
+<span id="cb12-29"><a href="executive-summary.html#cb12-29"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 4:Radio network - Example Layer 1 (Rural)&quot;</span>,</span>
+<span id="cb12-30"><a href="executive-summary.html#cb12-30"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/network%20layers-1.png" alt="The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented." width="672" />
+<p class="caption">
+(#fig:network layers)The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented.
+</p>
+</div>
+<p>We use a hexagonal structure to place towers across our focus area. This is a quite realistic setup for cell towers. Each hexagon corresponds to one tower which is originally placed in the centroid of the respective hexagon. In order to exclude symmetrical structure, we implement some randomness in the exact location of the cell towers. Figure 3 exemplifies the effect of the jitter parameter in the 1st layer - the actual location deviates slightly from the centroid in order to break the symmetry of the underlying hexagonal structure. This is done for every layer.</p>
+<p>The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="executive-summary.html#cb13-1"></a>knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/antenna%20animation.gif&quot;</span>)</span></code></pre></div>
+<p><img src="https://github.com/R-ramljak/MNO_Eurostat/raw/master/antenna%20animation.gif" /><!-- --></p>
+<p>Basically, a tower is generated at its specified location, then three antennas are created. For the operationalized data structure, the antenna location is not really relevant as it corresponds to the respective tower location. What is more important are the antennas’ <em>coverage area centroids</em> because they describe the middle point of the then generated circular coverage area. The specific radius of any generic coverage area is layer specific and listed above. As indicated in the animation, an antenna specific coverage area is setup with a variable <em>coverage intensity profile</em>. Basically, cell phones that are closer to the coverage area centroid of any antenna, have a higher coverage probability, which will be later introduced as the <em>signal strength</em> parameter.</p>
+<p>The following table presents the number of towers and the number of antennas of each layer. The number of antennas is not always a perfect factor of 3 as the coverage areas are cropped according to the focus area. This means if the complete coverage area of an antenna lies outside of the focus area it is discarded.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="executive-summary.html#cb14-1"></a>tile.count &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb14-2"><a href="executive-summary.html#cb14-2"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-3"><a href="executive-summary.html#cb14-3"></a><span class="st">  </span><span class="kw">group_by</span>(pop.area.kind) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb14-4"><a href="executive-summary.html#cb14-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">area.in.sq.km =</span> <span class="kw">n</span>() <span class="op">/</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-5"><a href="executive-summary.html#cb14-5"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(pop.area.kind)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-6"><a href="executive-summary.html#cb14-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">area.in.sq.km =</span> <span class="kw">case_when</span>(pop.area.kind <span class="op">==</span><span class="st"> &quot;Rural&quot;</span> <span class="op">~</span><span class="st"> </span><span class="kw">cumsum</span>(area.in.sq.km),</span>
+<span id="cb14-7"><a href="executive-summary.html#cb14-7"></a>                                   pop.area.kind <span class="op">==</span><span class="st"> &quot;Suburban&quot;</span> <span class="op">~</span><span class="st"> </span><span class="kw">cumsum</span>(area.in.sq.km),</span>
+<span id="cb14-8"><a href="executive-summary.html#cb14-8"></a>                                   pop.area.kind <span class="op">==</span><span class="st"> &quot;Urban&quot;</span> <span class="op">~</span><span class="st"> </span><span class="kw">cumsum</span>(area.in.sq.km))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-9"><a href="executive-summary.html#cb14-9"></a><span class="st">  </span><span class="kw">arrange</span>(pop.area.kind)</span></code></pre></div>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="executive-summary.html#cb16-1"></a>coverage.areas <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-2"><a href="executive-summary.html#cb16-2"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-3"><a href="executive-summary.html#cb16-3"></a><span class="st">  </span><span class="kw">group_by</span>(area.kind, tower.ID) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-4"><a href="executive-summary.html#cb16-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n.antenna =</span> <span class="kw">n</span>(), <span class="dt">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-5"><a href="executive-summary.html#cb16-5"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-6"><a href="executive-summary.html#cb16-6"></a><span class="st">  </span><span class="kw">group_by</span>(area.kind) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-7"><a href="executive-summary.html#cb16-7"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n.tower =</span> <span class="kw">n</span>(), </span>
+<span id="cb16-8"><a href="executive-summary.html#cb16-8"></a>            <span class="dt">n.antenna =</span> <span class="kw">sum</span>(n.antenna), <span class="dt">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-9"><a href="executive-summary.html#cb16-9"></a><span class="st">  </span><span class="kw">left_join</span>(tile.count, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;area.kind&quot;</span> =<span class="st"> &quot;pop.area.kind&quot;</span>)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-10"><a href="executive-summary.html#cb16-10"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="dt">layer =</span> area.kind, n.tower, n.antenna, area.in.sq.km) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-11"><a href="executive-summary.html#cb16-11"></a><span class="st">  </span><span class="kw">kbl</span>(<span class="dt">caption =</span> <span class="st">&quot;Descriptive statistics per coverage layer&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb16-12"><a href="executive-summary.html#cb16-12"></a><span class="st">  </span><span class="kw">kable_minimal</span>() <span class="op">%&gt;%</span></span>
+<span id="cb16-13"><a href="executive-summary.html#cb16-13"></a><span class="st">  </span><span class="kw">footnote</span>(<span class="dt">general =</span> <span class="st">&quot;`area.in.sq.km` reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.&quot;</span>)</span></code></pre></div>
+<table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'>
+<caption>
+(#tab:coverage areas 1)Descriptive statistics per coverage layer
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+layer
+</th>
+<th style="text-align:right;">
+n.tower
+</th>
+<th style="text-align:right;">
+n.antenna
+</th>
+<th style="text-align:right;">
+area.in.sq.km
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rural
+</td>
+<td style="text-align:right;">
+119
+</td>
+<td style="text-align:right;">
+334
+</td>
+<td style="text-align:right;">
+18283.14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Suburban
+</td>
+<td style="text-align:right;">
+220
+</td>
+<td style="text-align:right;">
+659
+</td>
+<td style="text-align:right;">
+1712.80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Urban
+</td>
+<td style="text-align:right;">
+950
+</td>
+<td style="text-align:right;">
+2848
+</td>
+<td style="text-align:right;">
+451.94
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> <code>area.in.sq.km</code> reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.
+</td>
+</tr>
+</tfoot>
+</table>
+<p>As described in the parameter list above, rural areas are covered only by layer 1, suburban areas are covered by layer 1 and 2 and the urbanized areas are covered by all three layers. The average distance between multiple towers of the same layer decrease in layer 2 and layer 3 compared to layer 1. This leads to denser networks within these layers represented by the higher numbers of towers and therefore higher numbers of antennas in layer 2 and 3, given their area. The reason for this is that any generic antenna can only offer signal service to a limited amount of number of mobile phones. To cover all cell phones in more urbanized areas a denser radio cell network is needed in these areas.</p>
+<p>The following figures present the actual coverage of each layer for the focus area.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="executive-summary.html#cb17-1"></a>coverage.area.plot &lt;-<span class="st"> </span>coverage.areas <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb17-2"><a href="executive-summary.html#cb17-2"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-3"><a href="executive-summary.html#cb17-3"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> area.kind), <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-4"><a href="executive-summary.html#cb17-4"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="dt">cols =</span> <span class="kw">vars</span>(area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-5"><a href="executive-summary.html#cb17-5"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-6"><a href="executive-summary.html#cb17-6"></a><span class="st">    </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="st">&quot;Layer&quot;</span>) <span class="op">+</span></span>
+<span id="cb17-7"><a href="executive-summary.html#cb17-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb17-8"><a href="executive-summary.html#cb17-8"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>),<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb17-9"><a href="executive-summary.html#cb17-9"></a>  <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb17-10"><a href="executive-summary.html#cb17-10"></a></span>
+<span id="cb17-11"><a href="executive-summary.html#cb17-11"></a><span class="kw">plot_grid</span>(coverage.area.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 5: Coverage per layer&quot;</span>,</span>
+<span id="cb17-12"><a href="executive-summary.html#cb17-12"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>) </span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/coverage%20areas%202-1.png" alt="The circles represent the coverage area of each antenna per layer. The signal density increases with increasing population density." width="864" />
+<p class="caption">
+(#fig:coverage areas 2)The circles represent the coverage area of each antenna per layer. The signal density increases with increasing population density.
+</p>
+</div>
+<p>The interpretations of the table above correspond to the level of coverage of each layer. It should be noticed that the antennas’ coverage areas are allowed to overlap - with antennas of the same tower, as well as across towers of the same or another layer.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="executive-summary.html#cb18-1"></a><span class="co"># Implement shape of focus area</span></span>
+<span id="cb18-2"><a href="executive-summary.html#cb18-2"></a>coverage.area.full.plot &lt;-<span class="st"> </span>coverage.areas <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb18-3"><a href="executive-summary.html#cb18-3"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb18-4"><a href="executive-summary.html#cb18-4"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> area.kind), <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb18-5"><a href="executive-summary.html#cb18-5"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Full coverage&quot;</span>) <span class="op">+</span></span>
+<span id="cb18-6"><a href="executive-summary.html#cb18-6"></a><span class="st">    </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="st">&quot;Layer&quot;</span>) <span class="op">+</span></span>
+<span id="cb18-7"><a href="executive-summary.html#cb18-7"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>),</span>
+<span id="cb18-8"><a href="executive-summary.html#cb18-8"></a>        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb18-9"><a href="executive-summary.html#cb18-9"></a>  <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb18-10"><a href="executive-summary.html#cb18-10"></a></span>
+<span id="cb18-11"><a href="executive-summary.html#cb18-11"></a><span class="kw">plot_grid</span>(pop.dist.map.plot, coverage.area.full.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 6: Full coverage corresponding to the density&quot;</span>, </span>
+<span id="cb18-12"><a href="executive-summary.html#cb18-12"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/coverage%20areas%203-1.png" alt="The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density." width="864" />
+<p class="caption">
+(#fig:coverage areas 3)The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density.
+</p>
+</div>
+<p>Figure 6 presents the full network structure. By comparing the network structure to the tile density one can see that full, partially overlapping coverage is granted for all areas and that the network layering structure follows suit with the true geographical population density.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="executive-summary.html#cb19-1"></a>tiles.cat &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/coverage intensity.rds&quot;</span>)</span>
+<span id="cb19-2"><a href="executive-summary.html#cb19-2"></a>coverage.intensity &lt;-<span class="st"> </span>tiles.cat <span class="op">%&gt;%</span></span>
+<span id="cb19-3"><a href="executive-summary.html#cb19-3"></a><span class="st">  </span><span class="co"># left_join(census.de.100m.tile, by = &quot;internal.id&quot;) %&gt;% </span></span>
+<span id="cb19-4"><a href="executive-summary.html#cb19-4"></a><span class="st">  </span><span class="co"># dplyr::select(internal.id, count, pop.area.kind) %&gt;% </span></span>
+<span id="cb19-5"><a href="executive-summary.html#cb19-5"></a><span class="st">  </span><span class="kw">arrange</span>(count) <span class="op">%&gt;%</span></span>
+<span id="cb19-6"><a href="executive-summary.html#cb19-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prob =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb19-7"><a href="executive-summary.html#cb19-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob =</span> <span class="kw">cumsum</span>(prob))</span>
+<span id="cb19-8"><a href="executive-summary.html#cb19-8"></a></span>
+<span id="cb19-9"><a href="executive-summary.html#cb19-9"></a>coverage.intensity.plot &lt;-<span class="st"> </span>coverage.intensity <span class="op">%&gt;%</span></span>
+<span id="cb19-10"><a href="executive-summary.html#cb19-10"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb19-11"><a href="executive-summary.html#cb19-11"></a><span class="st">  </span><span class="kw">stat_count</span>(<span class="kw">aes</span>(count), <span class="dt">fill =</span> <span class="st">&quot;#4477A9&quot;</span>) <span class="op">+</span></span>
+<span id="cb19-12"><a href="executive-summary.html#cb19-12"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(coverage.intensity<span class="op">$</span>count), <span class="dt">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#117733&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">+</span></span>
+<span id="cb19-13"><a href="executive-summary.html#cb19-13"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">median</span>(coverage.intensity<span class="op">$</span>count), <span class="dt">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#CC6677&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">+</span></span>
+<span id="cb19-14"><a href="executive-summary.html#cb19-14"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">median</span>(coverage.intensity<span class="op">$</span>count) <span class="op">-</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">y =</span> <span class="fl">5e+05</span>, <span class="dt">color =</span> <span class="st">&quot;#CC6677&quot;</span>,</span>
+<span id="cb19-15"><a href="executive-summary.html#cb19-15"></a>           <span class="dt">label =</span> <span class="kw">paste</span>(<span class="st">&quot;Median =&quot;</span>, <span class="kw">median</span>(coverage.intensity<span class="op">$</span>count))) <span class="op">+</span></span>
+<span id="cb19-16"><a href="executive-summary.html#cb19-16"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">round</span>(<span class="kw">mean</span>(coverage.intensity<span class="op">$</span>count), <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">y =</span> <span class="fl">5e+05</span>, <span class="dt">color =</span> <span class="st">&quot;#117733&quot;</span>, </span>
+<span id="cb19-17"><a href="executive-summary.html#cb19-17"></a>           <span class="dt">label =</span> <span class="kw">paste</span>(<span class="st">&quot;Mean =&quot;</span>, <span class="kw">round</span>(<span class="kw">mean</span>(coverage.intensity<span class="op">$</span>count), <span class="dv">2</span>))) <span class="op">+</span></span>
+<span id="cb19-18"><a href="executive-summary.html#cb19-18"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Count of tiles&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;Covered by ... antennas&quot;</span>, <span class="dt">colour =</span> <span class="st">&quot;&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb19-19"><a href="executive-summary.html#cb19-19"></a>  <span class="co"># facet_grid(~pop.area.kind)</span></span>
+<span id="cb19-20"><a href="executive-summary.html#cb19-20"></a>  </span>
+<span id="cb19-21"><a href="executive-summary.html#cb19-21"></a>  </span>
+<span id="cb19-22"><a href="executive-summary.html#cb19-22"></a><span class="kw">plot_grid</span>(coverage.intensity.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 7: Number of antennas covering a tile&quot;</span>,</span>
+<span id="cb19-23"><a href="executive-summary.html#cb19-23"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/coverage%20intensity-1.png" alt="The distribution is right skewed with a mean of 5.62, a minimum of 1, and a maximum of 21 antenna(s) per tile." width="672" />
+<p class="caption">
+(#fig:coverage intensity)The distribution is right skewed with a mean of 5.62, a minimum of 1, and a maximum of 21 antenna(s) per tile.
+</p>
+</div>
+<p>Figure 7 shows a histogram representing the number of antennas per tile. The distribution is right skewed with a mean of 5.62, a minimum of 1 and a maximum of 21 antenna(s) per tile. Even though the coverage areas were generated synthetically, this distribution mimics a realistic layout.</p>
+</div>
+<div id="device-to-cell-association" class="section level2">
+<h2><span class="header-section-number">3.4</span> Device-to-cell association</h2>
+<p>At this stage we have added to the geographically distributed mobile phone population a radio network, which is setup in three layers, spanning respectively across tiles that correspond to specific tile classification. (<code>pop.area.kind</code>).</p>
+<p>The following module will establish the association between mobile phones of a generic tile to a relevant antenna. The result will be a reference matrix <span class="math inline">\(P\)</span> of size <span class="math inline">\(I x J\)</span>, where I denotes the total number of radio cells (antennas), <span class="math inline">\(J\)</span> is the total number of tiles and the elements correspond to the probability of the mobile phones of any tile <span class="math inline">\(j\)</span> are registered in the cell <span class="math inline">\(i\)</span>. With <span class="math inline">\(P\)</span> one is able to simulate the column vector <span class="math inline">\(c\)</span> (random variable) which describes the total count of mobile phone associated to a radio cell.</p>
+<p>Assuming that <span class="math inline">\(\mathcal{L}_{j}\)</span> denotes the subset of radio cells covering a particular tile (remember, overlapping coverage areas are very common). This means that these respective radio cells are competing with each other to be associated with the cell phones in the tile. We therefore assign probabilities which describe the respective association between a radio cell <span class="math inline">\(i\)</span> and tile <span class="math inline">\(j\)</span>. This probability depends on the parameter signal strength which we mimic with a simple linear function that describes the gradual decrease in signal the further away the tile centroid <span class="math inline">\(j\)</span> is from the coverage area centroid of <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[
+s_{ij} = \frac{d_{ij}}{r_{i}}
+\]</span></p>
+<p>We basically calculate the distance between the two centroids, <span class="math inline">\(d_{ij}\)</span>, and divide it between the radius of that radio cell, <span class="math inline">\(r_{i}\)</span>- it is denoted by <span class="math inline">\(s_{ij}\)</span>. We introduce a minimum threshold value <span class="math inline">\(\nu\)</span> which limits radio cells with a too low signal intensity <span class="math inline">\(s_{ij}\)</span> for a particular tile to be able to be picked up by a mobile phone in that tile - resulting in the minimum value of 0. We also introduce a maximum threshold, describing tiles that are very close to the coverage area centroid, i.e. a high value for <span class="math inline">\(s_{ij}\)</span> – when passing this threshold their respective <span class="math inline">\(s_{ij}\)</span> values result in the maximum value 1. This particular operationalization of a function modeling the signal strength parameter instead of fixed categorical signal strength values makes the overall workflow of the notebook more realistic (granularity) and more modular as one can later implement very easy even more realistic functions describing the signal strength parameter. In this scenario we have implemented a minimum threshold of <span class="math inline">\(\nu = 0.01\)</span> and a maximum threshold of <span class="math inline">\(\zeta = 0.01\)</span> depending on <span class="math inline">\(r_{i}\)</span>. The exact operationalization can be found <a href="https://github.com/R-ramljak/MNO_GM/blob/master/3_device%20to%20cell.R">here</a>.</p>
+<p>The elements of <span class="math inline">\(P\)</span> - the probability with which the mobile phones within a particular cell are associated with a particular radio cell - are defined by</p>
+<p><span class="math display">\[
+p_{ij} = \frac{s_{ij}}{\sum_{i \in \mathcal{L}_{j}} s_{ij}}
+\]</span></p>
+<p>where <span class="math inline">\(s_{ij}\)</span> describes the signal intensity of a particular cell <span class="math inline">\(i\)</span> associated with a particular tile <span class="math inline">\(j\)</span>, and <span class="math inline">\(\mathcal{L}_{j}\)</span> describes the subset of radio cells that are covering the tile <span class="math inline">\(j\)</span>. We then simulate the tile specific experiments - every mobile phone within a tile will be independently assigned to relevant radio cell with the probability <span class="math inline">\(p_{ij}\)</span>. The result is the column vector <span class="math inline">\(c\)</span> which will act as a reference for the later on introduced estimation strategies.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="executive-summary.html#cb20-1"></a>C.vec.df &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/C.vec.df.final.new.rds&quot;</span>)</span>
+<span id="cb20-2"><a href="executive-summary.html#cb20-2"></a><span class="co"># ECCDF of population distribution </span></span>
+<span id="cb20-3"><a href="executive-summary.html#cb20-3"></a>ECCDF.phones.data &lt;-<span class="st"> </span>C.vec.df <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb20-4"><a href="executive-summary.html#cb20-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">layer =</span> <span class="kw">case_when</span>(<span class="kw">str_detect</span>(antenna.ID, <span class="st">&quot;RT&quot;</span>) <span class="op">~</span><span class="st"> &quot;Layer 1&quot;</span>,</span>
+<span id="cb20-5"><a href="executive-summary.html#cb20-5"></a>                           <span class="kw">str_detect</span>(antenna.ID, <span class="st">&quot;ST&quot;</span>) <span class="op">~</span><span class="st"> &quot;Layer 2&quot;</span>,</span>
+<span id="cb20-6"><a href="executive-summary.html#cb20-6"></a>                           <span class="kw">str_detect</span>(antenna.ID, <span class="st">&quot;UT&quot;</span>) <span class="op">~</span><span class="st"> &quot;Layer 3&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb20-7"><a href="executive-summary.html#cb20-7"></a><span class="st">  </span><span class="kw">arrange</span>(phones.sum) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb20-8"><a href="executive-summary.html#cb20-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prob =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb20-9"><a href="executive-summary.html#cb20-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob =</span> <span class="kw">cumsum</span>(prob)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb20-10"><a href="executive-summary.html#cb20-10"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob.comp =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>cum.prob) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb20-11"><a href="executive-summary.html#cb20-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10.cum.prob.comp =</span> <span class="kw">log10</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>cum.prob)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb20-12"><a href="executive-summary.html#cb20-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10.phones =</span> <span class="kw">log10</span>(phones.sum))</span>
+<span id="cb20-13"><a href="executive-summary.html#cb20-13"></a></span>
+<span id="cb20-14"><a href="executive-summary.html#cb20-14"></a>ECCDF.phones.plot &lt;-<span class="st"> </span>ECCDF.phones.data <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb20-15"><a href="executive-summary.html#cb20-15"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-16"><a href="executive-summary.html#cb20-16"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> log10.phones, <span class="dt">y =</span> log10.cum.prob.comp, </span>
+<span id="cb20-17"><a href="executive-summary.html#cb20-17"></a>                 <span class="dt">color =</span> layer)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-18"><a href="executive-summary.html#cb20-18"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">-0.3010300</span>, <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-19"><a href="executive-summary.html#cb20-19"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">-1</span>, <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-20"><a href="executive-summary.html#cb20-20"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> <span class="dv">4</span>, <span class="dt">y =</span> <span class="fl">-0.15</span>, <span class="dt">label =</span> <span class="st">&quot;50% of the data&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-21"><a href="executive-summary.html#cb20-21"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> <span class="dv">4</span>, <span class="dt">y =</span> <span class="fl">-0.85</span>, <span class="dt">label =</span> <span class="st">&quot;90% of the data&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-22"><a href="executive-summary.html#cb20-22"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Layer 1&quot;</span>, <span class="st">&quot;Layer 2&quot;</span>, <span class="st">&quot;Layer 3&quot;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-23"><a href="executive-summary.html#cb20-23"></a><span class="st">  </span><span class="kw">ylim</span>(<span class="op">-</span><span class="dv">4</span>, <span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb20-24"><a href="executive-summary.html#cb20-24"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span></span>
+<span id="cb20-25"><a href="executive-summary.html#cb20-25"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;log10(Prob(Y &gt; x))&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;log10(Mobile phones)&quot;</span>, <span class="dt">colour =</span> <span class="st">&quot;&quot;</span>)<span class="op">+</span></span>
+<span id="cb20-26"><a href="executive-summary.html#cb20-26"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">10</span>, <span class="dt">face=</span><span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb20-27"><a href="executive-summary.html#cb20-27"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">9</span>,<span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb20-28"><a href="executive-summary.html#cb20-28"></a>ECDF.phones.plot &lt;-<span class="st"> </span>ECCDF.phones.data <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb20-29"><a href="executive-summary.html#cb20-29"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-30"><a href="executive-summary.html#cb20-30"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> phones.sum, <span class="dt">y =</span> cum.prob.comp, <span class="dt">color =</span> layer)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb20-31"><a href="executive-summary.html#cb20-31"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="dt">guide =</span> <span class="ot">FALSE</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb20-32"><a href="executive-summary.html#cb20-32"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></span>
+<span id="cb20-33"><a href="executive-summary.html#cb20-33"></a><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">8000</span>) <span class="op">+</span></span>
+<span id="cb20-34"><a href="executive-summary.html#cb20-34"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb20-35"><a href="executive-summary.html#cb20-35"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb20-36"><a href="executive-summary.html#cb20-36"></a>        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb20-37"><a href="executive-summary.html#cb20-37"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>())</span>
+<span id="cb20-38"><a href="executive-summary.html#cb20-38"></a>pop.dist.ecdf.insert &lt;-<span class="st"> </span>ECCDF.phones.plot <span class="op">+</span></span>
+<span id="cb20-39"><a href="executive-summary.html#cb20-39"></a><span class="st">  </span><span class="kw">annotation_custom</span>(<span class="kw">ggplotGrob</span>(ECDF.phones.plot), </span>
+<span id="cb20-40"><a href="executive-summary.html#cb20-40"></a>                    <span class="dt">xmin =</span> <span class="dv">0</span>, <span class="dt">xmax =</span> <span class="dv">2</span>, </span>
+<span id="cb20-41"><a href="executive-summary.html#cb20-41"></a>                    <span class="dt">ymin =</span> <span class="dv">-4</span>, <span class="dt">ymax =</span> <span class="fl">-1.5</span>)</span>
+<span id="cb20-42"><a href="executive-summary.html#cb20-42"></a>    </span>
+<span id="cb20-43"><a href="executive-summary.html#cb20-43"></a><span class="kw">plot_grid</span>(pop.dist.ecdf.insert, <span class="dt">labels =</span> <span class="st">&quot;Fig. 8: ECCDF Device-to-cell association&quot;</span>,  <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<div class="figure">
+<img src="bookdown_files/figure-html/c.vector.distribution-1.png" alt="Mobile devices are predominately associated with Layer 1 antennas." width="864" />
+<p class="caption">
+(#fig:c.vector.distribution)Mobile devices are predominately associated with Layer 1 antennas.
+</p>
+</div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="executive-summary.html#cb22-1"></a>extreme.antennas.plot &lt;-<span class="st"> </span>C.vec.df <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb22-2"><a href="executive-summary.html#cb22-2"></a><span class="st">  </span><span class="kw">filter</span>(phones.sum <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10000</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-3"><a href="executive-summary.html#cb22-3"></a><span class="st">  </span><span class="kw">left_join</span>(coverage.areas, <span class="dt">by =</span> <span class="st">&quot;antenna.ID&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-4"><a href="executive-summary.html#cb22-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-5"><a href="executive-summary.html#cb22-5"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb22-6"><a href="executive-summary.html#cb22-6"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> area.kind), <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb22-7"><a href="executive-summary.html#cb22-7"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb22-8"><a href="executive-summary.html#cb22-8"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="st">&quot;Layer&quot;</span>) <span class="op">+</span></span>
+<span id="cb22-9"><a href="executive-summary.html#cb22-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb22-10"><a href="executive-summary.html#cb22-10"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>),<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb22-11"><a href="executive-summary.html#cb22-11"></a>  <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb22-12"><a href="executive-summary.html#cb22-12"></a></span>
+<span id="cb22-13"><a href="executive-summary.html#cb22-13"></a><span class="kw">plot_grid</span>(extreme.antennas.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 9: Extreme antennas&quot;</span>,</span>
+<span id="cb22-14"><a href="executive-summary.html#cb22-14"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>) </span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/c.vector%20special%20cases-1.png" alt="These antennas have more than 10,000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers." width="672" />
+<p class="caption">
+(#fig:c.vector special cases)These antennas have more than 10,000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers.
+</p>
+</div>
+</div>
+<div id="estimation-strategies" class="section level2">
+<h2><span class="header-section-number">3.5</span> Estimation strategies</h2>
+<p>We have implemented two specific estimation strategies:</p>
+<ul>
+<li><p>Voronoi tesselation (tower locations OR coverage area centroids as seeds)</p></li>
+<li><p>MLE Poisson</p></li>
+</ul>
+<p>All three of these estimation techniques produce a tile specific estimand. The sum of these estimands always exactly equals the sum of the c.vector, i.e. all registered mobile phones. This characteristic explains the strategy of all of these estimators: Taking the complete number of registered phones in the c.vector and allocating them across all the tiles. There is however a fundamental difference between the two estimators: The second one allows for the realistic setting of overlapping antenna coverage. As shown above there are many tiles that are covered by multiple antennas. Current research suggests that this can result in more accurate estimations.</p>
+<div id="voronoi-tesselation" class="section level3">
+<h3><span class="header-section-number">3.5.1</span> Voronoi tesselation</h3>
+<p>Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed there is one Voronoi region that contains the area that is closest to the particular seed. There are two seed specifications we are interested in:</p>
+<ul>
+<li><p>Tower locations as seeds –&gt; <code>n =</code> 1289</p></li>
+<li><p>Coverage area centroid (per antenna) locations as seeds –&gt; <code>n =</code> 3841</p></li>
+</ul>
+<p>Below we specify the tower locations as seed points. These are then used to compute the Voronoi regions. Before we do that we need to make sure that the corresponding c.vector is aggregated on the toer level. We then join the Voronoi regions with the tiles to create an object that links tiles within respective Voronoi regions.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="executive-summary.html#cb23-1"></a><span class="co"># Plot read in</span></span>
+<span id="cb23-2"><a href="executive-summary.html#cb23-2"></a>VT.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/VT.plot.rds&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</span>
+<span id="cb23-3"><a href="executive-summary.html#cb23-3"></a>VA.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/VA.plot.rds&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</span>
+<span id="cb23-4"><a href="executive-summary.html#cb23-4"></a></span>
+<span id="cb23-5"><a href="executive-summary.html#cb23-5"></a><span class="kw">plot_grid</span>(VT.plot, VA.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 10: Voronoi tower estimation&quot;</span>,  <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/voronoi%20antenna%20and%20tower%20prep%20plot-1.png" alt="The tower centroids were used as seeds for the creation of the Voronoi regions." width="864" />
+<p class="caption">
+(#fig:voronoi antenna and tower prep plot)The tower centroids were used as seeds for the creation of the Voronoi regions.
+</p>
+</div>
+<p>We have now created the Voronoi regions for our focus area with tower locations as seeds as well as with antenna respective coverage area centroid locations as seeds. The number of seeds and Voronoi regions align with each other.</p>
+<p>The spatial density per tile can be expressed as the ratio of the mobile phones in that region and the area of the Voronoi region:</p>
+<p><span class="math inline">\(d_{k} = \frac{\sum c_{i}} {A_{k}}\)</span></p>
+<p>This region specific estimate corresponds to the tile estimate for a tile that is contained in this region. On the tile level there can be two cases that we need to differentiate:</p>
+<ul>
+<li><p>Tiles that are completely contained within one Voronoi region</p></li>
+<li><p>Tiles that intersect with two or more Vornoi regions</p></li>
+</ul>
+<p>For the first case, the tile specific estimate corresponds to <span class="math inline">\(d_{k}\)</span>. For the second case we will calculate a weighted mean of the relevant Voronoi region estimates by using the corresponding tile area within each Voronoi region as weights.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="executive-summary.html#cb24-1"></a>VT.bird.example.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/VT.bird.example.plot.rds&quot;</span>)</span>
+<span id="cb24-2"><a href="executive-summary.html#cb24-2"></a></span>
+<span id="cb24-3"><a href="executive-summary.html#cb24-3"></a>VT.example.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/VT.example.plot.rds&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</span>
+<span id="cb24-4"><a href="executive-summary.html#cb24-4"></a></span>
+<span id="cb24-5"><a href="executive-summary.html#cb24-5"></a><span class="kw">plot_grid</span>(VT.bird.example.plot, VT.example.plot, </span>
+<span id="cb24-6"><a href="executive-summary.html#cb24-6"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 11: Example multiple tile&quot;</span>,  <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/Voronoi%20tower%20multiples-1.png" alt="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator." width="864" />
+<p class="caption">
+(#fig:Voronoi tower multiples)This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator.
+</p>
+</div>
+<p>Here we visualize the second case with an example tile and example Voronoi regions from the Voronoi with tower locations as seeds. In the left plot we can see a small tile that is indicated in red. This tile is at the intersection of 4 Voronoi regions. The corresponding relative tile area intersecting with each Voronoi region can be seen in the right plot. The labels correspond to the Voronoi region ID and the below in brackets indicate the proportional weight that should be considered in calculting the tile specific weighted mean estimate. To compare this to the first case - where a tile is fully contained only in one region - the weight for the particular Voronoi region is 1. The same methodogolgy is pursued for the Voronoi antenna case.</p>
+</div>
+<div id="mle-poisson" class="section level3">
+<h3><span class="header-section-number">3.5.2</span> MLE Poisson</h3>
+<p>MLE Poisson: <span class="math inline">\(\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}\)</span></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="executive-summary.html#cb25-1"></a>equal.<span class="fl">100.</span>plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.100.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Evolution&quot;</span>)</span>
+<span id="cb25-2"><a href="executive-summary.html#cb25-2"></a>equal.resid.<span class="fl">100.</span>plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.resid.100.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Residual&quot;</span>)</span>
+<span id="cb25-3"><a href="executive-summary.html#cb25-3"></a></span>
+<span id="cb25-4"><a href="executive-summary.html#cb25-4"></a><span class="kw">plot_grid</span>(equal.<span class="fl">100.</span>plot, equal.resid.<span class="fl">100.</span>plot, </span>
+<span id="cb25-5"><a href="executive-summary.html#cb25-5"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 12 Equal P.matrix, 100 iterations&quot;</span>,  <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">12</span>,</span>
+<span id="cb25-6"><a href="executive-summary.html#cb25-6"></a>          <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">nrow =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/estimations%201.1-1.png" width="864" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="executive-summary.html#cb26-1"></a>ematrix =<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.equal.rmspe.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>))</span>
+<span id="cb26-2"><a href="executive-summary.html#cb26-2"></a></span>
+<span id="cb26-3"><a href="executive-summary.html#cb26-3"></a>ematrix <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-4"><a href="executive-summary.html#cb26-4"></a><span class="st">  </span><span class="kw">kbl</span>(<span class="dt">caption =</span> <span class="st">&quot;Equal prob P.matrix, constant prior: RMSE&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-5"><a href="executive-summary.html#cb26-5"></a><span class="st">  </span><span class="kw">kable_minimal</span>() </span></code></pre></div>
+<table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'>
+<caption>
+(#tab:estimations 1.2)Equal prob P.matrix, constant prior: RMSE
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+pop.area.kind
+</th>
+<th style="text-align:right;">
+i001
+</th>
+<th style="text-align:right;">
+i002
+</th>
+<th style="text-align:right;">
+i005
+</th>
+<th style="text-align:right;">
+i010
+</th>
+<th style="text-align:right;">
+i020
+</th>
+<th style="text-align:right;">
+i050
+</th>
+<th style="text-align:right;">
+i100
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rural
+</td>
+<td style="text-align:right;">
+1.007860
+</td>
+<td style="text-align:right;">
+1.007202
+</td>
+<td style="text-align:right;">
+1.035010
+</td>
+<td style="text-align:right;">
+1.080061
+</td>
+<td style="text-align:right;">
+1.100131
+</td>
+<td style="text-align:right;">
+1.005177
+</td>
+<td style="text-align:right;">
+1.004581
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Suburban
+</td>
+<td style="text-align:right;">
+4.810772
+</td>
+<td style="text-align:right;">
+4.669090
+</td>
+<td style="text-align:right;">
+4.839212
+</td>
+<td style="text-align:right;">
+5.191712
+</td>
+<td style="text-align:right;">
+5.628672
+</td>
+<td style="text-align:right;">
+6.102674
+</td>
+<td style="text-align:right;">
+9.020127
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Urban
+</td>
+<td style="text-align:right;">
+17.215097
+</td>
+<td style="text-align:right;">
+16.990543
+</td>
+<td style="text-align:right;">
+17.332398
+</td>
+<td style="text-align:right;">
+18.357417
+</td>
+<td style="text-align:right;">
+21.151187
+</td>
+<td style="text-align:right;">
+29.777979
+</td>
+<td style="text-align:right;">
+40.294924
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="executive-summary.html#cb27-1"></a>true.<span class="fl">100.</span>plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.100.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Evolution&quot;</span>)</span>
+<span id="cb27-2"><a href="executive-summary.html#cb27-2"></a>true.resid.<span class="fl">100.</span>plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.resid.100.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Residual&quot;</span>)</span>
+<span id="cb27-3"><a href="executive-summary.html#cb27-3"></a></span>
+<span id="cb27-4"><a href="executive-summary.html#cb27-4"></a><span class="kw">plot_grid</span>(true.<span class="fl">100.</span>plot, true.resid.<span class="fl">100.</span>plot, </span>
+<span id="cb27-5"><a href="executive-summary.html#cb27-5"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 13 True P. Matrix, 100 iterations&quot;</span>,  <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">12</span>,</span>
+<span id="cb27-6"><a href="executive-summary.html#cb27-6"></a>          <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">nrow =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/estimations%202.1-1.png" width="864" /></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="executive-summary.html#cb28-1"></a>tmatrix =<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.true.rmspe.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>))</span>
+<span id="cb28-2"><a href="executive-summary.html#cb28-2"></a></span>
+<span id="cb28-3"><a href="executive-summary.html#cb28-3"></a>ematrix <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-4"><a href="executive-summary.html#cb28-4"></a><span class="st">  </span><span class="kw">kbl</span>(<span class="dt">caption =</span> <span class="st">&quot;Equal prob P.matrix, constant prior: RMSE&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-5"><a href="executive-summary.html#cb28-5"></a><span class="st">  </span><span class="kw">kable_minimal</span>() </span></code></pre></div>
+<table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'>
+<caption>
+(#tab:estimations 2.2)Equal prob P.matrix, constant prior: RMSE
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+pop.area.kind
+</th>
+<th style="text-align:right;">
+i001
+</th>
+<th style="text-align:right;">
+i002
+</th>
+<th style="text-align:right;">
+i005
+</th>
+<th style="text-align:right;">
+i010
+</th>
+<th style="text-align:right;">
+i020
+</th>
+<th style="text-align:right;">
+i050
+</th>
+<th style="text-align:right;">
+i100
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rural
+</td>
+<td style="text-align:right;">
+1.007860
+</td>
+<td style="text-align:right;">
+1.007202
+</td>
+<td style="text-align:right;">
+1.035010
+</td>
+<td style="text-align:right;">
+1.080061
+</td>
+<td style="text-align:right;">
+1.100131
+</td>
+<td style="text-align:right;">
+1.005177
+</td>
+<td style="text-align:right;">
+1.004581
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Suburban
+</td>
+<td style="text-align:right;">
+4.810772
+</td>
+<td style="text-align:right;">
+4.669090
+</td>
+<td style="text-align:right;">
+4.839212
+</td>
+<td style="text-align:right;">
+5.191712
+</td>
+<td style="text-align:right;">
+5.628672
+</td>
+<td style="text-align:right;">
+6.102674
+</td>
+<td style="text-align:right;">
+9.020127
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Urban
+</td>
+<td style="text-align:right;">
+17.215097
+</td>
+<td style="text-align:right;">
+16.990543
+</td>
+<td style="text-align:right;">
+17.332398
+</td>
+<td style="text-align:right;">
+18.357417
+</td>
+<td style="text-align:right;">
+21.151187
+</td>
+<td style="text-align:right;">
+29.777979
+</td>
+<td style="text-align:right;">
+40.294924
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="evaluation-of-all-estimates" class="section level2">
+<h2><span class="header-section-number">3.6</span> Evaluation of all estimates</h2>
+<p>We created 4 final estimates:</p>
+<ul>
+<li><p>Voronoi tesselation with tower locations as seeds</p></li>
+<li><p>Voronoi tesselation with coverage area locations (antennas) as seeds</p></li>
+<li><p>MLE uniform prior equal probability P.matrix after 1000 iterations</p></li>
+<li><p>MLE uniform prior oracle probability P.matrix after 1000 iterations</p></li>
+</ul>
+<p>In this section we want to evaluate the 4 estimates by comparing them with different perspectives in mind to the actual true population. Each subsection defines the perspective-respective performance measure:</p>
+<p>This section is still under construction. We will evaluate the estimators and their convergence behaviour from three perspectives:</p>
+<ol style="list-style-type: decimal">
+<li><p>Geographical evaluation</p></li>
+<li><p>Statistical evaluation</p></li>
+</ol>
+<div id="geographical-evaluation" class="section level3">
+<h3><span class="header-section-number">3.6.1</span> Geographical Evaluation</h3>
+<p>For the geographical evaluation we use the following performance measure: The visual resemblance of fixed tile categories from the respective estimate and the actual true population on a map.</p>
+<p>We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="executive-summary.html#cb29-1"></a>true.geo.eval.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Estimates/Plot.files/true.pop_map.rds&quot;</span>)</span>
+<span id="cb29-2"><a href="executive-summary.html#cb29-2"></a></span>
+<span id="cb29-3"><a href="executive-summary.html#cb29-3"></a>VT.geo.eval.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Estimates/Plot.files/VT.estimate_map.rds&quot;</span>)</span>
+<span id="cb29-4"><a href="executive-summary.html#cb29-4"></a></span>
+<span id="cb29-5"><a href="executive-summary.html#cb29-5"></a></span>
+<span id="cb29-6"><a href="executive-summary.html#cb29-6"></a><span class="kw">plot_grid</span>(true.geo.eval.plot, VT.geo.eval.plot,</span>
+<span id="cb29-7"><a href="executive-summary.html#cb29-7"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 14 Comparing Voronoi tower estimate&quot;</span>, <span class="dt">label_size =</span> <span class="dv">12</span>,</span>
+<span id="cb29-8"><a href="executive-summary.html#cb29-8"></a>          <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/Voronoi%20tower%20geo%20eval-1.png" width="864" /></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="executive-summary.html#cb30-1"></a>VA.geo.eval.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Estimates/Plot.files/VA.estimate_map.rds&quot;</span>)</span>
+<span id="cb30-2"><a href="executive-summary.html#cb30-2"></a></span>
+<span id="cb30-3"><a href="executive-summary.html#cb30-3"></a><span class="kw">plot_grid</span>(true.geo.eval.plot, VA.geo.eval.plot,</span>
+<span id="cb30-4"><a href="executive-summary.html#cb30-4"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 15 Comparing Voronoi antenna estimate&quot;</span>, <span class="dt">label_size =</span> <span class="dv">12</span>,</span>
+<span id="cb30-5"><a href="executive-summary.html#cb30-5"></a>          <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/Voronoi%20antenna%20geo%20eval-1.png" width="864" /></p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="executive-summary.html#cb31-1"></a><span class="co"># MLE.equal.geo.eval.plot &lt;- readRDS(&quot;Estimates/Plot.files/MLE.oracle.estimate_map.rds&quot;)</span></span>
+<span id="cb31-2"><a href="executive-summary.html#cb31-2"></a><span class="co"># animate(MLE.equal.geo.eval.plot, fps = 10)</span></span>
+<span id="cb31-3"><a href="executive-summary.html#cb31-3"></a></span>
+<span id="cb31-4"><a href="executive-summary.html#cb31-4"></a><span class="co"># plot_grid(true.geo.eval.plot, MLE.equal.geo.eval.plot,</span></span>
+<span id="cb31-5"><a href="executive-summary.html#cb31-5"></a><span class="co">#           labels = &quot;Comparing MLE equal P.matrix estimate&quot;, label_size = 12,</span></span>
+<span id="cb31-6"><a href="executive-summary.html#cb31-6"></a><span class="co">#           align = &quot;hv&quot;, hjust = -0.1)</span></span>
+<span id="cb31-7"><a href="executive-summary.html#cb31-7"></a></span>
+<span id="cb31-8"><a href="executive-summary.html#cb31-8"></a>knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;Estimates/Plot.files/MLE.equal.estimate_map.gif&quot;</span>)</span></code></pre></div>
+<p><img src="Estimates/Plot.files/MLE.equal.estimate_map.gif" /><!-- --></p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="executive-summary.html#cb32-1"></a><span class="co"># MLE.true.geo.eval.plot &lt;- readRDS(&quot;Estimates/Plot.files/MLE.oracle.estimate_map.rds&quot;)</span></span>
+<span id="cb32-2"><a href="executive-summary.html#cb32-2"></a><span class="co"># MLE.true.geo.eval.plot &lt;- animate(MLE.true.geo.eval.plot, fps = 10)</span></span>
+<span id="cb32-3"><a href="executive-summary.html#cb32-3"></a><span class="co"># </span></span>
+<span id="cb32-4"><a href="executive-summary.html#cb32-4"></a><span class="co"># </span></span>
+<span id="cb32-5"><a href="executive-summary.html#cb32-5"></a><span class="co"># plot_grid(true.geo.eval.plot, MLE.true.geo.eval.plot,</span></span>
+<span id="cb32-6"><a href="executive-summary.html#cb32-6"></a><span class="co">#           labels = &quot;Comparing MLE true P.matrix estimate&quot;, label_size = 12,</span></span>
+<span id="cb32-7"><a href="executive-summary.html#cb32-7"></a><span class="co">#           align = &quot;hv&quot;, hjust = -0.1)</span></span>
+<span id="cb32-8"><a href="executive-summary.html#cb32-8"></a></span>
+<span id="cb32-9"><a href="executive-summary.html#cb32-9"></a>knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;Estimates/Plot.files/MLE.oracle.estimate_map.gif&quot;</span>)</span></code></pre></div>
+<p><img src="Estimates/Plot.files/MLE.oracle.estimate_map.gif" /><!-- --></p>
+</div>
+<div id="statisticaldistributional-evaluation" class="section level3">
+<h3><span class="header-section-number">3.6.2</span> Statistical/Distributional Evaluation</h3>
+<p>In order to actually compare the numerical resemblance between the estimates and the actual true population we introduce two discrepancy performance measures.</p>
+<ul>
+<li><p>Average Absolute Discrepancy: <span class="math inline">\(D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|\)</span></p></li>
+<li><p>Maximum Absolute Discrepancy: <span class="math inline">\(D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |\)</span></p></li>
+</ul>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="executive-summary.html#cb33-1"></a>aad.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/aad.comp.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;AAD&quot;</span>)</span>
+<span id="cb33-2"><a href="executive-summary.html#cb33-2"></a></span>
+<span id="cb33-3"><a href="executive-summary.html#cb33-3"></a>mad.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/mad.comp.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;MAD&quot;</span>)</span>
+<span id="cb33-4"><a href="executive-summary.html#cb33-4"></a></span>
+<span id="cb33-5"><a href="executive-summary.html#cb33-5"></a><span class="kw">plot_grid</span>(aad.plot, mad.plot,</span>
+<span id="cb33-6"><a href="executive-summary.html#cb33-6"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 16 Voronoi Estimation vs MLE&quot;</span>, </span>
+<span id="cb33-7"><a href="executive-summary.html#cb33-7"></a>          <span class="dt">label_size =</span> <span class="dv">12</span>, <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>) </span></code></pre></div>
+<p><img src="bookdown_files/figure-html/voronoi%20vs%20MLE-1.png" width="864" />
+By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. In general, the Voronoi estimates result in less discrepancy compared to both of the MLE estimates. Between the two MLE estimates, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimates, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.</p>
+</div>
+</div>
+<div id="excurse-evaluation-looking-deeper-into-the-convergence-behavior" class="section level2">
+<h2><span class="header-section-number">3.7</span> Excurse Evaluation: Looking deeper into the convergence behavior</h2>
+<p>In the course of our work we thought it was particularly interesting to further focus on the actual convergence behavior of the MLE-based estimators.</p>
+<p>We will visualize the convergence behaviour/the evolution of the estimands up to 1000 iterations. This is executed based on a stratified sample (strata: three level <code>pop.area.kind</code> variable), n = 150)</p>
+<div id="discrepancy-measures-per-iteration" class="section level3">
+<h3><span class="header-section-number">3.7.1</span> Discrepancy measures per iteration</h3>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="executive-summary.html#cb34-1"></a>aad.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.aad.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;AAD&quot;</span>)</span>
+<span id="cb34-2"><a href="executive-summary.html#cb34-2"></a></span>
+<span id="cb34-3"><a href="executive-summary.html#cb34-3"></a>mad.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.mad.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;MAD&quot;</span>)</span>
+<span id="cb34-4"><a href="executive-summary.html#cb34-4"></a></span>
+<span id="cb34-5"><a href="executive-summary.html#cb34-5"></a><span class="kw">plot_grid</span>(aad.plot, mad.plot,</span>
+<span id="cb34-6"><a href="executive-summary.html#cb34-6"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 17 Discrepancy Over Time, Equal Pop. Matrix&quot;</span>, </span>
+<span id="cb34-7"><a href="executive-summary.html#cb34-7"></a>          <span class="dt">label_size =</span> <span class="dv">12</span>, <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/unnamed-chunk-2-1.png" width="864" />
+For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 700th iteration, the discrepancy values are largely the same.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="executive-summary.html#cb35-1"></a>aad.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.aad.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;AAD&quot;</span>)</span>
+<span id="cb35-2"><a href="executive-summary.html#cb35-2"></a></span>
+<span id="cb35-3"><a href="executive-summary.html#cb35-3"></a>mad.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.mad.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;MAD&quot;</span>)</span>
+<span id="cb35-4"><a href="executive-summary.html#cb35-4"></a></span>
+<span id="cb35-5"><a href="executive-summary.html#cb35-5"></a><span class="kw">plot_grid</span>(aad.plot, mad.plot,</span>
+<span id="cb35-6"><a href="executive-summary.html#cb35-6"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 18 Discrepancy Over Time, True Pop. Matrix&quot;</span>, </span>
+<span id="cb35-7"><a href="executive-summary.html#cb35-7"></a>          <span class="dt">label_size =</span> <span class="dv">12</span>, <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/unnamed-chunk-3-1.png" width="864" />
+For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same.</p>
+</div>
+<div id="convergence-behavior" class="section level3">
+<h3><span class="header-section-number">3.7.2</span> Convergence behavior</h3>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="executive-summary.html#cb36-1"></a>equal.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Evolution&quot;</span>)</span>
+<span id="cb36-2"><a href="executive-summary.html#cb36-2"></a>equal.resid.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.resid.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Residual&quot;</span>)</span>
+<span id="cb36-3"><a href="executive-summary.html#cb36-3"></a></span>
+<span id="cb36-4"><a href="executive-summary.html#cb36-4"></a><span class="kw">plot_grid</span>(equal.plot, equal.resid.plot,</span>
+<span id="cb36-5"><a href="executive-summary.html#cb36-5"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 19 Convergence behaviour (Equal P.matrix)&quot;</span>, </span>
+<span id="cb36-6"><a href="executive-summary.html#cb36-6"></a>          <span class="dt">label_size =</span> <span class="dv">12</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>) </span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/distributionl%20eval%201-1.png" alt="The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached." width="864" />
+<p class="caption">
+(#fig:distributionl eval 1)The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands’ convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached.
+</p>
+</div>
+<p>The graphs above shows how the estimated population evolve over time (left) as well as its prediction error (right). From the graph on the left, most of the estimated population stabilizes rather quickly in rural and suburban tiles. With the urban tiles, it is harder to say exactly when the convergence will occur, especially there are a bit of variation. The residual plot (right) shows the error of prediction in comparison to the actual population in that specific tile. The rural tiles shows a trend of constant error of prediction over iterations. The suburban tiles generally shows the same trend as well, but also shows that there are tiles that overestimated. The urban tiles tend to have an underestimation.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="executive-summary.html#cb37-1"></a>true.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Evolution&quot;</span>)</span>
+<span id="cb37-2"><a href="executive-summary.html#cb37-2"></a></span>
+<span id="cb37-3"><a href="executive-summary.html#cb37-3"></a>true.resid.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">url</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.resid.plot.rds&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;libcurl&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Residual&quot;</span>)</span>
+<span id="cb37-4"><a href="executive-summary.html#cb37-4"></a></span>
+<span id="cb37-5"><a href="executive-summary.html#cb37-5"></a><span class="kw">plot_grid</span>(true.plot, true.resid.plot,</span>
+<span id="cb37-6"><a href="executive-summary.html#cb37-6"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 20 Convergence behaviour (True P.matrix)&quot;</span>, </span>
+<span id="cb37-7"><a href="executive-summary.html#cb37-7"></a>          <span class="dt">label_size =</span> <span class="dv">12</span>, <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>) </span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/distributionl%20eval%202-1.png" alt="The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour (equal probability P.matrix). The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached." width="864" />
+<p class="caption">
+(#fig:distributionl eval 2)The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands’ convergence behaviour (equal probability P.matrix). The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached.
+</p>
+</div>
+<p>Using the true population matrix, the estimated population stabilizes faster over time in comparison to the equal population matrix. However, there are a few tiles that do not stabilize as fast as we hoped. This is particularly evident in the urban tiles. The residual plot (right) shows the error of prediction over time by the type of tile. There seems to be a trend of increasing prediction error as the degree of urbanization increases as well. We can see that the range of error for suburban tiles range from 30 to -10 and the range of error for urban tiles are between 100 and -75. The suburban tiles seems to underestimate and the urban tiles seems to overestimate.</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2><span class="header-section-number">3.8</span> References</h2>
+<p>[1] Ricciato F, Lanzieri G., Wirthmann A., and Seynaeve G.(2020) Towards a methodological framework for estimating present population density from mobile network operator data. <a href="https://ec.europa.eu/eurostat/cros/content/towards-methodological-framework-estimating-present-population-density-mobile-network-operator-data-extended-version_en" class="uri">https://ec.europa.eu/eurostat/cros/content/towards-methodological-framework-estimating-present-population-density-mobile-network-operator-data-extended-version_en</a></p>
+<p>[2]<a href="https://gadm.org/download_country_v3.html" class="uri">https://gadm.org/download_country_v3.html</a></p>
+<p>[3]<a href="https://www.destatis.de/EN/Home/_node.html" class="uri">https://www.destatis.de/EN/Home/_node.html</a></p>
+<p>[4]<a href="https://tma.ifip.org/2016/phdSchool/data/toy_excercise_solution.pdf" class="uri">https://tma.ifip.org/2016/phdSchool/data/toy_excercise_solution.pdf</a></p>
 
+</div>
 </div>
             </section>
 
@@ -191,25 +1133,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
-"sharing": {
-"github": false,
-"facebook": true,
-"twitter": true,
-"linkedin": false,
-"weibo": false,
-"instapaper": false,
-"vk": false,
-"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
-},
+"sharing": null,
 "fontsettings": {
 "theme": "white",
 "family": "sans",
 "size": 2
 },
-"edit": {
-"link": null,
-"text": null
-},
+"edit": null,
 "history": {
 "link": null,
 "text": null
@@ -218,14 +1148,34 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["bookdown.pdf", "bookdown.epub"],
+"download": null,
 "toc": {
-"collapse": "subsection"
-}
+"collapse": "section",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": true,
+"info": true
 });
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

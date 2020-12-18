@@ -1,4 +1,4 @@
-# Applications
+# Estimation Strategies
 
 ## Example one
 
