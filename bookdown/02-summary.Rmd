@@ -11,7 +11,7 @@ The notebook at hand relies on multiple scripts that follow a methodological cha
 
 Our concrete research goal is to evaluate and compare different cutting edge estimation techniques of present population with MNO data. Because MNO data, even though aggregated, is very secure, we did not work with real data. Instead we needed to completely build our own toy world, aiming at a very realistic scenario which could be the base of our evaluation. This simulation setting gives us the unique opportunity to actually test the performance of different estimators because we are in control of the true values. The notebook is structured as follows: In the next section we introduce the generation of the toy world, consisting of a geographical area with a mobile phone population and a corresponding radio cell network. We mention most important features and parameters as well as explain how mobile phones are logged to radio cells (device-to-cell association). Following this we introduce two of the currently existing estimation strategies, explain their most important characteristics and assumptions and apply them to our toy world. In the final section we undertake a detailed evaluation of each estimator, focusing on statistical as well as geographical-distributional performance measures. We end this evaluation with further exploring the convergence behavior of one of the estimators and formulating further potential research goals in this area.
 
-## Toy world generation
+### Toy World Generation
 
 Our toy world bases on population census data from the German Federal Statistical Office [2] (https://www.destatis.de/EN/Home/_node.html). This data entails continous population counts on a 100m * 100m grid. *For our project we reduce the population count to a third to mimic the process of receiving data from an MNO provider - therefore we assume that the population count resembles the number of mobile phones in this area.* For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises a high diversity of urban, suburban, and rural areas.
 
@@ -131,13 +131,15 @@ The stacked bar plot shows the proportions of the tiles according to the four ca
 
 ```{r pop distribution 2, fig.cap= "The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." }
 
-pop.dist.map.plot <- ECCDF.pop.data %>% 
-  # sample_n(1000) %>%
-  ggplot() + 
-  geom_sf(aes(color = pop.area.kind), show.legend = F) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-  ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
+# pop.dist.map.plot <- ECCDF.pop.data %>% 
+#   # sample_n(1000) %>%
+#   ggplot() + 
+#   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
+#   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
+#   ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
+#   theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
+
+true.geo.eval.plot <- readRDS("Estimates/Plot.files/true.pop_map.rds")
  
 ECCDF.pop.plot <- ECCDF.pop.data %>%   
   ggplot() + 
@@ -170,7 +172,7 @@ pop.dist.ecdf.insert <- ECCDF.pop.plot +
                     xmin = 0, xmax = 1.5, 
                     ymin = -7, ymax = -3)
 
-plot_grid(pop.dist.map.plot, pop.dist.ecdf.insert, labels = "Fig. 3: Mobile phone density per tile",  
+plot_grid(true.geo.eval.plot, pop.dist.ecdf.insert, labels = "Fig. 3: Mobile phone density per tile",  
           hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1))
 ```
 
@@ -182,7 +184,7 @@ The ECCDF is a step function with jumps `i/n` at observation values, where `i` i
 
 As the figure suggests, 50% of the data are represented by uninhabited tiles with no phones; furthermore, 90% of the tiles contain less than half of the mobile phones in our focus area. One can also see the tiles' classification based on the clustering results. Some tiles classified as Rural have higher values for their mobile phone population - this is because they are not considered as an Urban or Suburban cluster, as mentioned above. 10% left are tiles both urban and rural containing 0.5 and above mobile phones.
 
-## Generation of a synthetic Radio Network
+#### Generation of a synthetic Radio Network
 
 We generate a radio network, which is composed of three layers. The layers follow the pop.area.kind variable - layer 1 (Rural) spans over the rural, suburban and urban tiles, layer 2 (Suburban) spans over the suburban and urban tiles and layer 3 (Urban) is spanned over the urban tiles.
 
@@ -300,16 +302,17 @@ The interpretations of the table above correspond to the level of coverage of ea
 
 ```{r coverage areas 3, fig.cap = "The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density."}
 # Implement shape of focus area
-coverage.area.full.plot <- coverage.areas %>% 
-  ggplot() +
-  geom_sf(aes(col = area.kind), fill = NA) +
-  ggtitle("", subtitle = "Full coverage") +
-    scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-  theme(axis.text.x=element_text(angle=90, hjust=1),
-        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-  plot.subtitle = element_text(size = 9, hjust = 0.5))
+# Implement shape of focus area
+# coverage.area.full.plot <- coverage.areas %>% 
+#  ggplot() +
+#  geom_sf(aes(col = area.kind), fill = NA) +
+#  ggtitle("", subtitle = "Full coverage") +
+#    scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
+#  theme(axis.text.x=element_text(angle=90, hjust=1),
+#        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+#  plot.subtitle = element_text(size = 9, hjust = 0.5))
 
-plot_grid(pop.dist.map.plot, coverage.area.full.plot, labels = "Fig. 6: Full coverage corresponding to the density", 
+plot_grid(true.geo.eval.plot, coverage.area.full.plot, labels = "Fig. 6: Full coverage corresponding to the density", 
           hjust = -0.1, label_size = 14)
 ```
 
@@ -333,7 +336,7 @@ coverage.intensity.plot <- coverage.intensity %>%
            label = paste("Median =", median(coverage.intensity$count))) +
   annotate("text", x = round(mean(coverage.intensity$count), 2) + 2, y = 5e+05, color = "#117733", 
            label = paste("Mean =", round(mean(coverage.intensity$count), 2))) +
-  labs(y = "Count of tiles", x = "Covered by ... antennas", colour = "", title = "")
+  labs(y = "Count of tiles", x = "Covered by # antennas", colour = "", title = "")
   # facet_grid(~pop.area.kind)
   
   
@@ -343,7 +346,7 @@ plot_grid(coverage.intensity.plot, labels = "Fig. 7: Number of antennas covering
 
 Figure 7 shows a histogram representing the number of antennas per tile. The distribution is right skewed with a mean of `r round(mean(coverage.intensity$count), 2)`, a minimum of `r min(coverage.intensity$count)` and a maximum of `r max(coverage.intensity$count)` antenna(s) per tile. Even though the coverage areas were generated synthetically, this distribution mimics a realistic layout.
 
-## Device-to-cell association
+#### Device-to-cell association
 
 At this stage we have added to the geographically distributed mobile phone population a radio network, which is setup in three layers, spanning respectively across tiles that correspond to specific tile classification. (`pop.area.kind`).
 
@@ -365,7 +368,12 @@ $$
 
 where $s_{ij}$ describes the signal intensity of a particular cell $i$ associated with a particular tile $j$, and $\mathcal{L}_{j}$ describes the subset of radio cells that are covering the tile $j$. We then simulate the tile specific experiments - every mobile phone within a tile will be independently assigned to relevant radio cell with the probability $p_{ij}$. The result is the column vector $c$ which will act as a reference for the later on introduced estimation strategies.
 
-```{r c.vector.distribution, fig.cap= "Mobile devices are predominately associated with Layer 1 antennas."}
+
+
+```{r c.vector.distribution, fig.cap= "On the left one can see the synthetic distribution of the sij parameter depending on the network layer. The specified Path loss exponent controls sij in a way that it favors Layer 3 antennas and sanctions Layer 1 antennas in order to balance the resulting c.vector. On the right one can see that mobile devices are predominately associated with Layer 1 antennas."}
+
+signal.strength.plot <- readRDS("Plots/signal.strength.dist.plot.rds")
+
 C.vec.df <- readRDS("working objects/C.vec.df.final.new.rds")
 # ECCDF of population distribution 
 ECCDF.phones.data <- C.vec.df %>% 
@@ -385,14 +393,14 @@ ECCDF.phones.plot <- ECCDF.phones.data %>%
                  color = layer)) + 
   geom_hline(yintercept = -0.3010300, linetype = "dotted") + 
   geom_hline(yintercept = -1, linetype = "dotted") + 
-  geom_text(x = 4, y = -0.15, label = "50% of the data") + 
-  geom_text(x = 4, y = -0.85, label = "90% of the data") + 
+  geom_text(x = 0.8, y = -0.2, label = "50% of the data") + 
+  geom_text(x = 0.8, y = -0.9, label = "90% of the data") + 
   scale_color_ptol(breaks = c("Layer 1", "Layer 2", "Layer 3")) + 
   ylim(-4, 0) +
-  ggtitle("") +
+  ggtitle("", subtitle = "ECCDF and ECDF") +
   labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)", colour = "")+
-  theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
-        plot.subtitle = element_text(size=9,hjust = 0.5))
+  theme(plot.title = element_text(size =10, face="bold", hjust = 0.5),
+        plot.subtitle = element_text(size =9,hjust = 0.5))
 ECDF.phones.plot <- ECCDF.phones.data %>%   
   ggplot() + 
   geom_point(aes(x = phones.sum, y = cum.prob.comp, color = layer)) + 
@@ -405,31 +413,15 @@ ECDF.phones.plot <- ECCDF.phones.data %>%
         axis.title.y = element_blank())
 pop.dist.ecdf.insert <- ECCDF.phones.plot +
   annotation_custom(ggplotGrob(ECDF.phones.plot), 
-                    xmin = 0, xmax = 2, 
+                    xmin = 0, xmax = 3, 
                     ymin = -4, ymax = -1.5)
     
-plot_grid(pop.dist.ecdf.insert, labels = "Fig. 8: ECCDF Device-to-cell association",  hjust = -0.1, label_size = 14)
+plot_grid(signal.strength.plot, pop.dist.ecdf.insert, labels = "Device-to-cell association",  hjust = -0.1, label_size = 14)
 ```
 
-```{r c.vector special cases, fig.width = 7, fig.cap = "These antennas have more than 10,000 mobile devices associated to themselves. They all belong to layer 1 and are located close or within urban centers."}
 
-extreme.antennas.plot <- C.vec.df %>%  
-  filter(phones.sum >= 10000) %>% 
-  left_join(coverage.areas, by = "antenna.ID") %>% 
-  st_as_sf() %>% 
-  ggplot() + 
-  geom_sf(aes(col = area.kind), fill = NA) + 
-  ggtitle("") + 
-  scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-  labs(x = NULL, y = NULL) +
-  theme(axis.text.x=element_text(angle=90, hjust=1),plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-  plot.subtitle = element_text(size = 9, hjust = 0.5))
 
-plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
-          hjust = -0.1, label_size = 14) 
-```
-
-## Estimation strategies
+### Estimation strategies
 
 We have implemented two specific estimation strategies:
 
@@ -439,7 +431,7 @@ We have implemented two specific estimation strategies:
 
 All three of these estimation techniques produce a tile specific estimand. The sum of these estimands always exactly equals the sum of the c.vector, i.e. all registered mobile phones. This characteristic explains the strategy of all of these estimators: Taking the complete number of registered phones in the c.vector and allocating them across all the tiles. There is however a fundamental difference between the two estimators: The second one allows for the realistic setting of overlapping antenna coverage. As shown above there are many tiles that are covered by multiple antennas. Current research suggests that this can result in more accurate estimations.
 
-### Voronoi tesselation
+#### Voronoi tesselation
 
 Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed there is one Voronoi region that contains the area that is closest to the particular seed. There are two seed specifications we are interested in:
 
@@ -449,11 +441,11 @@ Voronoi tesselation uses seeds to calculate Voronoi regions. For every seed ther
 
 Below we specify the tower locations as seed points. These are then used to compute the Voronoi regions. Before we do that we need to make sure that the corresponding c.vector is aggregated on the toer level. We then join the Voronoi regions with the tiles to create an object that links tiles within respective Voronoi regions.
 
-```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions."}
+```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions. The color scale is defined by the log with base 10 local density i.e. the absolute number of mobile phones within a Voronoi region divided by absolute area of the respecitve Voronoi region."}
 
 # Plot read in
-VT.plot <- readRDS("working objects/VT.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
-VA.plot <- readRDS("working objects/VA.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
+VT.plot <- readRDS("working objects/VT.plot.rds")
+VA.plot <- readRDS("working objects/VA.plot.rds")
 
 plot_grid(VT.plot, VA.plot, labels = "Fig. 10: Voronoi tower estimation",  hjust = -0.1, label_size = 14)
 
@@ -487,44 +479,12 @@ plot_grid(VT.bird.example.plot, VT.example.plot,
 Here we visualize the second case with an example tile and example Voronoi regions from the Voronoi with tower locations as seeds. In the left plot we can see a small tile that is indicated in red. This tile is at the intersection of 4 Voronoi regions. The corresponding relative tile area intersecting with each Voronoi region can be seen in the right plot. The labels correspond to the Voronoi region ID and the below in brackets indicate the proportional weight that should be considered in calculting the tile specific weighted mean estimate. To compare this to the first case - where a tile is fully contained only in one region - the weight for the particular Voronoi region is 1. The same methodogolgy is pursued for the Voronoi antenna case.
 
 
-### MLE Poisson
+#### MLE Poisson
 
 MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
 
-```{r estimations 1.1}
-equal.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
-equal.resid.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.resid.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
 
-plot_grid(equal.100.plot, equal.resid.100.plot, 
-          labels = "Fig. 12 Equal P.matrix, 100 iterations",  hjust = -0.1, label_size = 12,
-          ncol = 2, nrow = 1)
-```
-```{r estimations 1.2}
-ematrix = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.equal.rmspe.rds", method = "libcurl"))
-
-ematrix %>% 
-  kbl(caption = "Equal prob P.matrix, constant prior: RMSE") %>% 
-  kable_minimal() 
-```
-
-```{r estimations 2.1}
-true.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
-true.resid.100.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.resid.100.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
-
-plot_grid(true.100.plot, true.resid.100.plot, 
-          labels = "Fig. 13 True P. Matrix, 100 iterations",  hjust = -0.1, label_size = 12,
-          ncol = 2, nrow = 1)
-```
-
-```{r estimations 2.2}
-tmatrix = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/100.true.rmspe.rds", method = "libcurl"))
-
-ematrix %>% 
-  kbl(caption = "Equal prob P.matrix, constant prior: RMSE") %>% 
-  kable_minimal() 
-```
-
-## Evaluation of all estimates
+### Evaluation of all estimates
 
 We created 4 final estimates:
 
@@ -545,7 +505,7 @@ This section is still under construction. We will evaluate the estimators and th
 2.  Statistical evaluation
 
 
-### Geographical Evaluation
+#### Geographical Evaluation
 
 For the geographical evaluation we use the following performance measure: The visual resemblance of fixed tile categories from the respective estimate and the actual true population on a map.    
 
@@ -596,7 +556,7 @@ knitr::include_graphics("Estimates/Plot.files/MLE.equal.estimate_map.gif")
 knitr::include_graphics("Estimates/Plot.files/MLE.oracle.estimate_map.gif")
 ```
 
-### Statistical/Distributional Evaluation
+#### Statistical/Distributional Evaluation
 
 In order to actually compare the numerical resemblance between the estimates and the actual true population we introduce two discrepancy performance measures. 
 
@@ -616,13 +576,13 @@ plot_grid(aad.plot, mad.plot,
 ```
 By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. In general, the Voronoi estimates result in less discrepancy compared to both of the MLE estimates. Between the two MLE estimates, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimates, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.
 
-## Excurse Evaluation: Looking deeper into the convergence behavior
+### Excurse Evaluation: Looking deeper into the convergence behavior
 
 In the course of our work we thought it was particularly interesting to further focus on the actual convergence behavior of the MLE-based estimators. 
 
 We will visualize the convergence behaviour/the evolution of the estimands up to 1000 iterations. This is executed based on a stratified sample (strata: three level `pop.area.kind` variable), n = 150)
 
-### Discrepancy measures per iteration
+#### Discrepancy measures per iteration
 
 ```{r}
 
@@ -647,7 +607,7 @@ plot_grid(aad.plot, mad.plot,
 ```
 For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same. 
 
-### Convergence behavior
+#### Convergence behavior
 
 ```{r distributionl eval 1, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached."}
 
@@ -676,8 +636,15 @@ plot_grid(true.plot, true.resid.plot,
 
 Using the true population matrix, the estimated population stabilizes faster over time in comparison to the equal population matrix. However, there are a few tiles that do not stabilize as fast as we hoped. This is particularly evident in the urban tiles. The residual plot (right) shows the error of prediction over time by the type of tile. There seems to be a trend of increasing prediction error as the degree of urbanization increases as well. We can see that the range of error for suburban tiles range from 30 to -10 and the range of error for urban tiles are between 100 and -75. The suburban tiles seems to underestimate and the urban tiles seems to overestimate.
 
+### Final Remarks
 
-## References
+Throughout this notebook we have first created the toy world, where we have generated semi-synthetic population data and a synthetic cell towers. After that, we then linked each person in the population to cell tower. We then estimated the population based on the cell-device association from the towers and then finally evaluated how well these estimation strategies perform in comparison with each other. 
+
+However, this is not the end of MNO. Rather this is the beginning of further explorations. There are still a lot more to discover. Topics such as the convergence behavior of MLE estimations or simulating an event based example such as people going on holiday where the towers would then be overloaded with users are all in the works. Other estimations should be used as well, such as the Earth Mover's Distance or different evaluation metrics.
+
+Up until now, we have found that the MLE estimations are not as accurate as the Voronoi estimations, but we believe this is only temporary. Further varied testing should be carried out to verify the different characteristics of each estimation strategy. 
+
+### References
 
 [1] Ricciato F, Lanzieri G., Wirthmann A., and Seynaeve G.(2020) Towards a methodological framework for estimating present population density from mobile network operator data. <https://ec.europa.eu/eurostat/cros/content/towards-methodological-framework-estimating-present-population-density-mobile-network-operator-data-extended-version_en>
 
