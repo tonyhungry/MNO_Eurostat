@@ -22,13 +22,12 @@ voro.ant.eccdf.plot = voro.ant.ECCDF %>%
   geom_point(aes(x = log10.pop, y = log10.cum.prob.comp)) + 
   scale_color_ptol() + 
   ggtitle("", subtitle = "ECCDF of Voronoi ~ Antenna") +  
-  labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)",  
-       colour = "") + 
+  labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)") + 
   ylim(-10, 0) +
   theme(legend.position = "bottom") 
 
 voro.ant.ecdf.plot = voro %>%
-  ggplot(aes(voronoi.est.antenna)) + stat_ecdf() + 
+  ggplot(aes(voronoi.est.antenna)) + stat_ecdf(pad = F) + 
   ggtitle("", subtitle = "ECDF of Voronoi ~ Antenna")
 
 # Voronoi Tower
@@ -53,12 +52,58 @@ voro.tow.eccdf.plot = voro.tow.ECCDF %>%
   theme(legend.position = "bottom") 
 
 voro.ant.ecdf.plot = voro %>%
-  ggplot(aes(voronoi.est.tower)) + stat_ecdf() + 
+  ggplot(aes(voronoi.est.tower)) + stat_ecdf(pad = F) + 
   ggtitle("", subtitle = "ECDF of Voronoi ~ Tower")
 
-# 
+# MLE Equal 
 
+mle.equal.ECCDF = as.data.frame(equal) %>% 
+  # sample_n(1000) %>%
+  mutate(pop.plot = equal + 1) %>%  
+  arrange(pop.plot) %>%  
+  mutate(prob = 1 / n()) %>%  
+  mutate(cum.prob = cumsum(prob)) %>%  
+  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
+  mutate(log10.pop = log10(pop.plot)) %>%  
+  mutate(cum.prob.comp = 1 - cum.prob)
 
+mle.equal.eccdf.plot = mle.equal.ECCDF %>%   
+  ggplot() + 
+  geom_point(aes(x = log10.pop, y = log10.cum.prob.comp)) + 
+  scale_color_ptol() + 
+  ggtitle("", subtitle = "ECCDF of MLE ~ Equal") +  
+  labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)") + 
+  ylim(-10, 0) +
+  theme(legend.position = "bottom") 
+
+mle.equal.ecdf.plot = as.data.frame(equal) %>%
+  ggplot(aes(equal)) + stat_ecdf(pad = F) + 
+  ggtitle("", subtitle = "ECDF of MLE ~ Equal")
+
+# MLE true 
+
+mle.true.ECCDF = as.data.frame(true) %>% 
+  # sample_n(1000) %>%
+  mutate(pop.plot = true + 1) %>%  
+  arrange(pop.plot) %>%  
+  mutate(prob = 1 / n()) %>%  
+  mutate(cum.prob = cumsum(prob)) %>%  
+  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
+  mutate(log10.pop = log10(pop.plot)) %>%  
+  mutate(cum.prob.comp = 1 - cum.prob)
+
+mle.true.eccdf.plot = mle.true.ECCDF %>%   
+  ggplot() + 
+  geom_point(aes(x = log10.pop, y = log10.cum.prob.comp)) + 
+  scale_color_ptol() + 
+  ggtitle("", subtitle = "ECCDF of MLE ~ True") +  
+  labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)") + 
+  ylim(-10, 0) +
+  theme(legend.position = "bottom") 
+
+mle.true.ecdf.plot = as.data.frame(true) %>%
+  ggplot(aes(true)) + stat_ecdf(pad = F) + 
+  ggtitle("", subtitle = "ECDF of MLE ~ True")
 
 #### Potential New Work Flow for ECCDF ####
 voroa = cbind(voro, equal, true)
