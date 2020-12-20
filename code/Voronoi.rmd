@@ -175,7 +175,7 @@ antenna.seed.voronoi <- antennas.final.data %>%
 # Visualizing the Vornoi regions with respective phone count
 VT.plot <- tower.seed.voronoi %>% 
   ggplot() +
-  geom_sf(aes(fill = category, col = category)) + 
+  geom_sf(aes(fill = category), size = 0.001) + 
   scale_fill_ptol(na.translate = FALSE) +
   scale_color_ptol(na.translate = FALSE) +
   guides(color = F) +
@@ -189,7 +189,7 @@ saveRDS(VT.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/wor
 
 VA.plot <- antenna.seed.voronoi %>% 
   ggplot() +
-  geom_sf(aes(fill = category, col = category)) + 
+  geom_sf(aes(fill = category), size = 0.001) + 
   scale_fill_ptol(na.translate = FALSE) +
   scale_color_ptol(na.translate = FALSE) +
   guides(color = F) +
