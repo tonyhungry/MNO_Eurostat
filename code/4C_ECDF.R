@@ -9,12 +9,12 @@ true <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimate
 # Voronoi Antenna
 voro.ant.ECCDF = voro %>% 
   # sample_n(1000) %>%
-  mutate(pop.plot = voronoi.est.antenna) %>%  
+  mutate(pop.plot = voronoi.est.antenna + 1) %>%  
   arrange(pop.plot) %>%  
   mutate(prob = 1 / n()) %>%  
   mutate(cum.prob = cumsum(prob)) %>%  
-  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
-  mutate(log10.pop = log10(pop.plot)) %>%  
+  mutate(log10.cum.prob.comp = 1 - cum.prob) %>%  
+  mutate(log10.pop = pop.plot) %>%  
   mutate(cum.prob.comp = 1 - cum.prob)
 
 voro.ant.eccdf.plot = voro.ant.ECCDF %>%   
@@ -22,13 +22,20 @@ voro.ant.eccdf.plot = voro.ant.ECCDF %>%
   geom_point(aes(x = log10.pop, y = log10.cum.prob.comp)) + 
   scale_color_ptol() + 
   ggtitle("", subtitle = "ECCDF of Voronoi ~ Antenna") +  
-  labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)") + 
+  labs(y = "Prob(Y > x)", x = "Mobile phones") + 
   ylim(-10, 0) +
   theme(legend.position = "bottom") 
 
+voro %>%
+  ggplot(aes(x=voronoi.est.antenna)) + geom_density()
+
+voro %>%
+  ggplot(aes(x=voronoi.est.antenna)) + geom_histogram(bins= 5)
+
 voro.ant.ecdf.plot = voro %>%
   ggplot(aes(voronoi.est.antenna)) + stat_ecdf(pad = F) + 
-  ggtitle("", subtitle = "ECDF of Voronoi ~ Antenna")
+  ggtitle("", subtitle = "ECDF of Voronoi ~ Antenna") +
+  labs(y = "Prob(Y > x)", x = "Mobile phones")
 
 # Voronoi Tower
 voro.tow.ECCDF = voro %>% 
