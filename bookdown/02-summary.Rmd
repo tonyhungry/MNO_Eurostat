@@ -78,48 +78,10 @@ plot_grid(focus.area.plot,
 As mentioned above this area is very heterogeneous in urban-rural intensity. Knowing the location of urban centers is very important for the corresponding radio cell network as there are differences in cell coverage between these different area kinds. We are aiming at developing a 3-category classification for each tile: Rural, Suburban and Urban. Based on the census data on the tile level we cannot locate urban centers just yet. Classifying tiles on such a low spatial resolution into one of these categories independent from each other (i.e. based on their population numbers) would not lead to the true location of urban centers. Therefore we apply a spatial clustering algorithm to account for the spatial dependence. The plots below present our classification results:
 ```{r pop distribution 1, fig.cap= "Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering."}
 
-# Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation
-# ECCDF of population distribution 
-ECCDF.pop.data <- census.de.100m.tile %>% 
-  # sample_n(1000) %>%
-  mutate(pop.plot = pop + 1) %>%  
-  arrange(pop.plot) %>%  
-  mutate(prob = 1 / n()) %>%  
-  mutate(cum.prob = cumsum(prob)) %>%  
-  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
-  mutate(log10.pop = log10(pop.plot)) %>%  
-  mutate(cum.prob.comp = 1 - cum.prob) %>% 
-  mutate(pop.area.kind = case_when(pop == 0 ~ "Uninhabitated", 
-                                   TRUE ~ pop.area.kind))
+tile.prop.plot <- readRDS("Estimates/Plot.files/tile.prop.plot.rds")
 
-prop.class <- data.frame( 
-  class = c("Rural","Suburban", "Uninhabitated","Urban"), 
-  n = summary(as.factor(ECCDF.pop.data$pop.area.kind)), 
-  prop = round(summary(as.factor(ECCDF.pop.data$pop.area.kind)) / length(census.de.100m.tile$internal.id), digits = 4) * 100)  %>% 
-  mutate(class = factor(class)) %>% 
-  arrange(desc(class)) %>% 
-  mutate(lab.ypos = cumsum(prop) - 0.5 * prop) 
- 
-tile.prop.plot <- prop.class %>% 
-  ggplot(aes(x = "", y = prop, fill = class)) + 
-  geom_bar(width = 1, stat = "identity", color = "white") + 
-  scale_fill_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
-  geom_text(aes(y = lab.ypos, label = paste0(prop, "%")), color = "black") +
-  labs(x = "Class", y = "Number of tiles", title = "",
-    subtitle = "Fig. 2a: Tile proportion") + 
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5))
- 
-cluster.plot <- census.de.100m.tile %>%
-  filter(pop.area.kind %in% c("Suburban", "Urban")) %>% 
-  ggplot() +  
-  geom_sf(aes(col = factor(pop.area.kind)), show.legend = F) + 
-  ggtitle("", subtitle = "Clustering Results") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
-  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#117733", "#CC6677")) +
-   labs(subtitle = "Fig. 2b: Clustering results") +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5))
+cluster.plot <- readRDS("working objects/cluster.plot.rds")
+
 
 plot_grid(cluster.plot, tile.prop.plot, labels = "Fig.2 : Population Classification",  
             hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1)) 
@@ -131,41 +93,26 @@ The stacked bar plot shows the proportions of the tiles according to the four ca
 
 ```{r pop distribution 2, fig.cap= "The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." }
 
-# pop.dist.map.plot <- ECCDF.pop.data %>% 
-#   # sample_n(1000) %>%
-#   ggplot() + 
-#   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
-#   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-#   ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
-#   theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
-
 true.geo.eval.plot <- readRDS("Estimates/Plot.files/true.pop_map.rds")
+
+ECCDF.true <- readRDS("Estimates/Plot.files/ECCDF.true.rds")
+
+ECDF.true <- readRDS("Estimates/Plot.files/ECDF.true.rds")
+
  
-ECCDF.pop.plot <- ECCDF.pop.data %>%   
-  ggplot() + 
-  geom_point(aes(x = log10.pop, y = log10.cum.prob.comp, 
-                 color = pop.area.kind)) + 
+ECCDF.pop.plot <- ECCDF.true +
   geom_hline(yintercept = -0.3010300, linetype = "dotted") + 
   geom_hline(yintercept = -1, linetype = "dotted") + 
   geom_text(x = 1.5, y = -0.2, label = "50% of the data") + 
   geom_text(x = 1.5, y = -0.9, label = "90% of the data") + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-  ggtitle("", subtitle = "Fig. 3b: Empirical cumulative complementary\ndistribution function") +  
   labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)",  
         colour = "") + 
   ylim(-7, 0) +
   theme(legend.position = "bottom") 
  
-ECDF.pop.plot <- ECCDF.pop.data %>%   
-  ggplot() + 
-  geom_point(aes(x = pop.plot, y = cum.prob.comp, color = pop.area.kind)) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban"), guide = FALSE, expand = c(0, 0)) +
+ECDF.pop.plot <- ECDF.true +
   xlim(0, 30) +
-  labs(y = "", x = "") +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank())
+  labs(y = "", x = "")
 
 pop.dist.ecdf.insert <- ECCDF.pop.plot +
   annotation_custom(ggplotGrob(ECDF.pop.plot), 
@@ -303,14 +250,14 @@ The interpretations of the table above correspond to the level of coverage of ea
 ```{r coverage areas 3, fig.cap = "The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density."}
 # Implement shape of focus area
 # Implement shape of focus area
-# coverage.area.full.plot <- coverage.areas %>% 
-#  ggplot() +
-#  geom_sf(aes(col = area.kind), fill = NA) +
-#  ggtitle("", subtitle = "Full coverage") +
-#    scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-#  theme(axis.text.x=element_text(angle=90, hjust=1),
-#        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-#  plot.subtitle = element_text(size = 9, hjust = 0.5))
+coverage.area.full.plot <- coverage.areas %>%
+ ggplot() +
+ geom_sf(aes(col = area.kind), fill = NA) +
+ ggtitle("", subtitle = "Full coverage") +
+   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
+ theme(axis.text.x=element_text(angle=90, hjust=1),
+       plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+ plot.subtitle = element_text(size = 9, hjust = 0.5))
 
 plot_grid(true.geo.eval.plot, coverage.area.full.plot, labels = "Fig. 6: Full coverage corresponding to the density", 
           hjust = -0.1, label_size = 14)
