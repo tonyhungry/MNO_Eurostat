@@ -102,17 +102,8 @@ As mentioned above this area is very heterogeneous in urban-rural intensity. Kno
 
 tile.prop.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/tile.prop.plot.rds")
 
- 
-cluster.plot <- census.de.100m.tile %>%
-  filter(pop.area.kind %in% c("Suburban", "Urban")) %>% 
-  ggplot() +  
-  geom_sf(aes(col = factor(pop.area.kind)), show.legend = F) + 
-  ggtitle("", subtitle = "Clustering Results") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
-  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#117733", "#CC6677")) +
-   labs(subtitle = "Fig. 2b: Clustering results") +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5))
+cluster.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/cluster.plot.rds")
+
 
 plot_grid(cluster.plot, tile.prop.plot, labels = "Fig.2 : Population Classification",  
             hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1)) 
