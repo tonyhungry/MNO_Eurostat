@@ -40,7 +40,7 @@ voro.ant.ecdf.plot = voro %>%
 # Voronoi Tower
 voro.tow.ECCDF = voro %>% 
   # sample_n(1000) %>%
-  mutate(pop.plot = voronoi.est.tower) %>%  
+  mutate(pop.plot = voronoi.est.tower + 1) %>%  
   arrange(pop.plot) %>%  
   mutate(prob = 1 / n()) %>%  
   mutate(cum.prob = cumsum(prob)) %>%  
