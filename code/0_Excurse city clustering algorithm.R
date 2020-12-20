@@ -8,6 +8,8 @@ library(raster)
 library(stars)
 library(osc)
 
+set.seed(6)
+
 census.raw <- fread("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/Data/Census data Germany/csv_Bevoelkerung_100m_Gitter/Zensus_Bevoelkerung_100m-Gitter.csv")
 
 # Dataframe with bounding box, tile id, and two versions of the population variable
@@ -16,11 +18,13 @@ census.de.100m <- census.raw %>%
   filter(between(y, 2700000, 2900000), # 285
          between(x, 4400000, 4500000)) %>%
   mutate(internal.id = row_number()) %>%
-  mutate(pop = case_when(pop.raw == "-1" | is.na(pop.raw) ~ sample(0:1, n(), replace = T),
-                         pop.raw == 2 ~ sample(2:3, n(), replace = T),
+  mutate(pop.true = case_when(pop.raw == "-1" | is.na(pop.raw) ~ sample(0:1, n(), replace = T),
+                         pop.raw %in% c(2:3) ~ sample(2:3, n(), replace = T),
                          TRUE ~ as.integer(pop.raw))) %>% 
-  mutate(pop.raster = case_when(pop < 70 ~ 0,
-                                pop >= 70 ~ 1)) %>%  # defining the pop threshold per tile
+  mutate(pop = case_when(pop.true <= 12 ~ sample(0:4, n(), prob = c(3/4, 3/16, 3/64, 3/256, 1/256), replace = T),
+                         pop.true > 12 ~ as.integer(round(pop.true / 3, 0)))) # reducing population by a third standing for one MNO provider population
+  mutate(pop.raster = case_when(pop < 50 ~ 0,
+                                pop >= 50 ~ 1)) %>%  # defining the pop threshold per tile
   dplyr::select(-pop.raw)
 
 

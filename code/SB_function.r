@@ -2,8 +2,8 @@ library(tidyverse)
 library(Matrix)
 
 # toy data
-c.vec <- c(12, 10, 30) # three antennas
-P.mat <- Matrix(matrix(c(0,1,0, 0,0.5,0.5, 1/3, 1/3, 1/3), nrow = 3, ncol = 3, byrow = F), sparse = T)
+c.vec <- c(12, 10, 30, 0) # three antennas
+P.mat <- Matrix(matrix(c(0, 1, 0, 0, 0.5, 0.5, 1/3, 1/3, 1/3), nrow = 3, ncol = 3, byrow = F), sparse = T)
 a.vec <- c(2, 1, 1) # 3 tiles
 
 # non informative prior

@@ -36,7 +36,7 @@ census.tile <- raster::rasterFromXYZ(census.de.100m, crs = st_crs(3035)$proj4str
 # Raster layer object with specified dichotomized variable for cca
 census.tile.pop.raster <- raster::raster(census.tile, layer = 4) 
 
-# CCA workflow, clustering 1 values (pop > 70) and define s
+# CCA workflow, clustering 1 values (pop > 15) and define s
 cities <- cca(census.tile.pop.raster, cell.class = 1, s = 11100000, unit = "m") 
 
 # Adding classification results to census sf object and splitting it up for further parallelized workflow
