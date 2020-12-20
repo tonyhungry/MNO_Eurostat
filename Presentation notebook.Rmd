@@ -100,37 +100,8 @@ plot_grid(focus.area.plot,
 As mentioned above this area is very heterogeneous in urban-rural intensity. Knowing the location of urban centers is very important for the corresponding radio cell network as there are differences in cell coverage between these different area kinds. We are aiming at developing a 3-category classification for each tile: Rural, Suburban and Urban. Based on the census data on the tile level we cannot locate urban centers just yet. Classifying tiles on such a low spatial resolution into one of these categories independent from each other (i.e. based on their population numbers) would not lead to the true location of urban centers. Therefore we apply a spatial clustering algorithm to account for the spatial dependence. The plots below present our classification results:
 ```{r pop distribution 1, fig.cap= "Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering."}
 
-# Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation
-# ECCDF of population distribution 
-ECCDF.pop.data <- census.de.100m.tile %>% 
-  # sample_n(1000) %>%
-  mutate(pop.plot = pop + 1) %>%  
-  arrange(pop.plot) %>%  
-  mutate(prob = 1 / n()) %>%  
-  mutate(cum.prob = cumsum(prob)) %>%  
-  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
-  mutate(log10.pop = log10(pop.plot)) %>%  
-  mutate(cum.prob.comp = 1 - cum.prob) %>% 
-  mutate(pop.area.kind = case_when(pop == 0 ~ "Uninhabitated", 
-                                   TRUE ~ pop.area.kind))
+tile.prop.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/tile.prop.plot.rds")
 
-prop.class <- data.frame( 
-  class = c("Rural","Suburban", "Uninhabitated","Urban"), 
-  n = summary(as.factor(ECCDF.pop.data$pop.area.kind)), 
-  prop = round(summary(as.factor(ECCDF.pop.data$pop.area.kind)) / length(census.de.100m.tile$internal.id), digits = 4) * 100)  %>% 
-  mutate(class = factor(class)) %>% 
-  arrange(desc(class)) %>% 
-  mutate(lab.ypos = cumsum(prop) - 0.5 * prop) 
- 
-tile.prop.plot <- prop.class %>% 
-  ggplot(aes(x = "", y = prop, fill = class)) + 
-  geom_bar(width = 1, stat = "identity", color = "white") + 
-  scale_fill_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
-  geom_text(aes(y = lab.ypos, label = paste0(prop, "%")), color = "black") +
-  labs(x = "Class", y = "Number of tiles", title = "",
-    subtitle = "Fig. 2a: Tile proportion") + 
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5))
  
 cluster.plot <- census.de.100m.tile %>%
   filter(pop.area.kind %in% c("Suburban", "Urban")) %>% 
@@ -145,49 +116,35 @@ cluster.plot <- census.de.100m.tile %>%
 
 plot_grid(cluster.plot, tile.prop.plot, labels = "Fig.2 : Population Classification",  
             hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1)) 
+
 ```
 
 Figure 2 shows the classification results from the clustering algorithm and the proportion of people in the area categories. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. When working at this low spatial resolution, it is discouraged to classify tiles independently based on their respective population value - one needs to take spatial dependence into consideration in order to identify urban centers. Therefore, we apply a spatial clustering method, mainly for identifying the last two categories. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 15 people per tile. Tiles below 15 are either classified as Uninhabited or Rural, from the start (uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 15 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 15 people.
 
-The stacked bar plot shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, `r prop.class$prop[1]`% of the tiles are urban areas. `r prop.class$prop[2]`% of the tiles are uninhabited areas. `r prop.class$prop[3]`% of the tiles are suburban areas, and `r prop.class$prop[4]`% of the tiles are rural areas.
+The stacked bar plot shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, `r tile.prop.plot$data$prop[1]`% of the tiles are urban areas. `r tile.prop.plot$data$prop$prop[2]`% of the tiles are uninhabited areas. `r tile.prop.plot$data$prop$prop[3]`% of the tiles are suburban areas, and `r tile.prop.plot$data$prop$prop[4]`% of the tiles are rural areas.
 
 ```{r pop distribution 2, fig.cap= "The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." }
 
-# pop.dist.map.plot <- ECCDF.pop.data %>% 
-#   # sample_n(1000) %>%
-#   ggplot() + 
-#   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
-#   scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-#   ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
-#   theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
-
 true.geo.eval.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/true.pop_map.rds")
+
+ECCDF.true <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECCDF.true.rds")
+
+ECDF.true <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECDF.true.rds")
+
  
-ECCDF.pop.plot <- ECCDF.pop.data %>%   
-  ggplot() + 
-  geom_point(aes(x = log10.pop, y = log10.cum.prob.comp, 
-                 color = pop.area.kind)) + 
+ECCDF.pop.plot <- ECCDF.true +
   geom_hline(yintercept = -0.3010300, linetype = "dotted") + 
   geom_hline(yintercept = -1, linetype = "dotted") + 
   geom_text(x = 1.5, y = -0.2, label = "50% of the data") + 
   geom_text(x = 1.5, y = -0.9, label = "90% of the data") + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-  ggtitle("", subtitle = "Fig. 3b: Empirical cumulative complementary\ndistribution function") +  
   labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)",  
         colour = "") + 
   ylim(-7, 0) +
   theme(legend.position = "bottom") 
  
-ECDF.pop.plot <- ECCDF.pop.data %>%   
-  ggplot() + 
-  geom_point(aes(x = pop.plot, y = cum.prob.comp, color = pop.area.kind)) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban"), guide = FALSE, expand = c(0, 0)) +
+ECDF.pop.plot <- ECDF.true +
   xlim(0, 30) +
-  labs(y = "", x = "") +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank())
+  labs(y = "", x = "")
 
 pop.dist.ecdf.insert <- ECCDF.pop.plot +
   annotation_custom(ggplotGrob(ECDF.pop.plot), 
@@ -492,7 +449,7 @@ For the first case, the tile specific estimate corresponds to $d_{k}$. For the s
 
 VT.bird.example.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.bird.example.plot.rds")
 
-VT.example.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.example.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
+VT.example.plot <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.example.plot.rds") + theme(axis.text.x=element_text(angle = 90, hjust = 1))
 
 plot_grid(VT.bird.example.plot, VT.example.plot, 
           labels = "Fig. 11: Example multiple tile",  hjust = -0.1, label_size = 14)
