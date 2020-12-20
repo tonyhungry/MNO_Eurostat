@@ -4,12 +4,13 @@ require(ggthemes)
 # Loading in
 
 voro <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Voronoi both/Voronoi.estimates.rds")
-equal <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part801_1000.rds")[,202]
-true <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000.rds")[,202]
+equal <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part801_1000_new.rds")[,202]
+true <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000_new.rds")[,202]
 
 voro = cbind(voro, equal, true)
 colnames(voro) = c("internal.id","pop","u.antenna","u.tower","u.equal","u.true")
-voro = voro [,-1]
+voro = voro [,-1] %>%
+  ungroup()
 
 bigu = sum(voro$pop)
 
@@ -27,7 +28,6 @@ aad.comp.plot = aadl %>%
   labs(x = "Estimation Type", y = "Average Absolute Discrepancy",title = "Comparison Across Different Estimation Strategies ~ AAD") + 
   theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") +
   scale_fill_ptol()
-  
 
 saveRDS(aad.comp.plot, file = "aad.comp.plot.rds")
 
