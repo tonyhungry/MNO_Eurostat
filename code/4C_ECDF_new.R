@@ -2,16 +2,16 @@ library(tidyverse)
 library(ggthemes)
 library(sf)
 
-setwd("C:/Users/Marco/")
+# setwd("C:/Users/Marco/")
 
 # Loading In
-voro <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Voronoi both/Voronoi.estimates.rds")
-equal <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.equal/u.est.non.inf.P.equal.part801_1000_new.rds")[,c(1,202)]
-# oracle <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000_new.rds")[,202]
-census.de.100m.tile <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds") 
+voro <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Voronoi both/Voronoi.estimates.rds")
+equal <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part801_1000_new.rds")[,c(1,202)]
+oracle <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000_new.rds")[,c(1,202)]
+census.de.100m.tile <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/census.tile.final.rds") 
 
 
-## This function computes ECCDF dataframes with log10 transformations of te x and y axis
+## This function computes ECCDF data frames with log10 transformations of the x and y axis
 
 custom_ecdf_prep <- function(df) {
   data <- df %>% 
@@ -83,15 +83,15 @@ MLE.equal.ECCDF <- equal %>%
 
 # Oracle prob
 
-# MLE.oracle.ECCDF <- oracle %>% 
-#   as_tibble() %>% 
-#   ungroup() %>% 
-#   dplyr::select(internal.id = j, pop = u200) %>% 
-#   custom_ecdf_prep() %>% 
-#   select(log10.cum.prob.comp, log10.pop) %>%
-#   mutate(log10.cum.prob.comp = round(log10.cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
-#   distinct() %>% 
-#   mutate(estimate = "MLE oracle P.matrix")
+MLE.oracle.ECCDF <- oracle %>%
+   as_tibble() %>%
+   ungroup() %>%
+  dplyr::select(internal.id = j, pop = u200) %>%
+  custom_ecdf_prep() %>%
+  select(log10.cum.prob.comp, log10.pop) %>%
+  mutate(log10.cum.prob.comp = round(log10.cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
+  distinct() %>%
+  mutate(estimate = "MLE oracle P.matrix")
 
 # True dist
 
@@ -119,7 +119,7 @@ ECCDF.estimates <- final.ECCDF %>%
   ggtitle("", subtitle = "ECCDF comparison") +  
   labs(y = "Prob(Y > x)", x = "Mobile phones", color = "Estimator")
 
-saveRDS(ECCDF.estimates, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECCDF.estimates.rds")
+saveRDS(ECCDF.estimates, "~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/ECCDF.estimates.rds")
 
 
 #######-------------------------###
@@ -165,15 +165,15 @@ MLE.equal.ECDF <- equal %>%
 
 # Oracle prob
 
-# MLE.oracle.ECDF <- oracle %>%
-#   as_tibble() %>%
-#   ungroup() %>%
-#   dplyr::select(internal.id = j, pop = u200) %>%
-#   custom_ecdf_prep() %>%
-#   select(cum.prob.comp, pop.plot) %>%
-#   mutate(cum.prob.comp = round(cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
-#   distinct() %>%
-#   mutate(estimate = "MLE oracle P.matrix")
+ MLE.oracle.ECDF <- oracle %>%
+   as_tibble() %>%
+   ungroup() %>%
+   dplyr::select(internal.id = j, pop = u200) %>%
+   custom_ecdf_prep() %>%
+   select(cum.prob.comp, pop.plot) %>%
+   mutate(cum.prob.comp = round(cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
+   distinct() %>%
+   mutate(estimate = "MLE oracle P.matrix")
 
 # True dist
 
@@ -204,4 +204,4 @@ ECDF.estimates <- final.ECDF %>%
         axis.title.x = element_blank(),
         axis.title.y = element_blank())
 
-saveRDS(ECDF.estimates, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECDF.estimates.rds")
+saveRDS(ECDF.estimates, "~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/ECDF.estimates.rds")
