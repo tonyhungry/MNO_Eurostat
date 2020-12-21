@@ -99,7 +99,7 @@ cluster.plot <- census.classified.final.sf %>%
   geom_sf(aes(color = factor(pop.area.kind), fill = factor(pop.area.kind)),  show.legend = F) + 
   ggtitle("", subtitle = "Clustering Results") + 
   theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
-  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#117733", "#CC6677")) +
+  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#DDCC77", "#CC6677")) +
   labs(subtitle = "Fig. 2b: Clustering results") +
   theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
         plot.subtitle = element_text(size = 9, hjust = 0.5))
