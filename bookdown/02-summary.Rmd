@@ -443,9 +443,28 @@ We created 4 final estimates:
 
 -   MLE uniform prior oracle probability P.matrix after 1000 iterations
 
-In this section we want to evaluate the 4 estimates by comparing them with different perspectives in mind to the actual true population. Each subsection defines the perspective-respective performance measure:
 
-This section is still under construction. We will evaluate the estimators and their convergence behaviour from three perspectives:
+In the following we compare the distributions of the final estimates to the true distribution of the mobile phone density per tile. Signficant variation can only be viewed in the tails of the dirstbution (ECCDF).
+
+```{r estimator pop dist compare, fig.cap="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density."}
+ECCDF.compare <- readRDS("Estimates/Plot.files/ECCDF.estimates.rds")
+
+ECDF.compare <- readRDS("Estimates/Plot.files/ECDF.estimates.rds") +  xlim(0, 1000) +
+  labs(y = "", x = "")
+
+
+# 
+pop.dist.estimates.compare <- ECCDF.compare +
+  annotation_custom(ggplotGrob(ECDF.compare),
+                    xmin = 0, xmax = 1.5,
+                    ymin = -6, ymax = -3)
+
+
+plot_grid(pop.dist.estimates.compare, 
+          labels = "Estimator density comparison",  hjust = -0.1, label_size = 14)
+```
+
+In this section we want to further evaluate the 4 estimates by comparing them with different perspectives in mind to the actual true population. Each subsection defines the perspective-respective performance measure:
 
 1.  Geographical evaluation
 
