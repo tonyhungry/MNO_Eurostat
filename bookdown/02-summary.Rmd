@@ -486,7 +486,7 @@ plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
 #           labels = "Comparing MLE equal P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("Estimates/Plot.files/MLE.equal.estimate_map.gif")
+knitr::include_graphics("Estimates/Plot.files/MLE.equal.estimate_map_new.gif")
 
 
 ```
@@ -500,7 +500,7 @@ knitr::include_graphics("Estimates/Plot.files/MLE.equal.estimate_map.gif")
 #           labels = "Comparing MLE true P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("Estimates/Plot.files/MLE.oracle.estimate_map.gif")
+knitr::include_graphics("Estimates/Plot.files/MLE.oracle.estimate_map_new.gif")
 ```
 
 #### Statistical/Distributional Evaluation
