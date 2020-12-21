@@ -193,7 +193,7 @@ We use a hexagonal structure to place towers across our focus area. This is a qu
 The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.
 
 ```{r animation}
-knitr::include_graphics("https://github.com/R-ramljak/MNO_Eurostat/raw/master/antenna%20animation.gif")
+knitr::include_graphics("https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/antenna%20animation.gif")
 ```
 
 Basically, a tower is generated at its specified location, then three antennas are created. For the operationalized data structure, the antenna location is not really relevant as it corresponds to the respective tower location. What is more important are the antennas' *coverage area centroids* because they describe the middle point of the then generated circular coverage area. The specific radius of any generic coverage area is layer specific and listed above. As indicated in the animation, an antenna specific coverage area is setup with a variable *coverage intensity profile*. Basically, cell phones that are closer to the coverage area centroid of any antenna, have a higher coverage probability, which will be later introduced as the *signal strength* parameter.
@@ -486,7 +486,8 @@ plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
 #           labels = "Comparing MLE equal P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("Estimates/Plot.files/MLE.equal.estimate_map_new.gif")
+
+knitr::include_graphics("https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.equal.estimate_map_new.gif")
 
 
 ```
@@ -500,7 +501,7 @@ knitr::include_graphics("Estimates/Plot.files/MLE.equal.estimate_map_new.gif")
 #           labels = "Comparing MLE true P.matrix estimate", label_size = 12,
 #           align = "hv", hjust = -0.1)
 
-knitr::include_graphics("Estimates/Plot.files/MLE.oracle.estimate_map_new.gif")
+knitr::include_graphics("https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.oracle.estimate_map_new.gif")
 ```
 
 #### Statistical/Distributional Evaluation
