@@ -22,3 +22,13 @@ example-two
 evaluation-of-our-estimation
 a-final-note
 toy-world-3
+origin
+start
+goal-of-this-project
+section
+estimation-strategies-1
+evaluation-methods
+final-remarks
+generation-of-population
+generation-of-a-synthetic-radio-network-1
+device-to-cell-association-1

@@ -36,7 +36,7 @@ census.tile <- raster::rasterFromXYZ(census.de.100m, crs = st_crs(3035)$proj4str
 # Raster layer object with specified dichotomized variable for cca
 census.tile.pop.raster <- raster::raster(census.tile, layer = 4) 
 
-# CCA workflow, clustering 1 values (pop > 70) and define s
+# CCA workflow, clustering 1 values (pop > 15) and define s
 cities <- cca(census.tile.pop.raster, cell.class = 1, s = 11100000, unit = "m") 
 
 # Adding classification results to census sf object and splitting it up for further parallelized workflow
@@ -90,9 +90,21 @@ census.classified.final.sf %>%
 
 
 saveRDS(census.classified.final.sf, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
-# census.classified.final.sf <- readRDS("C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
+census.classified.final.sf <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds")
 
 
+cluster.plot <- census.classified.final.sf %>%
+  filter(pop.area.kind %in% c("Suburban", "Urban")) %>% 
+  ggplot() +  
+  geom_sf(aes(color = factor(pop.area.kind), fill = factor(pop.area.kind)),  show.legend = F) + 
+  ggtitle("", subtitle = "Clustering Results") + 
+  theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
+  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#DDCC77", "#CC6677")) +
+  labs(subtitle = "Fig. 2b: Clustering results") +
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5))
+
+saveRDS(cluster.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/cluster.plot.rds")
 
 
 ######################################################

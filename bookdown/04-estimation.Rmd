@@ -1,5 +1,3 @@
-# Estimation of MNO Population
+# Estimation Strategies
 
-## Example one
-
-## Example two
+Currently under heavy construction.

@@ -264,60 +264,60 @@ saveRDS(true.resid.plot, file = "true.resid.plot.rds")
 
 #### Unused Codes ####
 
-# EQUAL: Root Mean Squared Prediction Error
-equalc = esample %>% 
-  mutate(r0001 = (u.true - u0001)^2, r0002 = (u.true - u0002)^2, r0005 = (u.true - u0005)^2,
-         r0010 = (u.true - u0010)^2, r0020 = (u.true - u0020)^2, r0050 = (u.true - u0050)^2,
-         r0100 = (u.true - u0100)^2, r0200 = (u.true - u0200)^2, r0300 = (u.true - u0300)^2,
-         r0400 = (u.true - u0400)^2, r0500 = (u.true - u0500)^2, r0600 = (u.true - u0600)^2,
-         r0700 = (u.true - u0700)^2, r0800 = (u.true - u0800)^2,
-         r0900 = (u.true - u0900)^2, r1000 = (u.true - u1000)^2
-  ) %>%
-  group_by(pop.area.kind) %>% 
-  summarise(i0001 = sqrt(mean(r0001)), i0002 = sqrt(mean(r0002)), i0005 = sqrt(mean(r0005)),
-            i0010 = sqrt(mean(r0010)), i0020 = sqrt(mean(r0020)), i0050 = sqrt(mean(r0050)),
-            i0100 = sqrt(mean(r0100)), i0200 = sqrt(mean(r0200)), i0300 = sqrt(mean(r0300)),
-            i0400 = sqrt(mean(r0400)), i0500 = sqrt(mean(r0500)), i0600 = sqrt(mean(r0600)),
-            i0700 = sqrt(mean(r0700)), i0800 = sqrt(mean(r0800)), i0900 = sqrt(mean(r0900)),
-            i1000 = sqrt(mean(r1000))
-  ) %>% 
-  kbl(caption = "Comparison between simulation results using Mean Squared Prediction Error") %>% 
-  kable_minimal() 
-
-saveRDS(equalc, file = "equal.rmspe.rds")
-
-# TRUE: Root Mean Squared Prediction Error
-tequalc = tsample %>% 
-  mutate(r0001 = (u.true.x - u0001)^2, r0002 = (u.true.x - u0002)^2, r0005 = (u.true.x - u0005)^2,
-         r0010 = (u.true.x - u0010)^2, r0020 = (u.true.x - u0020)^2, r0050 = (u.true.x - u0050)^2,
-         r0100 = (u.true.x - u0100)^2, r0200 = (u.true.x - u0200)^2, r0300 = (u.true.x - u0300)^2,
-         r0400 = (u.true.x - u0400)^2, r0500 = (u.true.x - u0500)^2, r0600 = (u.true.x - u0600)^2,
-         r0700 = (u.true.x - u0700)^2, r0800 = (u.true.x - u0800)^2
-  ) %>%
-  group_by(pop.area.kind) %>% 
-  summarise(i001 = sqrt(mean(r0001)), i002 = sqrt(mean(r0002)), i005 = sqrt(mean(r0005)),
-            i010 = sqrt(mean(r0010)), i020 = sqrt(mean(r0020)), i050 = sqrt(mean(r0050)),
-            i100 = sqrt(mean(r0100)), i200 = sqrt(mean(r0200)), i300 = sqrt(mean(r0300)),
-            i400 = sqrt(mean(r0400)), i500 = sqrt(mean(r0500)), i600 = sqrt(mean(r0600)),
-            i700 = sqrt(mean(r0700)), i800 = sqrt(mean(r0800))
-  ) %>% 
-  kbl(caption = "Comparison between simulation results using Mean Squared Prediction Error") %>% 
-  kable_minimal() 
-
-saveRDS(tequalc, file = "true.rmspe.rds")
-
-# The first 20 iterations
-b = esample[,1:22] %>% 
-  pivot_longer(-c(internal.id), names_to = "iter", values_to = "sim") %>%
-  mutate(lsim = log(sim, base=10))
-b %>% 
-  ggplot(aes(x = iter, y = sim, group = internal.id)) + 
-  geom_line()
-
-a = equal[1:100,]
-a %>% ggplot(aes(x = iter, y = sim, group = internal.id)) + 
-  geom_line(aes(color = internal.id)) + labs(x = "Number of Iteration", y = "Simulated Population", title = "Equal Probability Matrix ~ Urban") + theme(axis.text.x = element_text(angle = 90,size=5))
-
-equal %>% filter(pop.area.kind == "Urban") %>%
-  ggplot(aes(x = iter, y = sim, group = internal.id)) + 
-  geom_line(aes(color = internal.id)) + labs(x = "Number of Iteration", y = "Simulated Population", title = "Equal Probability Matrix ~ Urban") + theme(axis.text.x = element_text(angle = 90,size=2))
+# # EQUAL: Root Mean Squared Prediction Error
+# equalc = esample %>% 
+#   mutate(r0001 = (u.true - u0001)^2, r0002 = (u.true - u0002)^2, r0005 = (u.true - u0005)^2,
+#          r0010 = (u.true - u0010)^2, r0020 = (u.true - u0020)^2, r0050 = (u.true - u0050)^2,
+#          r0100 = (u.true - u0100)^2, r0200 = (u.true - u0200)^2, r0300 = (u.true - u0300)^2,
+#          r0400 = (u.true - u0400)^2, r0500 = (u.true - u0500)^2, r0600 = (u.true - u0600)^2,
+#          r0700 = (u.true - u0700)^2, r0800 = (u.true - u0800)^2,
+#          r0900 = (u.true - u0900)^2, r1000 = (u.true - u1000)^2
+#   ) %>%
+#   group_by(pop.area.kind) %>% 
+#   summarise(i0001 = sqrt(mean(r0001)), i0002 = sqrt(mean(r0002)), i0005 = sqrt(mean(r0005)),
+#             i0010 = sqrt(mean(r0010)), i0020 = sqrt(mean(r0020)), i0050 = sqrt(mean(r0050)),
+#             i0100 = sqrt(mean(r0100)), i0200 = sqrt(mean(r0200)), i0300 = sqrt(mean(r0300)),
+#             i0400 = sqrt(mean(r0400)), i0500 = sqrt(mean(r0500)), i0600 = sqrt(mean(r0600)),
+#             i0700 = sqrt(mean(r0700)), i0800 = sqrt(mean(r0800)), i0900 = sqrt(mean(r0900)),
+#             i1000 = sqrt(mean(r1000))
+#   ) %>% 
+#   kbl(caption = "Comparison between simulation results using Mean Squared Prediction Error") %>% 
+#   kable_minimal() 
+# 
+# saveRDS(equalc, file = "equal.rmspe.rds")
+# 
+# # TRUE: Root Mean Squared Prediction Error
+# tequalc = tsample %>% 
+#   mutate(r0001 = (u.true.x - u0001)^2, r0002 = (u.true.x - u0002)^2, r0005 = (u.true.x - u0005)^2,
+#          r0010 = (u.true.x - u0010)^2, r0020 = (u.true.x - u0020)^2, r0050 = (u.true.x - u0050)^2,
+#          r0100 = (u.true.x - u0100)^2, r0200 = (u.true.x - u0200)^2, r0300 = (u.true.x - u0300)^2,
+#          r0400 = (u.true.x - u0400)^2, r0500 = (u.true.x - u0500)^2, r0600 = (u.true.x - u0600)^2,
+#          r0700 = (u.true.x - u0700)^2, r0800 = (u.true.x - u0800)^2
+#   ) %>%
+#   group_by(pop.area.kind) %>% 
+#   summarise(i001 = sqrt(mean(r0001)), i002 = sqrt(mean(r0002)), i005 = sqrt(mean(r0005)),
+#             i010 = sqrt(mean(r0010)), i020 = sqrt(mean(r0020)), i050 = sqrt(mean(r0050)),
+#             i100 = sqrt(mean(r0100)), i200 = sqrt(mean(r0200)), i300 = sqrt(mean(r0300)),
+#             i400 = sqrt(mean(r0400)), i500 = sqrt(mean(r0500)), i600 = sqrt(mean(r0600)),
+#             i700 = sqrt(mean(r0700)), i800 = sqrt(mean(r0800))
+#   ) %>% 
+#   kbl(caption = "Comparison between simulation results using Mean Squared Prediction Error") %>% 
+#   kable_minimal() 
+# 
+# saveRDS(tequalc, file = "true.rmspe.rds")
+# 
+# # The first 20 iterations
+# b = esample[,1:22] %>% 
+#   pivot_longer(-c(internal.id), names_to = "iter", values_to = "sim") %>%
+#   mutate(lsim = log(sim, base=10))
+# b %>% 
+#   ggplot(aes(x = iter, y = sim, group = internal.id)) + 
+#   geom_line()
+# 
+# a = equal[1:100,]
+# a %>% ggplot(aes(x = iter, y = sim, group = internal.id)) + 
+#   geom_line(aes(color = internal.id)) + labs(x = "Number of Iteration", y = "Simulated Population", title = "Equal Probability Matrix ~ Urban") + theme(axis.text.x = element_text(angle = 90,size=5))
+# 
+# equal %>% filter(pop.area.kind == "Urban") %>%
+#   ggplot(aes(x = iter, y = sim, group = internal.id)) + 
+#   geom_line(aes(color = internal.id)) + labs(x = "Number of Iteration", y = "Simulated Population", title = "Equal Probability Matrix ~ Urban") + theme(axis.text.x = element_text(angle = 90,size=2))

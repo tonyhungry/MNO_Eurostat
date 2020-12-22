@@ -16,13 +16,13 @@ coverage.areas <- readRDS("C:/Users/ramljak/Desktop/marco/working objects/covera
 
 
 # New MLE iteration function by Matyas
-SB_u_est_EM_mat <- function(c.vec, P.dt, a.vec, n.iter) {
+SB_u_est_EM_mat <- function(c.vec, P.dt, a.vec, n.iter, ldt = 10^-04) {
   
   
   cdt <- data.table(c = c.vec)
   cdt <- cdt[, .(i = 1:.N, c = c)]
   pij <- cdt[P.dt, on = "i"]
-  pij <- pij[c > 0] #remove those lines where c==0 because it will create 0 division
+  pij <- pij[c > 0] # remove those lines where c==0 because it will create 0 division
   adt <- data.table(a = a.vec)
   tiles <- adt[, .(j = 1:.N, u0 = a)]
   
@@ -35,9 +35,11 @@ SB_u_est_EM_mat <- function(c.vec, P.dt, a.vec, n.iter) {
     denom <- pij[, .(sum_pik_uk = sum(u * pij)), by = i]
     pij <- denom[pij, on = "i"]
     faktor <- pij[, .(f = sum(c * pij / sum_pik_uk)), by = j]
+    faktor.adj <- faktor[, f := fifelse(test = {is.na(f) | is.nan(f) | is.infinite(f)}, 1, f)] # if else to assure that the posterior is 1 to secure the same estimand value after ldt
     pij[, c("u", "sum_pik_uk") := NULL]
-    tiles <- faktor[tiles, on = "j"]
-    tiles <- eval(parse(text = paste0("tiles[,u", m+1, ":=u", m, "*f]")))
+    tiles <- faktor.adj[tiles, on = "j"]
+    tiles <- eval(parse(text = paste0("tiles[, u", m + 1, " := u", m, "* f]")))
+    tiles <- eval(parse(text = paste0("tiles[,  u", m + 1, " := fifelse(u", m + 1, " < ldt, 0, u", m + 1, ")]"))) # implement ldt if else
     tiles[, "f" := NULL]
   }
   
