@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4.1 Generation of Population | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</title>
+  <meta name="description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4.1 Generation of Population | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4.1 Generation of Population | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  
+  <meta name="twitter:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+<meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
+
+
+<meta name="date" content="2020-12-22" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="making-a-toy-world.html"/>
+<link rel="next" href="generation-of-a-synthetic-radio-network-1.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Cover</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="executive-summary.html"><a href="executive-summary.html"><i class="fa fa-check"></i><b>3</b> Executive Summary</a><ul>
+<li class="chapter" data-level="3.0.1" data-path="executive-summary.html"><a href="executive-summary.html#preface"><i class="fa fa-check"></i><b>3.0.1</b> Preface</a></li>
+<li class="chapter" data-level="3.0.2" data-path="executive-summary.html"><a href="executive-summary.html#toy-world-generation"><i class="fa fa-check"></i><b>3.0.2</b> Toy World Generation</a></li>
+<li class="chapter" data-level="3.0.3" data-path="executive-summary.html"><a href="executive-summary.html#estimation-strategies"><i class="fa fa-check"></i><b>3.0.3</b> Estimation strategies</a></li>
+<li class="chapter" data-level="3.0.4" data-path="executive-summary.html"><a href="executive-summary.html#evaluation-of-all-estimates"><i class="fa fa-check"></i><b>3.0.4</b> Evaluation of all estimates</a></li>
+<li class="chapter" data-level="3.0.5" data-path="executive-summary.html"><a href="executive-summary.html#excurse-evaluation-looking-deeper-into-the-convergence-behavior"><i class="fa fa-check"></i><b>3.0.5</b> Excurse Evaluation: Looking deeper into the convergence behavior</a></li>
+<li class="chapter" data-level="3.0.6" data-path="executive-summary.html"><a href="executive-summary.html#final-remarks"><i class="fa fa-check"></i><b>3.0.6</b> Final Remarks</a></li>
+<li class="chapter" data-level="3.0.7" data-path="executive-summary.html"><a href="executive-summary.html#references"><i class="fa fa-check"></i><b>3.0.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="making-a-toy-world.html"><a href="making-a-toy-world.html"><i class="fa fa-check"></i><b>4</b> Making a Toy World</a><ul>
+<li class="chapter" data-level="4.1" data-path="generation-of-population.html"><a href="generation-of-population.html"><i class="fa fa-check"></i><b>4.1</b> Generation of Population</a></li>
+<li class="chapter" data-level="4.2" data-path="generation-of-a-synthetic-radio-network-1.html"><a href="generation-of-a-synthetic-radio-network-1.html"><i class="fa fa-check"></i><b>4.2</b> Generation of a synthetic Radio Network</a></li>
+<li class="chapter" data-level="4.3" data-path="device-to-cell-association-1.html"><a href="device-to-cell-association-1.html"><i class="fa fa-check"></i><b>4.3</b> Device-to-cell association</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="estimation-strategies-1.html"><a href="estimation-strategies-1.html"><i class="fa fa-check"></i><b>5</b> Estimation Strategies</a></li>
+<li class="chapter" data-level="6" data-path="evaluation-methods.html"><a href="evaluation-methods.html"><i class="fa fa-check"></i><b>6</b> Evaluation Methods</a></li>
+<li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
+<li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="generation-of-population" class="section level2">
+<h2><span class="header-section-number">4.1</span> Generation of Population</h2>
+<p>Our toy world bases on population census data from the German Federal Statistical Office [2] (<a href="https://www.destatis.de/EN/Home/_node.html" class="uri">https://www.destatis.de/EN/Home/_node.html</a>). This data entails continous population counts on a 100m * 100m grid. <em>For our project we reduce the population count to a third to mimic the process of receiving data from an MNO provider - therefore we assume that the population count resembles the number of mobile phones in this area.</em> For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises a high diversity of urban, suburban, and rural areas.</p>
+<p><em>Terminology used in this project:</em>
+Due to various definitions out there, it is imperial to define the different terminologies used in this project before going further to reduce unnecessary confusion.
+- When we talk about <em>tiles</em>, we mean any square on the regular 100 * 100 m2 grid.
+- An <em>antenna</em> is a device facilitating between radio transmission and reception. Specifically in our case, an antenna transmits and receives cell phone signals. This is also known as a <em>cell</em>.
+- A (radio) <em>tower</em> or commonly referred to as a <em>cell tower, cellular site, or cellular base station</em> is a tower equipped with antennas.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="generation-of-population.html#cb1-1"></a><span class="co"># change accordingly</span></span>
+<span id="cb1-2"><a href="generation-of-population.html#cb1-2"></a>knitr<span class="op">::</span>opts_knit<span class="op">$</span><span class="kw">set</span>(<span class="dt">root.dir =</span> <span class="kw">normalizePath</span>(<span class="st">&quot;/Users/tonyhung/OneDrive - Vysoká škola ekonomická v Praze/YAY&quot;</span>)) </span>
+<span id="cb1-3"><a href="generation-of-population.html#cb1-3"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">fig.width =</span> <span class="dv">9</span>)</span>
+<span id="cb1-4"><a href="generation-of-population.html#cb1-4"></a>knitr<span class="op">::</span>opts_knit<span class="op">$</span><span class="kw">set</span>(<span class="dt">eval.after =</span> <span class="st">&quot;fig.cap&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="generation-of-population.html#cb2-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="generation-of-population.html#cb2-2"></a><span class="kw">library</span>(sf)</span>
+<span id="cb2-3"><a href="generation-of-population.html#cb2-3"></a><span class="kw">library</span>(raster)</span>
+<span id="cb2-4"><a href="generation-of-population.html#cb2-4"></a><span class="kw">library</span>(Matrix)</span>
+<span id="cb2-5"><a href="generation-of-population.html#cb2-5"></a><span class="kw">library</span>(knitr)</span>
+<span id="cb2-6"><a href="generation-of-population.html#cb2-6"></a><span class="kw">library</span>(kableExtra)</span>
+<span id="cb2-7"><a href="generation-of-population.html#cb2-7"></a><span class="kw">library</span>(ggthemes)</span>
+<span id="cb2-8"><a href="generation-of-population.html#cb2-8"></a><span class="kw">library</span>(cowplot)</span>
+<span id="cb2-9"><a href="generation-of-population.html#cb2-9"></a><span class="kw">library</span>(transformr)</span>
+<span id="cb2-10"><a href="generation-of-population.html#cb2-10"></a><span class="kw">library</span>(gganimate)</span>
+<span id="cb2-11"><a href="generation-of-population.html#cb2-11"></a><span class="kw">set.seed</span>(<span class="dv">762</span>)</span>
+<span id="cb2-12"><a href="generation-of-population.html#cb2-12"></a></span>
+<span id="cb2-13"><a href="generation-of-population.html#cb2-13"></a>census.de<span class="fl">.100</span>m.tile &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/census.tile.final.rds&quot;</span>) </span></code></pre></div>
+<p>Throughout this project, we are going to analyze the area of South Bavaria. Consequently in Figure 1, the interested area in highlighted with a red rectangle. More specifically, this zone is identified by a longitude between 4400000 and 4500000 and a latitude between 2700000 and 2900000. Moreover, the coordinates are transformed and converted so that it is possible to use the same convention through the entire research.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="generation-of-population.html#cb3-1"></a><span class="co"># Bounding box of focus area</span></span>
+<span id="cb3-2"><a href="generation-of-population.html#cb3-2"></a>bb.focus.dat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xmin =</span> <span class="dv">4400000</span>, <span class="dt">xmax =</span> <span class="dv">4500000</span>,</span>
+<span id="cb3-3"><a href="generation-of-population.html#cb3-3"></a>                           <span class="dt">ymin =</span> <span class="dv">2700000</span>, <span class="dt">ymax =</span> <span class="dv">2900000</span>)</span>
+<span id="cb3-4"><a href="generation-of-population.html#cb3-4"></a>bb.focus.vec &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">xmin =</span> <span class="dv">4400000</span>, <span class="dt">xmax =</span> <span class="dv">4500000</span>,</span>
+<span id="cb3-5"><a href="generation-of-population.html#cb3-5"></a>                  <span class="dt">ymin =</span> <span class="dv">2700000</span>, <span class="dt">ymax =</span> <span class="dv">2900000</span>)</span>
+<span id="cb3-6"><a href="generation-of-population.html#cb3-6"></a><span class="co"># Download data from : https://gadm.org/download_country_v3.html --&gt; R(sf) level 1</span></span>
+<span id="cb3-7"><a href="generation-of-population.html#cb3-7"></a>germany.raw &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/gadm36_DEU_1_sf.rds&quot;</span>) </span>
+<span id="cb3-8"><a href="generation-of-population.html#cb3-8"></a>germany &lt;-<span class="st"> </span>germany.raw <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb3-9"><a href="generation-of-population.html#cb3-9"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="dv">3035</span>)</span>
+<span id="cb3-10"><a href="generation-of-population.html#cb3-10"></a>focus.area.plot &lt;-<span class="st"> </span>germany <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb3-11"><a href="generation-of-population.html#cb3-11"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-12"><a href="generation-of-population.html#cb3-12"></a><span class="st">  </span><span class="kw">geom_sf</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-13"><a href="generation-of-population.html#cb3-13"></a><span class="st">  </span><span class="kw">geom_rect</span>(<span class="dt">data =</span> bb.focus.dat, <span class="kw">aes</span>(<span class="dt">ymin =</span> ymin, <span class="dt">ymax =</span> ymax,  </span>
+<span id="cb3-14"><a href="generation-of-population.html#cb3-14"></a>                                      <span class="dt">xmin =</span> xmin, <span class="dt">xmax =</span> xmax,  </span>
+<span id="cb3-15"><a href="generation-of-population.html#cb3-15"></a>                                     <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>),  </span>
+<span id="cb3-16"><a href="generation-of-population.html#cb3-16"></a>            <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-17"><a href="generation-of-population.html#cb3-17"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-18"><a href="generation-of-population.html#cb3-18"></a><span class="st">  </span><span class="kw">scale_color_identity</span>(<span class="dt">name =</span> <span class="st">&quot;&quot;</span>, </span>
+<span id="cb3-19"><a href="generation-of-population.html#cb3-19"></a>                       <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Focus area&quot;</span>), </span>
+<span id="cb3-20"><a href="generation-of-population.html#cb3-20"></a>                       <span class="dt">guide =</span> <span class="st">&quot;legend&quot;</span>) <span class="op">+</span></span>
+<span id="cb3-21"><a href="generation-of-population.html#cb3-21"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>,</span>
+<span id="cb3-22"><a href="generation-of-population.html#cb3-22"></a>       <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb3-23"><a href="generation-of-population.html#cb3-23"></a> </span>
+<span id="cb3-24"><a href="generation-of-population.html#cb3-24"></a><span class="kw">plot_grid</span>(focus.area.plot, </span>
+<span id="cb3-25"><a href="generation-of-population.html#cb3-25"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig.1: Focusing on a part of South Bavaria&quot;</span>,</span>
+<span id="cb3-26"><a href="generation-of-population.html#cb3-26"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">13</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/focus%20area-1.png" alt="We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas" width="672" />
+<p class="caption">
+(#fig:focus area)We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas
+</p>
+</div>
+<p>As mentioned above, this area is very heterogeneous in urban-rural intensity. Knowing the location of urban centers is very important for the corresponding radio cell network as there are differences in cell coverage between these different area kinds. We are aiming at developing a 3-category classification for each tile: Rural, Suburban and Urban. Based on the census data on the tile level we cannot locate urban centers just yet. Classifying tiles on such a low spatial resolution into one of these categories independent from each other (i.e. based on their population numbers) would not lead to the true location of urban centers; in fact, we need to take spatial dependence into consideration in order to identify urban centers. Therefore we apply a spatial clustering algorithm to account for the spatial dependence. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 15 people per tile. Tiles below 15 are either classified as Uninhabited or Rural, from the start (uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 15 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 15 people.
+We started with the definition of the data necessary for the Empirical Complementary Cumulative Distribution Function (ECCDF). This function is going to be further explained in Figure 3.</p>
+<p>The plots below present our classification results:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="generation-of-population.html#cb4-1"></a><span class="co"># Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation</span></span>
+<span id="cb4-2"><a href="generation-of-population.html#cb4-2"></a><span class="co"># ECCDF of population distribution </span></span>
+<span id="cb4-3"><a href="generation-of-population.html#cb4-3"></a>census.de<span class="fl">.100</span>m.tile &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/census.tile.final.rds&quot;</span>)</span>
+<span id="cb4-4"><a href="generation-of-population.html#cb4-4"></a>ECCDF.pop.data &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-5"><a href="generation-of-population.html#cb4-5"></a><span class="st">  </span><span class="co"># sample_n(1000) %&gt;%</span></span>
+<span id="cb4-6"><a href="generation-of-population.html#cb4-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop.plot =</span> pop <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-7"><a href="generation-of-population.html#cb4-7"></a><span class="st">  </span><span class="kw">arrange</span>(pop.plot) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-8"><a href="generation-of-population.html#cb4-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prob =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-9"><a href="generation-of-population.html#cb4-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob =</span> <span class="kw">cumsum</span>(prob)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-10"><a href="generation-of-population.html#cb4-10"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10.cum.prob.comp =</span> <span class="kw">log10</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>cum.prob)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-11"><a href="generation-of-population.html#cb4-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10.pop =</span> <span class="kw">log10</span>(pop.plot)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-12"><a href="generation-of-population.html#cb4-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob.comp =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>cum.prob) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-13"><a href="generation-of-population.html#cb4-13"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop.area.kind =</span> <span class="kw">case_when</span>(pop <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> &quot;Uninhabitated&quot;</span>, </span>
+<span id="cb4-14"><a href="generation-of-population.html#cb4-14"></a>                                   <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>pop.area.kind))</span></code></pre></div>
+<pre><code>## Warning: Problem with `mutate()` input `log10.cum.prob.comp`.
+## ℹ NaNs produced
+## ℹ Input `log10.cum.prob.comp` is `log10(1 - cum.prob)`.</code></pre>
+<pre><code>## Warning in mask$eval_all_mutate(dots[[i]]): NaNs produced</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="generation-of-population.html#cb7-1"></a>prop.class &lt;-<span class="st"> </span><span class="kw">data.frame</span>( </span>
+<span id="cb7-2"><a href="generation-of-population.html#cb7-2"></a>  <span class="dt">class =</span> <span class="kw">c</span>(<span class="st">&quot;Rural&quot;</span>,<span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Uninhabitated&quot;</span>,<span class="st">&quot;Urban&quot;</span>), </span>
+<span id="cb7-3"><a href="generation-of-population.html#cb7-3"></a>  <span class="dt">n =</span> <span class="kw">summary</span>(<span class="kw">as.factor</span>(ECCDF.pop.data<span class="op">$</span>pop.area.kind)), </span>
+<span id="cb7-4"><a href="generation-of-population.html#cb7-4"></a>  <span class="dt">prop =</span> <span class="kw">round</span>(<span class="kw">summary</span>(<span class="kw">as.factor</span>(ECCDF.pop.data<span class="op">$</span>pop.area.kind)) <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(census.de<span class="fl">.100</span>m.tile<span class="op">$</span>internal.id), <span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>)  <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-5"><a href="generation-of-population.html#cb7-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">class =</span> <span class="kw">factor</span>(class)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-6"><a href="generation-of-population.html#cb7-6"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(class)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-7"><a href="generation-of-population.html#cb7-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lab.ypos =</span> <span class="kw">cumsum</span>(prop) <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>prop) </span>
+<span id="cb7-8"><a href="generation-of-population.html#cb7-8"></a> </span>
+<span id="cb7-9"><a href="generation-of-population.html#cb7-9"></a>tile.prop.plot &lt;-<span class="st"> </span>prop.class <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-10"><a href="generation-of-population.html#cb7-10"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> prop, <span class="dt">fill =</span> class)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-11"><a href="generation-of-population.html#cb7-11"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">width =</span> <span class="dv">1</span>, <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-12"><a href="generation-of-population.html#cb7-12"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">+</span></span>
+<span id="cb7-13"><a href="generation-of-population.html#cb7-13"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">y =</span> lab.ypos, <span class="dt">label =</span> <span class="kw">paste0</span>(prop, <span class="st">&quot;%&quot;</span>)), <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
+<span id="cb7-14"><a href="generation-of-population.html#cb7-14"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Class&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Number of tiles&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb7-15"><a href="generation-of-population.html#cb7-15"></a>    <span class="dt">subtitle =</span> <span class="st">&quot;Fig. 2b: Tile proportion&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-16"><a href="generation-of-population.html#cb7-16"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-17"><a href="generation-of-population.html#cb7-17"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb7-18"><a href="generation-of-population.html#cb7-18"></a> </span>
+<span id="cb7-19"><a href="generation-of-population.html#cb7-19"></a>cluster.plot &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span></span>
+<span id="cb7-20"><a href="generation-of-population.html#cb7-20"></a><span class="st">  </span><span class="kw">filter</span>(pop.area.kind <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-21"><a href="generation-of-population.html#cb7-21"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st">  </span></span>
+<span id="cb7-22"><a href="generation-of-population.html#cb7-22"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> <span class="kw">factor</span>(pop.area.kind)), <span class="dt">show.legend =</span> F) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-23"><a href="generation-of-population.html#cb7-23"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Clustering Results&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-24"><a href="generation-of-population.html#cb7-24"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.margin =</span> <span class="kw">unit</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="st">&quot;mm&quot;</span>)) <span class="op">+</span><span class="st">  </span></span>
+<span id="cb7-25"><a href="generation-of-population.html#cb7-25"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;#117733&quot;</span>, <span class="st">&quot;#CC6677&quot;</span>)) <span class="op">+</span></span>
+<span id="cb7-26"><a href="generation-of-population.html#cb7-26"></a><span class="st">   </span><span class="kw">labs</span>(<span class="dt">subtitle =</span> <span class="st">&quot;Fig. 2a: Clustering results&quot;</span>) <span class="op">+</span></span>
+<span id="cb7-27"><a href="generation-of-population.html#cb7-27"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-28"><a href="generation-of-population.html#cb7-28"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb7-29"><a href="generation-of-population.html#cb7-29"></a></span>
+<span id="cb7-30"><a href="generation-of-population.html#cb7-30"></a><span class="kw">plot_grid</span>(cluster.plot, tile.prop.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig.2 : Population Classification&quot;</span>,  </span>
+<span id="cb7-31"><a href="generation-of-population.html#cb7-31"></a>            <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>, <span class="dt">rel_widths =</span> <span class="kw">c</span>(<span class="fl">0.8</span>, <span class="dv">1</span>)) </span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/pop%20distribution%201-1.png" alt="Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering." width="864" />
+<p class="caption">
+(#fig:pop distribution 1)Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering.
+</p>
+</div>
+<p>In Figure 2a, only the Suburban and Urban categories of tiles are represented and the transition from one category to another is highlighted thanks to the different colors used. It is possible to notice that there is an agglomeration of Urban tiles in correspondence to the important cities of South Bavaria, such as Munich. The Suburban tiles surround perfectly the Urban ones.</p>
+<p>The Figure 2b is a the stacked bar plot, that shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, 1.49% of the tiles are urban areas. 71.35% of the tiles are uninhabited areas. 2.29% of the tiles are suburban areas, and 24.87% of the tiles are rural areas. As we can see, the largest percentage of tiles is inhabited.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="generation-of-population.html#cb8-1"></a>pop.dist.map.plot &lt;-<span class="st"> </span>ECCDF.pop.data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="generation-of-population.html#cb8-2"></a><span class="st">  </span><span class="co"># sample_n(1000) %&gt;%</span></span>
+<span id="cb8-3"><a href="generation-of-population.html#cb8-3"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-4"><a href="generation-of-population.html#cb8-4"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">color =</span> pop.area.kind), <span class="dt">show.legend =</span> F) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-5"><a href="generation-of-population.html#cb8-5"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-6"><a href="generation-of-population.html#cb8-6"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot; Fig. 3a : Geographic distribution&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-7"><a href="generation-of-population.html#cb8-7"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.margin =</span> <span class="kw">unit</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="st">&quot;mm&quot;</span>), <span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>)) </span>
+<span id="cb8-8"><a href="generation-of-population.html#cb8-8"></a> </span>
+<span id="cb8-9"><a href="generation-of-population.html#cb8-9"></a>ECCDF.pop.plot &lt;-<span class="st"> </span>ECCDF.pop.data <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb8-10"><a href="generation-of-population.html#cb8-10"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-11"><a href="generation-of-population.html#cb8-11"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> log10.pop, <span class="dt">y =</span> log10.cum.prob.comp, </span>
+<span id="cb8-12"><a href="generation-of-population.html#cb8-12"></a>                 <span class="dt">color =</span> pop.area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-13"><a href="generation-of-population.html#cb8-13"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">-0.3010300</span>, <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-14"><a href="generation-of-population.html#cb8-14"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">-1</span>, <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-15"><a href="generation-of-population.html#cb8-15"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> <span class="fl">1.5</span>, <span class="dt">y =</span> <span class="fl">-0.2</span>, <span class="dt">label =</span> <span class="st">&quot;50% of the data&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-16"><a href="generation-of-population.html#cb8-16"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> <span class="fl">1.5</span>, <span class="dt">y =</span> <span class="fl">-0.9</span>, <span class="dt">label =</span> <span class="st">&quot;90% of the data&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-17"><a href="generation-of-population.html#cb8-17"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-18"><a href="generation-of-population.html#cb8-18"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Fig. 3b: Empirical cumulative complementary</span><span class="ch">\n</span><span class="st">distribution function&quot;</span>) <span class="op">+</span><span class="st">  </span></span>
+<span id="cb8-19"><a href="generation-of-population.html#cb8-19"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;log10(Prob(Y &gt; x))&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;log10(Mobile phones)&quot;</span>,  </span>
+<span id="cb8-20"><a href="generation-of-population.html#cb8-20"></a>        <span class="dt">colour =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-21"><a href="generation-of-population.html#cb8-21"></a><span class="st">  </span><span class="kw">ylim</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb8-22"><a href="generation-of-population.html#cb8-22"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) </span>
+<span id="cb8-23"><a href="generation-of-population.html#cb8-23"></a> </span>
+<span id="cb8-24"><a href="generation-of-population.html#cb8-24"></a>ECDF.pop.plot &lt;-<span class="st"> </span>ECCDF.pop.data <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb8-25"><a href="generation-of-population.html#cb8-25"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-26"><a href="generation-of-population.html#cb8-26"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pop.plot, <span class="dt">y =</span> cum.prob.comp, <span class="dt">color =</span> pop.area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-27"><a href="generation-of-population.html#cb8-27"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="dt">guide =</span> <span class="ot">FALSE</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb8-28"><a href="generation-of-population.html#cb8-28"></a><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">30</span>) <span class="op">+</span></span>
+<span id="cb8-29"><a href="generation-of-population.html#cb8-29"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></span>
+<span id="cb8-30"><a href="generation-of-population.html#cb8-30"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-31"><a href="generation-of-population.html#cb8-31"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-32"><a href="generation-of-population.html#cb8-32"></a>        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb8-33"><a href="generation-of-population.html#cb8-33"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>())</span>
+<span id="cb8-34"><a href="generation-of-population.html#cb8-34"></a></span>
+<span id="cb8-35"><a href="generation-of-population.html#cb8-35"></a>pop.dist.ecdf.insert &lt;-<span class="st"> </span>ECCDF.pop.plot <span class="op">+</span></span>
+<span id="cb8-36"><a href="generation-of-population.html#cb8-36"></a><span class="st">  </span><span class="kw">annotation_custom</span>(<span class="kw">ggplotGrob</span>(ECDF.pop.plot), </span>
+<span id="cb8-37"><a href="generation-of-population.html#cb8-37"></a>                    <span class="dt">xmin =</span> <span class="dv">0</span>, <span class="dt">xmax =</span> <span class="fl">1.5</span>, </span>
+<span id="cb8-38"><a href="generation-of-population.html#cb8-38"></a>                    <span class="dt">ymin =</span> <span class="dv">-7</span>, <span class="dt">ymax =</span> <span class="dv">-3</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 8923 rows containing missing values (geom_point).</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="generation-of-population.html#cb10-1"></a><span class="kw">plot_grid</span>(pop.dist.map.plot, pop.dist.ecdf.insert, <span class="dt">labels =</span> <span class="st">&quot;Fig. 3: Mobile phone density per tile&quot;</span>,  </span>
+<span id="cb10-2"><a href="generation-of-population.html#cb10-2"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>, <span class="dt">rel_widths =</span> <span class="kw">c</span>(<span class="fl">0.8</span>, <span class="dv">1</span>))</span></code></pre></div>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<div class="figure">
+<img src="bookdown_files/figure-html/pop%20distribution%202-1.png" alt="The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." width="864" />
+<p class="caption">
+(#fig:pop distribution 2)The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF.
+</p>
+</div>
+<p>Figure 3 shows the mobile phone density per tile in the focus area. In particular, we have 4 different colors representing the clusters: Uninhabited, Rural, Suburban and Urban.
+Figure 3a confirms what we have written previously, in fact, the majority of the figure is yellow, which represents the Inhabitant tiles. It is possible to see the Urban tiles, which are red. But it is not possible to clearly distinguish Suburban and Rural tiles. Anyway, in Figure 2a, we have seen the detail of Urban and Suburban tiles. The Rural tiles are more distributed.</p>
+<p>However, as we have already said, to have a deeper look of the mobile phone density per tile, we choose to represent the data with an empirical cumulative complementary distribution function (ECCDF) (using a log base 10 transformation).
+The ECCDF is a step function with jumps <code>i/n</code> at observation values, where <code>i</code> is the number of tied observations at that value. Moreover, missing values are ignored and the objective “complementary” means that we need to subtract 1 - the cumulative probability. It is commonly used with variables that have a highly skewed distribution. We can see that this is the case - the population on this low spatial resolution is heavily right skewed.</p>
+<p>As Figure 3b suggests with the presentation of the ECCDF, 50% of the data are represented by uninhabited tiles with no phones; furthermore, 90% of the tiles contain less than half of the mobile phones in our focus area. One can also see the tiles’ classification based on the clustering results. Some tiles classified as Rural have higher values for their mobile phone population - this is because they are not considered as an Urban or Suburban cluster, as mentioned above. 10% left are tiles both Urban and Rural containing 0.5 and above mobile phones.</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="making-a-toy-world.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="generation-of-a-synthetic-radio-network-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": true,
+"info": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

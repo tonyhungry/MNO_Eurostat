@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4.2 Generation of a synthetic Radio Network | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</title>
+  <meta name="description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4.2 Generation of a synthetic Radio Network | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4.2 Generation of a synthetic Radio Network | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  
+  <meta name="twitter:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+<meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
+
+
+<meta name="date" content="2020-12-22" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="generation-of-population.html"/>
+<link rel="next" href="device-to-cell-association-1.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Cover</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="executive-summary.html"><a href="executive-summary.html"><i class="fa fa-check"></i><b>3</b> Executive Summary</a><ul>
+<li class="chapter" data-level="3.0.1" data-path="executive-summary.html"><a href="executive-summary.html#preface"><i class="fa fa-check"></i><b>3.0.1</b> Preface</a></li>
+<li class="chapter" data-level="3.0.2" data-path="executive-summary.html"><a href="executive-summary.html#toy-world-generation"><i class="fa fa-check"></i><b>3.0.2</b> Toy World Generation</a></li>
+<li class="chapter" data-level="3.0.3" data-path="executive-summary.html"><a href="executive-summary.html#estimation-strategies"><i class="fa fa-check"></i><b>3.0.3</b> Estimation strategies</a></li>
+<li class="chapter" data-level="3.0.4" data-path="executive-summary.html"><a href="executive-summary.html#evaluation-of-all-estimates"><i class="fa fa-check"></i><b>3.0.4</b> Evaluation of all estimates</a></li>
+<li class="chapter" data-level="3.0.5" data-path="executive-summary.html"><a href="executive-summary.html#excurse-evaluation-looking-deeper-into-the-convergence-behavior"><i class="fa fa-check"></i><b>3.0.5</b> Excurse Evaluation: Looking deeper into the convergence behavior</a></li>
+<li class="chapter" data-level="3.0.6" data-path="executive-summary.html"><a href="executive-summary.html#final-remarks"><i class="fa fa-check"></i><b>3.0.6</b> Final Remarks</a></li>
+<li class="chapter" data-level="3.0.7" data-path="executive-summary.html"><a href="executive-summary.html#references"><i class="fa fa-check"></i><b>3.0.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="making-a-toy-world.html"><a href="making-a-toy-world.html"><i class="fa fa-check"></i><b>4</b> Making a Toy World</a><ul>
+<li class="chapter" data-level="4.1" data-path="generation-of-population.html"><a href="generation-of-population.html"><i class="fa fa-check"></i><b>4.1</b> Generation of Population</a></li>
+<li class="chapter" data-level="4.2" data-path="generation-of-a-synthetic-radio-network-1.html"><a href="generation-of-a-synthetic-radio-network-1.html"><i class="fa fa-check"></i><b>4.2</b> Generation of a synthetic Radio Network</a></li>
+<li class="chapter" data-level="4.3" data-path="device-to-cell-association-1.html"><a href="device-to-cell-association-1.html"><i class="fa fa-check"></i><b>4.3</b> Device-to-cell association</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="estimation-strategies-1.html"><a href="estimation-strategies-1.html"><i class="fa fa-check"></i><b>5</b> Estimation Strategies</a></li>
+<li class="chapter" data-level="6" data-path="evaluation-methods.html"><a href="evaluation-methods.html"><i class="fa fa-check"></i><b>6</b> Evaluation Methods</a></li>
+<li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
+<li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="generation-of-a-synthetic-radio-network-1" class="section level2">
+<h2><span class="header-section-number">4.2</span> Generation of a synthetic Radio Network</h2>
+<p>We generate a radio network, which is composed of three layers. The layers follow the pop.area.kind variable - layer 1 (Rural) spans over the rural, suburban and urban tiles, layer 2 (Suburban) spans over the suburban and urban tiles and layer 3 (Urban) is spanned over the urban tiles.</p>
+<p><strong>Important features and parameters of the generated radio network are:</strong></p>
+<ul>
+<li><p>The layers follow a hexagon shape with cell towers located in the respective centroid of each hexagon</p></li>
+<li><p>Towers vary in distance to each other of the same layer, i.e. how far/close are towers of the same layer located to each other: layer 1 = 27,000m; layer 2 = 7000m; layer 3 = 900m (-&gt; the more urbanized, the closer the towers are too each other -&gt; denser coverage). Furthermore, hexagon independent rotation in terms of the first layer is executed: layer 2 = 35 degrees; layer 3 = 70 degrees</p></li>
+<li><p>Each cell tower location is jittered in order to break the symmetry. The jitter amount depends on the layer: layer 1 = 5000m, layer 2 = 1000m, layer 3 = 400m.</p></li>
+<li><p>Each tower contains three antennas pointing into 120 degree differing directions.</p></li>
+<li><p>The layer determines the coverage diameter of an antenna: layer 1 = 15,000m; layer 2 = 2500m; layer 3 = 500m</p></li>
+<li><p>Each tile of the focus area is sufficiently covered by at least one antenna and the antennas’ coverage areas are allowed to overlap.</p></li>
+<li><p>Parameters concerning the device to cell association are specified in the next section</p></li>
+</ul>
+<p>The link to the source code for the layers.1 object as well as the coverage.areas.1 object is <a href="https://github.com/R-ramljak/MNO_GM/blob/master/2_Radio%20cell%20generation.R">here</a>.</p>
+<p>The link to the source code for the layers object as well as the coverage.areas object is [here] (<a href="https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R" class="uri">https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R</a>).</p>
+<p>We use a hexagonal structure to place towers across our focus area. This is a quite realistic setup for cell towers. Each hexagon corresponds to one tower which is originally placed in the centroid of the respective hexagon. In order to exclude symmetrical structure, we implement some randomness in the exact location of the cell towers.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-1"></a>layers &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/radio cell layers.rds&quot;</span>) </span>
+<span id="cb12-2"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-2"></a>coverage.areas &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/coverage.areas.rds&quot;</span>) </span>
+<span id="cb12-3"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-3"></a> </span>
+<span id="cb12-4"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-4"></a>coverage.layer1 &lt;-<span class="st"> </span>coverage.areas <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-5"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-5"></a><span class="st">  </span><span class="kw">filter</span>(area.kind <span class="op">==</span><span class="st"> &quot;Rural&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-6"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-6"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-7"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-7"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>antenna.centroid) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-8"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-8"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;X.tow&quot;</span>, <span class="st">&quot;Y.tow&quot;</span>), <span class="dt">crs =</span> <span class="dv">3035</span>) </span>
+<span id="cb12-9"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-9"></a> </span>
+<span id="cb12-10"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-10"></a>layers.plot &lt;-<span class="st"> </span>layers[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb12-11"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-11"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">crs =</span> <span class="dv">3035</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb12-12"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-12"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-13"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-13"></a><span class="st">    </span><span class="co"># geom_rect(data = bb.focus.dat, aes(ymin = ymin, ymax = ymax,  </span></span>
+<span id="cb12-14"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-14"></a><span class="st">    </span><span class="co">#                                   xmin = xmin, xmax = xmax),  </span></span>
+<span id="cb12-15"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-15"></a><span class="st">    </span><span class="co">#         color = &quot;black&quot;, size = 0.3, alpha = 0.5, fill = alpha(&quot;grey&quot;, 0)) + </span></span>
+<span id="cb12-16"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-16"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-17"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-17"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> coverage.layer1, <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;#4273C5&quot;</span>), <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-18"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-18"></a><span class="st">  </span><span class="kw">scale_color_identity</span>(<span class="dt">name =</span> <span class="st">&quot;&quot;</span>, </span>
+<span id="cb12-19"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-19"></a>                       <span class="co"># breaks = c(&quot;Focus area&quot;), </span></span>
+<span id="cb12-20"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-20"></a>                       <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Jittered tower location&quot;</span>), </span>
+<span id="cb12-21"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-21"></a>                       <span class="dt">guide =</span> <span class="st">&quot;legend&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-22"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-22"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>,</span>
+<span id="cb12-23"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-23"></a>       <span class="dt">title =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb12-24"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-24"></a>    <span class="dt">subtitle =</span> <span class="st">&quot;Towers are located in the centroid of a hexagon.&quot;</span>) <span class="op">+</span></span>
+<span id="cb12-25"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-25"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">10</span>, <span class="dt">face=</span><span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb12-26"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-26"></a>  <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">9</span>,<span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb12-27"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-27"></a>   </span>
+<span id="cb12-28"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-28"></a><span class="kw">plot_grid</span>(layers.plot,</span>
+<span id="cb12-29"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-29"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 4:Radio network - Example Layer 1 (Rural)&quot;</span>,</span>
+<span id="cb12-30"><a href="generation-of-a-synthetic-radio-network-1.html#cb12-30"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/network%20layers-1.png" alt="The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented." width="672" />
+<p class="caption">
+(#fig:network layers)The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented.
+</p>
+</div>
+<p>Figure 3 exemplifies the effect of the jitter parameter in the 1st layer, which covers the Rural tiles. The actual location deviates slightly from the centroid in order to break the symmetry of the underlying hexagonal structure. This is done for every layer.</p>
+<p>The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="generation-of-a-synthetic-radio-network-1.html#cb13-1"></a>knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;https://github.com/R-ramljak/MNO_Eurostat/raw/master/antenna%20animation.gif&quot;</span>)</span></code></pre></div>
+<p><img src="https://github.com/R-ramljak/MNO_Eurostat/raw/master/antenna%20animation.gif" /><!-- --></p>
+<p>Basically, a tower is generated at its specified location, then three antennas are created. For the operationalized data structure, the antenna location is not really relevant as it corresponds to the respective tower location. What is more important are the antennas’ <em>coverage area centroids</em> because they describe the middle point of the then generated circular coverage area. The specific radius of any generic coverage area is layer specific and listed above. As indicated in the animation, an antenna specific coverage area is setup with a variable <em>coverage intensity profile</em>. Basically, cell phones that are closer to the coverage area centroid of any antenna, have a higher coverage probability, which will be later introduced as the <em>signal strength</em> parameter.</p>
+<p>The following table presents the number of towers and the number of antennas of each layer (Rural, Urban and Suburban). More specifically, it is computed as a cumulative sum also the area in squared kilometers covered by each layers.
+The number of antennas is not always a perfect factor of 3 as the coverage areas are cropped according to the focus area. This means if the complete coverage area of an antenna lies outside of the focus area it is discarded.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-1"></a>tile.count &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb14-2"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-2"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-3"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-3"></a><span class="st">  </span><span class="kw">group_by</span>(pop.area.kind) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb14-4"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">area.in.sq.km =</span> <span class="kw">n</span>() <span class="op">/</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-5"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-5"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(pop.area.kind)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-6"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">area.in.sq.km =</span> <span class="kw">case_when</span>(pop.area.kind <span class="op">==</span><span class="st"> &quot;Rural&quot;</span> <span class="op">~</span><span class="st"> </span><span class="kw">cumsum</span>(area.in.sq.km),</span>
+<span id="cb14-7"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-7"></a>                                   pop.area.kind <span class="op">==</span><span class="st"> &quot;Suburban&quot;</span> <span class="op">~</span><span class="st"> </span><span class="kw">cumsum</span>(area.in.sq.km),</span>
+<span id="cb14-8"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-8"></a>                                   pop.area.kind <span class="op">==</span><span class="st"> &quot;Urban&quot;</span> <span class="op">~</span><span class="st"> </span><span class="kw">cumsum</span>(area.in.sq.km))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-9"><a href="generation-of-a-synthetic-radio-network-1.html#cb14-9"></a><span class="st">  </span><span class="kw">arrange</span>(pop.area.kind)</span></code></pre></div>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-1"></a>coverage.areas <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-2"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-2"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-3"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-3"></a><span class="st">  </span><span class="kw">group_by</span>(area.kind, tower.ID) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-4"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n.antenna =</span> <span class="kw">n</span>(), <span class="dt">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-5"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-5"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-6"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-6"></a><span class="st">  </span><span class="kw">group_by</span>(area.kind) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-7"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-7"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n.tower =</span> <span class="kw">n</span>(), </span>
+<span id="cb16-8"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-8"></a>            <span class="dt">n.antenna =</span> <span class="kw">sum</span>(n.antenna), <span class="dt">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-9"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-9"></a><span class="st">  </span><span class="kw">left_join</span>(tile.count, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;area.kind&quot;</span> =<span class="st"> &quot;pop.area.kind&quot;</span>)) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-10"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-10"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="dt">layer =</span> area.kind, n.tower, n.antenna, area.in.sq.km) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb16-11"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-11"></a><span class="st">  </span><span class="kw">kbl</span>(<span class="dt">caption =</span> <span class="st">&quot;Descriptive statistics per coverage layer&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb16-12"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-12"></a><span class="st">  </span><span class="kw">kable_minimal</span>() <span class="op">%&gt;%</span></span>
+<span id="cb16-13"><a href="generation-of-a-synthetic-radio-network-1.html#cb16-13"></a><span class="st">  </span><span class="kw">footnote</span>(<span class="dt">general =</span> <span class="st">&quot;`area.in.sq.km` reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.&quot;</span>)</span></code></pre></div>
+<table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'>
+<caption>
+(#tab:coverage areas 1)Descriptive statistics per coverage layer
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+layer
+</th>
+<th style="text-align:right;">
+n.tower
+</th>
+<th style="text-align:right;">
+n.antenna
+</th>
+<th style="text-align:right;">
+area.in.sq.km
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rural
+</td>
+<td style="text-align:right;">
+119
+</td>
+<td style="text-align:right;">
+334
+</td>
+<td style="text-align:right;">
+18283.14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Suburban
+</td>
+<td style="text-align:right;">
+220
+</td>
+<td style="text-align:right;">
+659
+</td>
+<td style="text-align:right;">
+1712.80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Urban
+</td>
+<td style="text-align:right;">
+950
+</td>
+<td style="text-align:right;">
+2848
+</td>
+<td style="text-align:right;">
+451.94
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> <code>area.in.sq.km</code> reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.
+</td>
+</tr>
+</tfoot>
+</table>
+<p>As described in the parameter list above, Rural areas are covered only by layer 1, Suburban areas are covered by layer 1 and 2 and the urbanized areas are covered by all three layers. The average distance between multiple towers of the same layer decrease in layer 2 and layer 3 compared to layer 1. This leads to denser networks within these layers represented by the higher numbers of towers and therefore higher numbers of antennas in layer 2 and 3, given their area. The reason for this is that any generic antenna can only offer signal service to a limited amount of number of mobile phones. To cover all cell phones in more urbanized areas a denser radio cell network is needed in these areas.</p>
+<p>The following figures present the actual coverage of each layer for the focus area.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-1"></a>coverage.area.plot &lt;-<span class="st"> </span>coverage.areas <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb17-2"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-2"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-3"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-3"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> area.kind), <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-4"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-4"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="dt">cols =</span> <span class="kw">vars</span>(area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-5"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-5"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-6"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-6"></a><span class="st">    </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="st">&quot;Layer&quot;</span>) <span class="op">+</span></span>
+<span id="cb17-7"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb17-8"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-8"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>),<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb17-9"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-9"></a>  <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb17-10"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-10"></a></span>
+<span id="cb17-11"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-11"></a><span class="kw">plot_grid</span>(coverage.area.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 5: Coverage per layer&quot;</span>,</span>
+<span id="cb17-12"><a href="generation-of-a-synthetic-radio-network-1.html#cb17-12"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>) </span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/coverage%20areas%202-1.png" alt="The circles represent the coverage area of each antenna per layer. The signal density increases with increasing population density." width="864" />
+<p class="caption">
+(#fig:coverage areas 2)The circles represent the coverage area of each antenna per layer. The signal density increases with increasing population density.
+</p>
+</div>
+<p>The interpretations of the Figure 5 above correspond to the level of coverage of each layer. It should be noticed that the antennas’ coverage areas are allowed to overlap - with antennas of the same tower, as well as across towers of the same or another layer.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-1"></a><span class="co"># Implement shape of focus area</span></span>
+<span id="cb18-2"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-2"></a></span>
+<span id="cb18-3"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-3"></a>pop.dist.map.plot &lt;-<span class="st"> </span>ECCDF.pop.data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb18-4"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-4"></a><span class="st">  </span><span class="co"># sample_n(1000) %&gt;%</span></span>
+<span id="cb18-5"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-5"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb18-6"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-6"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">color =</span> pop.area.kind), <span class="dt">show.legend =</span> F) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb18-7"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-7"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb18-8"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-8"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot; Fig. 6a : Geographic distribution&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb18-9"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-9"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.margin =</span> <span class="kw">unit</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="st">&quot;mm&quot;</span>), <span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>)) </span>
+<span id="cb18-10"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-10"></a> </span>
+<span id="cb18-11"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-11"></a>coverage.area.full.plot &lt;-<span class="st"> </span>coverage.areas <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb18-12"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-12"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb18-13"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-13"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> area.kind), <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb18-14"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-14"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Fig. 6b: Full coverage&quot;</span>) <span class="op">+</span></span>
+<span id="cb18-15"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-15"></a><span class="st">    </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>), <span class="st">&quot;Layer&quot;</span>) <span class="op">+</span></span>
+<span id="cb18-16"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-16"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>),</span>
+<span id="cb18-17"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-17"></a>        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb18-18"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-18"></a>  <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb18-19"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-19"></a></span>
+<span id="cb18-20"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-20"></a><span class="kw">plot_grid</span>(pop.dist.map.plot, coverage.area.full.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 6: Full coverage corresponding to the density&quot;</span>, </span>
+<span id="cb18-21"><a href="generation-of-a-synthetic-radio-network-1.html#cb18-21"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/coverage%20areas%203-1.png" alt="The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density." width="864" />
+<p class="caption">
+(#fig:coverage areas 3)The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density.
+</p>
+</div>
+<p>Figure 6b presents the full network structure. By comparing the network structure to the tile density in Figure 6a we can see that full, partially overlapping coverage is granted for all areas and that the network layering structure follows suit with the true geographical population density.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-1"></a>tiles.cat &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;working objects/coverage intensity.rds&quot;</span>)</span>
+<span id="cb19-2"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-2"></a>coverage.intensity &lt;-<span class="st"> </span>tiles.cat <span class="op">%&gt;%</span></span>
+<span id="cb19-3"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-3"></a><span class="st">  </span><span class="co"># left_join(census.de.100m.tile, by = &quot;internal.id&quot;) %&gt;% </span></span>
+<span id="cb19-4"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-4"></a><span class="st">  </span><span class="co"># dplyr::select(internal.id, count, pop.area.kind) %&gt;% </span></span>
+<span id="cb19-5"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-5"></a><span class="st">  </span><span class="kw">arrange</span>(count) <span class="co">#%&gt;%</span></span>
+<span id="cb19-6"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-6"></a>  <span class="co">#mutate(prob = 1 / n()) %&gt;%</span></span>
+<span id="cb19-7"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-7"></a>  <span class="co">#mutate(cum.prob = cumsum(prob))</span></span>
+<span id="cb19-8"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-8"></a></span>
+<span id="cb19-9"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-9"></a>coverage.intensity.plot &lt;-<span class="st"> </span>coverage.intensity <span class="op">%&gt;%</span></span>
+<span id="cb19-10"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-10"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb19-11"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-11"></a><span class="st">  </span><span class="kw">stat_count</span>(<span class="kw">aes</span>(count), <span class="dt">fill =</span> <span class="st">&quot;#4477A9&quot;</span>) <span class="op">+</span></span>
+<span id="cb19-12"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-12"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(coverage.intensity<span class="op">$</span>count), <span class="dt">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#117733&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">+</span></span>
+<span id="cb19-13"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-13"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">median</span>(coverage.intensity<span class="op">$</span>count), <span class="dt">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#CC6677&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">+</span></span>
+<span id="cb19-14"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-14"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">median</span>(coverage.intensity<span class="op">$</span>count) <span class="op">-</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">y =</span> <span class="fl">5e+05</span>, <span class="dt">color =</span> <span class="st">&quot;#CC6677&quot;</span>,</span>
+<span id="cb19-15"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-15"></a>           <span class="dt">label =</span> <span class="kw">paste</span>(<span class="st">&quot;Median =&quot;</span>, <span class="kw">median</span>(coverage.intensity<span class="op">$</span>count))) <span class="op">+</span></span>
+<span id="cb19-16"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-16"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">round</span>(<span class="kw">mean</span>(coverage.intensity<span class="op">$</span>count), <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">y =</span> <span class="fl">5e+05</span>, <span class="dt">color =</span> <span class="st">&quot;#117733&quot;</span>, </span>
+<span id="cb19-17"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-17"></a>           <span class="dt">label =</span> <span class="kw">paste</span>(<span class="st">&quot;Mean =&quot;</span>, <span class="kw">round</span>(<span class="kw">mean</span>(coverage.intensity<span class="op">$</span>count), <span class="dv">2</span>))) <span class="op">+</span></span>
+<span id="cb19-18"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-18"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Count of tiles&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;Covered by ... antennas&quot;</span>, <span class="dt">colour =</span> <span class="st">&quot;&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb19-19"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-19"></a>  <span class="co"># facet_grid(~pop.area.kind)</span></span>
+<span id="cb19-20"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-20"></a>  </span>
+<span id="cb19-21"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-21"></a>  </span>
+<span id="cb19-22"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-22"></a><span class="kw">plot_grid</span>(coverage.intensity.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 7: Number of antennas covering a tile&quot;</span>,</span>
+<span id="cb19-23"><a href="generation-of-a-synthetic-radio-network-1.html#cb19-23"></a>          <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/coverage%20intensity-1.png" alt="The distribution is right skewed with a mean of 5.62, a minimum of 1, and a maximum of 21 antenna(s) per tile." width="672" />
+<p class="caption">
+(#fig:coverage intensity)The distribution is right skewed with a mean of 5.62, a minimum of 1, and a maximum of 21 antenna(s) per tile.
+</p>
+</div>
+<p>Figure 7 shows a histogram representing the number of antennas per tile. The distribution is right skewed with a mean of 5.62, a minimum of 1 and a maximum of 21 antenna(s) per tile. So, we have a median of 5 antennas per tile, which is a more robust measure than the mean that is driven by the extreme values. Even though the coverage areas were generated synthetically, this distribution mimics a realistic layout.</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="generation-of-population.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="device-to-cell-association-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": true,
+"info": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
