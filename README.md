@@ -23,9 +23,7 @@ To reproduce our results, run the numbered R-scripts, which also resemble the mo
 Content Code relies on the R-language and the following session info
 ```r
 sessionInfo()
-```
 
-```r
 R version 4.0.3 (2020-10-10)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 Running under: Windows 10 x64 (build 19041)
