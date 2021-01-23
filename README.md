@@ -8,7 +8,7 @@ The authors of this repository include: Giulia Regazzoni (UniBg, IT), Marco Raml
 
 ## Important links
 
-HTML version of our working notebook*(currently under development)*: https://r-ramljak.github.io/MNO_Eurostat/ or https://bookdown.org/tonyhung_th/bookdown/executive-summary.html
+HTML version of our working notebook *(currently under development)*: https://r-ramljak.github.io/MNO_Eurostat/ or https://bookdown.org/tonyhung_th/bookdown/executive-summary.html
 
 For a full overview of our work, please visit our book *(currently under development)*: https://bookdown.org/tonyhung_th/bookdown/
 
