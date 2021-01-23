@@ -18,7 +18,7 @@ This link provides more information regarding the topic of the MNO Project (p8-9
 
 As this is a simulation study, no data needs to be protected and everything can be shared upon request. Currently, the only *real* data source used, which was not simulated, is the population generation which is based on German Census Data. Result objects based on the current workflow with the specified parameters used in our notebook can be provided upon request and therefore fully reproduced. As some of the modeled results objects are very large (>5gb each) they are currently uploaded in the student version of our Microsoft One drive account. As these clouds are university bound it is difficult to share them with non-university members, therefore, if objects are needed, they will be sent via compressed files.
 
-To reproduce our results, run the numbered R-scripts, which also resemble the modules in our modular design, in [code](https://github.com/R-ramljak/MNO_Eurostat/tree/master/code) in corresponding order. Scripts that contain results of random nature (random variable, etc.) have a `set.seed()` command implemented. If the seed is changed, results will most likely differ.
+To reproduce our results, run the numbered R-scripts, which also resemble the modules in our modular design, in [code](https://github.com/R-ramljak/MNO_Eurostat/tree/master/code) in corresponding order. Scripts that contain results of random nature (random variable, etc.) have a `set.seed()` command implemented. If the seed is changed, results will most likely differ. Furthermore, it should be noted that runtime can take a long time. Please reach out if you have any questions.
 
 Content Code relies on the R-language and the following session info
 ```r
