@@ -1,3 +1,5 @@
 # Estimation Strategies
 
 Currently under heavy construction.
+
+Talk about the difference between MLE True and Equal. 

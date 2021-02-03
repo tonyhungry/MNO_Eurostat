@@ -1,8 +1,8 @@
 # Evaluation Methods
 
-In this section, we will graphically compare the two estimates: MLE and Voronoi, and see how well they perform against each other.
+In this section, we will graphically compare the two estimates: MLE and Voronoi, and see how well they perform against each other. We will measure the performance through the the lens of empirical distributions (ECCDF plots), spatial distributions (maps), statistical distributions (bar graphs), and finally with the Kantorovich-Wasserstein Distance.
 
-The packages used in this section are: `tidyverse`, `ggthemes`, `knitr`, and `cowplot.`
+The main packages used in this section are: `tidyverse`, `ggthemes`, `knitr`, and `cowplot.` 
 
 ```{r packages, message=FALSE, echo = F}
 library(tidyverse)
@@ -33,29 +33,68 @@ We created 4 final estimates:
 
 In the following we compare the distributions of the final estimates to the true distribution of the mobile phone density per tile. Significant variation can only be viewed in the tails of the distribution (ECCDF).
 
-```{r estimator pop dist compare, fig.cap="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density."}
+``` {r, eval = F}
+
+# Creating the data frame we need to graph the eccdf 
+true.ECCDF.first <- census.de.100m.tile %>% 
+  st_drop_geometry() %>% 
+  ungroup() %>% 
+  custom_ecdf_prep() %>% 
+  dplyr::select(log10.cum.prob.comp, log10.pop, pop.area.kind) %>%
+  mutate(log10.cum.prob.comp = round(log10.cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
+  distinct()
+true.ECDF.first <- census.de.100m.tile %>% 
+  st_drop_geometry() %>% 
+  ungroup() %>% 
+  custom_ecdf_prep() %>% 
+  dplyr::select(cum.prob.comp, pop.plot, pop.area.kind) %>%
+  mutate(cum.prob.comp = round(cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
+  distinct()
+
+# Plot the ECCDF
+breaks.first <- c("Uninhabitated", "Rural", "Suburban", "Urban")
+ECCDF.true <- true.ECCDF.first %>%   
+  ggplot() + 
+  geom_point(aes(x = log10.pop, y = log10.cum.prob.comp, color = pop.area.kind)) + 
+  scale_color_ptol(breaks = breaks.first) + 
+  ggtitle("", subtitle = "ECCDF true mobile phone density") +  
+  labs(y = "Prob(Y > x)", x = "Mobile phones", color = "")
+
+saveRDS(ECCDF.true, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECCDF.true.rds") # save the plot as a rds file
+
+# plot the ecdf using ggplot
+ECDF.true <- true.ECDF.first %>%   
+  ggplot() + 
+  geom_point(aes(x = pop.plot, y = cum.prob.comp, color = pop.area.kind)) + 
+  scale_color_ptol(breaks = breaks.first, guide = FALSE, expand = c(0, 0)) +
+  labs(y = "", x = "") +
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 9, hjust = 0.5),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
+
+saveRDS(ECDF.true, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECDF.true.rds") # save the plot as a rds file
+
+```
+
+```{r estimator pop dist compare,echo = F, warning=F, fig.cap="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density."}
 ECCDF.compare <- readRDS("Estimates/Plot.files/ECCDF.estimates.rds")
 
-ECDF.compare <- readRDS("Estimates/Plot.files/ECDF.estimates.rds") +  xlim(0, 1000) +
-  labs(y = "", x = "")
+ECDF.compare <- readRDS("Estimates/Plot.files/ECDF.estimates.rds") +  xlim(0, 1000) + labs(y = "", x = "")
 
-
-# 
 pop.dist.estimates.compare <- ECCDF.compare +
   annotation_custom(ggplotGrob(ECDF.compare),
                     xmin = 0, xmax = 1.5,
                     ymin = -6, ymax = -3)
 
-
-plot_grid(pop.dist.estimates.compare, 
-          labels = "Estimator density comparison",  hjust = -0.1, label_size = 14)
+plot_grid(pop.dist.estimates.compare, labels = "Estimator density comparison",  hjust = -0.1, label_size = 14)
 ```
 
 In this section we want to further evaluate the 4 estimates by comparing them with different perspectives in mind to the actual true population. Each subsection defines the perspective-respective performance measure:
 
-1.  Geographical evaluation
+1.  Geographical evaluation through the use of maps to show the final results of each estimation strategy
 
-2.  Statistical evaluation
+2.  Statistical evaluation through the use of MAD and AAD metrics to compare the statistical accuracy of each estimation strategy.
 
 
 ### Geographical Evaluation
@@ -150,6 +189,8 @@ aadl = aad.table %>%
 
 ```{r aad.table, echo = F}
 
+
+
 ```
 
 ```{r, eval = F}
@@ -200,3 +241,7 @@ plot_grid(aad.plot, mad.plot,
 ```
 
 By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. In general, the Voronoi estimates result in less discrepancy compared to both of the MLE estimates. Between the two MLE estimates, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimates, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.
+
+## Kantorovich-Wasserstein Distance (KWD)
+
+The KWD is different such that it takes in consideration of the spatial component which was not considered by the previous metrics. Thus it is safe to say that it is a more holistic assessment of the different estimation strategies.
