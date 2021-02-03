@@ -1,6 +1,5 @@
 # Evaluation Methods
 
-<<<<<<< HEAD
 In this section, we will graphically compare the two estimates: MLE and Voronoi, and see how well they perform against each other. We will measure the performance through the the lens of empirical distributions (ECCDF plots), spatial distributions (maps), statistical distributions (bar graphs), and finally with the Kantorovich-Wasserstein Distance.
 
 The main packages used in this section are: `tidyverse`, `ggthemes`, `knitr`, and `cowplot.` 
@@ -79,9 +78,9 @@ saveRDS(ECDF.true, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/E
 ```
 
 ```{r estimator pop dist compare,echo = F, warning=F, fig.cap="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density."}
-ECCDF.compare <- readRDS("Estimates/Plot.files/ECCDF.estimates.rds")
+ECCDF.compare <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/ECCDF.estimates.rds")
 
-ECDF.compare <- readRDS("Estimates/Plot.files/ECDF.estimates.rds") +  xlim(0, 1000) + labs(y = "", x = "")
+ECDF.compare <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/ECDF.estimates.rds") +  xlim(0, 1000) + labs(y = "", x = "")
 
 pop.dist.estimates.compare <- ECCDF.compare +
   annotation_custom(ggplotGrob(ECDF.compare),
@@ -105,9 +104,9 @@ For the geographical evaluation we use the following performance measure: The vi
 We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.
 
 ```{r Voronoi tower geo eval}
-true.geo.eval.plot <- readRDS("Estimates/Plot.files/true.pop_map.rds")
+true.geo.eval.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/true.pop_map.rds")
 
-VT.geo.eval.plot <- readRDS("Estimates/Plot.files/VT.estimate_map.rds")
+VT.geo.eval.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/VT.estimate_map.rds")
 
 
 plot_grid(true.geo.eval.plot, VT.geo.eval.plot,
@@ -117,7 +116,7 @@ plot_grid(true.geo.eval.plot, VT.geo.eval.plot,
 ```
 
 ```{r Voronoi antenna geo eval}
-VA.geo.eval.plot <- readRDS("Estimates/Plot.files/VA.estimate_map.rds")
+VA.geo.eval.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/VA.estimate_map.rds")
 
 plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
           labels = "Fig. 15 Comparing Voronoi antenna estimate", label_size = 12,
@@ -190,7 +189,11 @@ aadl = aad.table %>%
 
 ```{r aad.table, echo = F}
 
+aadtable = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/aad.table.rds", method = "libcurl"))
 
+aadtable %>%
+  kbl(caption = "AAD Table") %>%
+  kable_minimal()
 
 ```
 
@@ -216,7 +219,19 @@ colnames(mad.table) = c("Voronoi ~ Antenna","Voronoi ~ Tower","MLE ~ Equal","MLE
 
 madl = mad.table %>%
   pivot_longer(-c(), names_to = "type", values_to = "mad") # Transform the dataset into long format.
+```
 
+```{r mad.table, echo = F}
+
+madtable = readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/mad.table.rds", method = "libcurl"))
+
+madtable %>%
+  kbl(caption = "MAD Table") %>%
+  kable_minimal()
+
+```
+
+``` {r, eval = F}
 # Graph through ggplot
 mad.comp.plot = madl %>%
   ggplot(aes(x = type,y = mad, fill = type)) + 
@@ -246,6 +261,3 @@ By calculating the two discrepancy measures, we can then evaluate the overall pe
 ## Kantorovich-Wasserstein Distance (KWD)
 
 The KWD is different such that it takes in consideration of the spatial component which was not considered by the previous metrics. Thus it is safe to say that it is a more holistic assessment of the different estimation strategies.
-=======
-Currently under heavy construction.
->>>>>>> 83db57ae462c9ff68ccc0d87660d9438ea46f2d7

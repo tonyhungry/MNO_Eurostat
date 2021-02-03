@@ -23,6 +23,7 @@ colnames(aad.table) = c("Voronoi ~ Antenna","Voronoi ~ Tower","MLE ~ Equal","MLE
 aadl = aad.table %>%
   pivot_longer(-c(), names_to = "type", values_to = "aad")
 
+aad.table = as.data.frame(aad.table)
 saveRDS(aad.table, file = "aad.table.rds")
 
 aad.comp.plot = aadl %>%
@@ -42,6 +43,7 @@ colnames(mad.table) = c("Voronoi ~ Antenna","Voronoi ~ Tower","MLE ~ Equal","MLE
 madl = mad.table %>%
   pivot_longer(-c(), names_to = "type", values_to = "mad")
 
+mad.table = as.data.frame(mad.table)
 saveRDS(aad.table, file = "mad.table.rds")
 
 mad.comp.plot = madl %>%

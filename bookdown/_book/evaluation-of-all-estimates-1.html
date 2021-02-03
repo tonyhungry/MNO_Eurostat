@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6.1 Evaluation of all estimates | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</title>
+  <meta name="description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6.1 Evaluation of all estimates | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6.1 Evaluation of all estimates | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  
+  <meta name="twitter:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+<meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
+
+
+<meta name="date" content="2021-02-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="evaluation-methods.html"/>
+<link rel="next" href="kantorovich-wasserstein-distance-kwd.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Cover</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="executive-summary.html"><a href="executive-summary.html"><i class="fa fa-check"></i><b>3</b> Executive Summary</a><ul>
+<li class="chapter" data-level="3.0.1" data-path="executive-summary.html"><a href="executive-summary.html#preface"><i class="fa fa-check"></i><b>3.0.1</b> Preface</a></li>
+<li class="chapter" data-level="3.0.2" data-path="executive-summary.html"><a href="executive-summary.html#toy-world-generation"><i class="fa fa-check"></i><b>3.0.2</b> Toy World Generation</a></li>
+<li class="chapter" data-level="3.0.3" data-path="executive-summary.html"><a href="executive-summary.html#estimation-strategies"><i class="fa fa-check"></i><b>3.0.3</b> Estimation strategies</a></li>
+<li class="chapter" data-level="3.0.4" data-path="executive-summary.html"><a href="executive-summary.html#evaluation-of-all-estimates"><i class="fa fa-check"></i><b>3.0.4</b> Evaluation of all estimates</a></li>
+<li class="chapter" data-level="3.0.5" data-path="executive-summary.html"><a href="executive-summary.html#excurse-evaluation-looking-deeper-into-the-convergence-behavior"><i class="fa fa-check"></i><b>3.0.5</b> Excurse Evaluation: Looking deeper into the convergence behavior</a></li>
+<li class="chapter" data-level="3.0.6" data-path="executive-summary.html"><a href="executive-summary.html#final-remarks"><i class="fa fa-check"></i><b>3.0.6</b> Final Remarks</a></li>
+<li class="chapter" data-level="3.0.7" data-path="executive-summary.html"><a href="executive-summary.html#references"><i class="fa fa-check"></i><b>3.0.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="making-a-toy-world.html"><a href="making-a-toy-world.html"><i class="fa fa-check"></i><b>4</b> Making a Toy World</a><ul>
+<li class="chapter" data-level="4.1" data-path="prerequisites.html"><a href="prerequisites.html"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="4.2" data-path="generation-of-mobile-phone-population.html"><a href="generation-of-mobile-phone-population.html"><i class="fa fa-check"></i><b>4.2</b> Generation of Mobile Phone Population</a></li>
+<li class="chapter" data-level="4.3" data-path="generation-of-a-synthetic-radio-network-1.html"><a href="generation-of-a-synthetic-radio-network-1.html"><i class="fa fa-check"></i><b>4.3</b> Generation of a synthetic Radio Network</a></li>
+<li class="chapter" data-level="4.4" data-path="device-to-cell-association-1.html"><a href="device-to-cell-association-1.html"><i class="fa fa-check"></i><b>4.4</b> Device to cell association</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="estimation-strategies-1.html"><a href="estimation-strategies-1.html"><i class="fa fa-check"></i><b>5</b> Estimation Strategies</a></li>
+<li class="chapter" data-level="6" data-path="evaluation-methods.html"><a href="evaluation-methods.html"><i class="fa fa-check"></i><b>6</b> Evaluation Methods</a><ul>
+<li class="chapter" data-level="6.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html"><i class="fa fa-check"></i><b>6.1</b> Evaluation of all estimates</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#geographical-evaluation-1"><i class="fa fa-check"></i><b>6.1.1</b> Geographical Evaluation</a></li>
+<li class="chapter" data-level="6.1.2" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#statisticaldistributional-evaluation-1"><i class="fa fa-check"></i><b>6.1.2</b> Statistical/Distributional Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="kantorovich-wasserstein-distance-kwd.html"><a href="kantorovich-wasserstein-distance-kwd.html"><i class="fa fa-check"></i><b>6.2</b> Kantorovich-Wasserstein Distance (KWD)</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
+<li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="evaluation-of-all-estimates-1" class="section level2">
+<h2><span class="header-section-number">6.1</span> Evaluation of all estimates</h2>
+<p>We created 4 final estimates:</p>
+<ul>
+<li><p>Voronoi tessellation with tower locations as seeds</p></li>
+<li><p>Voronoi tessellation with coverage area locations (antennas) as seeds</p></li>
+<li><p>MLE uniform prior equal probability P.matrix after 1000 iterations</p></li>
+<li><p>MLE uniform prior oracle probability P.matrix after 1000 iterations</p></li>
+</ul>
+<p>In the following we compare the distributions of the final estimates to the true distribution of the mobile phone density per tile. Significant variation can only be viewed in the tails of the distribution (ECCDF).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="evaluation-of-all-estimates-1.html#cb1-1"></a><span class="co"># Creating the data frame we need to graph the eccdf </span></span>
+<span id="cb1-2"><a href="evaluation-of-all-estimates-1.html#cb1-2"></a>true.ECCDF.first &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-3"><a href="evaluation-of-all-estimates-1.html#cb1-3"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-4"><a href="evaluation-of-all-estimates-1.html#cb1-4"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-5"><a href="evaluation-of-all-estimates-1.html#cb1-5"></a><span class="st">  </span><span class="kw">custom_ecdf_prep</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-6"><a href="evaluation-of-all-estimates-1.html#cb1-6"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(log10.cum.prob.comp, log10.pop, pop.area.kind) <span class="op">%&gt;%</span></span>
+<span id="cb1-7"><a href="evaluation-of-all-estimates-1.html#cb1-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10.cum.prob.comp =</span> <span class="kw">round</span>(log10.cum.prob.comp, <span class="dv">4</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># effective plot sample --&gt; faster plotting excluding overplot</span></span>
+<span id="cb1-8"><a href="evaluation-of-all-estimates-1.html#cb1-8"></a><span class="st">  </span><span class="kw">distinct</span>()</span>
+<span id="cb1-9"><a href="evaluation-of-all-estimates-1.html#cb1-9"></a>true.ECDF.first &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-10"><a href="evaluation-of-all-estimates-1.html#cb1-10"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-11"><a href="evaluation-of-all-estimates-1.html#cb1-11"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-12"><a href="evaluation-of-all-estimates-1.html#cb1-12"></a><span class="st">  </span><span class="kw">custom_ecdf_prep</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-13"><a href="evaluation-of-all-estimates-1.html#cb1-13"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(cum.prob.comp, pop.plot, pop.area.kind) <span class="op">%&gt;%</span></span>
+<span id="cb1-14"><a href="evaluation-of-all-estimates-1.html#cb1-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cum.prob.comp =</span> <span class="kw">round</span>(cum.prob.comp, <span class="dv">4</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># effective plot sample --&gt; faster plotting excluding overplot</span></span>
+<span id="cb1-15"><a href="evaluation-of-all-estimates-1.html#cb1-15"></a><span class="st">  </span><span class="kw">distinct</span>()</span>
+<span id="cb1-16"><a href="evaluation-of-all-estimates-1.html#cb1-16"></a></span>
+<span id="cb1-17"><a href="evaluation-of-all-estimates-1.html#cb1-17"></a><span class="co"># Plot the ECCDF</span></span>
+<span id="cb1-18"><a href="evaluation-of-all-estimates-1.html#cb1-18"></a>breaks.first &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Uninhabitated&quot;</span>, <span class="st">&quot;Rural&quot;</span>, <span class="st">&quot;Suburban&quot;</span>, <span class="st">&quot;Urban&quot;</span>)</span>
+<span id="cb1-19"><a href="evaluation-of-all-estimates-1.html#cb1-19"></a>ECCDF.true &lt;-<span class="st"> </span>true.ECCDF.first <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb1-20"><a href="evaluation-of-all-estimates-1.html#cb1-20"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-21"><a href="evaluation-of-all-estimates-1.html#cb1-21"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> log10.pop, <span class="dt">y =</span> log10.cum.prob.comp, <span class="dt">color =</span> pop.area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-22"><a href="evaluation-of-all-estimates-1.html#cb1-22"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> breaks.first) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-23"><a href="evaluation-of-all-estimates-1.html#cb1-23"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;ECCDF true mobile phone density&quot;</span>) <span class="op">+</span><span class="st">  </span></span>
+<span id="cb1-24"><a href="evaluation-of-all-estimates-1.html#cb1-24"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Prob(Y &gt; x)&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;Mobile phones&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb1-25"><a href="evaluation-of-all-estimates-1.html#cb1-25"></a></span>
+<span id="cb1-26"><a href="evaluation-of-all-estimates-1.html#cb1-26"></a><span class="kw">saveRDS</span>(ECCDF.true, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECCDF.true.rds&quot;</span>) <span class="co"># save the plot as a rds file</span></span>
+<span id="cb1-27"><a href="evaluation-of-all-estimates-1.html#cb1-27"></a></span>
+<span id="cb1-28"><a href="evaluation-of-all-estimates-1.html#cb1-28"></a><span class="co"># plot the ecdf using ggplot</span></span>
+<span id="cb1-29"><a href="evaluation-of-all-estimates-1.html#cb1-29"></a>ECDF.true &lt;-<span class="st"> </span>true.ECDF.first <span class="op">%&gt;%</span><span class="st">   </span></span>
+<span id="cb1-30"><a href="evaluation-of-all-estimates-1.html#cb1-30"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-31"><a href="evaluation-of-all-estimates-1.html#cb1-31"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pop.plot, <span class="dt">y =</span> cum.prob.comp, <span class="dt">color =</span> pop.area.kind)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-32"><a href="evaluation-of-all-estimates-1.html#cb1-32"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">breaks =</span> breaks.first, <span class="dt">guide =</span> <span class="ot">FALSE</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb1-33"><a href="evaluation-of-all-estimates-1.html#cb1-33"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></span>
+<span id="cb1-34"><a href="evaluation-of-all-estimates-1.html#cb1-34"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb1-35"><a href="evaluation-of-all-estimates-1.html#cb1-35"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb1-36"><a href="evaluation-of-all-estimates-1.html#cb1-36"></a>        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb1-37"><a href="evaluation-of-all-estimates-1.html#cb1-37"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>())</span>
+<span id="cb1-38"><a href="evaluation-of-all-estimates-1.html#cb1-38"></a></span>
+<span id="cb1-39"><a href="evaluation-of-all-estimates-1.html#cb1-39"></a><span class="kw">saveRDS</span>(ECDF.true, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECDF.true.rds&quot;</span>) <span class="co"># save the plot as a rds file</span></span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/estimator%20pop%20dist%20compare-1.png" alt="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density." width="672" />
+<p class="caption">
+(#fig:estimator pop dist compare)In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density.
+</p>
+</div>
+<p>In this section we want to further evaluate the 4 estimates by comparing them with different perspectives in mind to the actual true population. Each subsection defines the perspective-respective performance measure:</p>
+<ol style="list-style-type: decimal">
+<li><p>Geographical evaluation through the use of maps to show the final results of each estimation strategy</p></li>
+<li><p>Statistical evaluation through the use of MAD and AAD metrics to compare the statistical accuracy of each estimation strategy.</p></li>
+</ol>
+<div id="geographical-evaluation-1" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Geographical Evaluation</h3>
+<p>For the geographical evaluation we use the following performance measure: The visual resemblance of fixed tile categories from the respective estimate and the actual true population on a map.</p>
+<p>We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="evaluation-of-all-estimates-1.html#cb2-1"></a>true.geo.eval.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/true.pop_map.rds&quot;</span>)</span>
+<span id="cb2-2"><a href="evaluation-of-all-estimates-1.html#cb2-2"></a></span>
+<span id="cb2-3"><a href="evaluation-of-all-estimates-1.html#cb2-3"></a>VT.geo.eval.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/VT.estimate_map.rds&quot;</span>)</span>
+<span id="cb2-4"><a href="evaluation-of-all-estimates-1.html#cb2-4"></a></span>
+<span id="cb2-5"><a href="evaluation-of-all-estimates-1.html#cb2-5"></a></span>
+<span id="cb2-6"><a href="evaluation-of-all-estimates-1.html#cb2-6"></a><span class="kw">plot_grid</span>(true.geo.eval.plot, VT.geo.eval.plot,</span>
+<span id="cb2-7"><a href="evaluation-of-all-estimates-1.html#cb2-7"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 14 Comparing Voronoi tower estimate&quot;</span>, <span class="dt">label_size =</span> <span class="dv">12</span>,</span>
+<span id="cb2-8"><a href="evaluation-of-all-estimates-1.html#cb2-8"></a>          <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/Voronoi%20tower%20geo%20eval-1.png" width="672" /></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="evaluation-of-all-estimates-1.html#cb3-1"></a>VA.geo.eval.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/VA.estimate_map.rds&quot;</span>)</span>
+<span id="cb3-2"><a href="evaluation-of-all-estimates-1.html#cb3-2"></a></span>
+<span id="cb3-3"><a href="evaluation-of-all-estimates-1.html#cb3-3"></a><span class="kw">plot_grid</span>(true.geo.eval.plot, VA.geo.eval.plot,</span>
+<span id="cb3-4"><a href="evaluation-of-all-estimates-1.html#cb3-4"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 15 Comparing Voronoi antenna estimate&quot;</span>, <span class="dt">label_size =</span> <span class="dv">12</span>,</span>
+<span id="cb3-5"><a href="evaluation-of-all-estimates-1.html#cb3-5"></a>          <span class="dt">align =</span> <span class="st">&quot;hv&quot;</span>, <span class="dt">hjust =</span> <span class="fl">-0.1</span>)</span></code></pre></div>
+<p><img src="bookdown_files/figure-html/Voronoi%20antenna%20geo%20eval-1.png" width="672" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="evaluation-of-all-estimates-1.html#cb4-1"></a><span class="co"># MLE.equal.geo.eval.plot &lt;- readRDS(&quot;Estimates/Plot.files/MLE.oracle.estimate_map.rds&quot;)</span></span>
+<span id="cb4-2"><a href="evaluation-of-all-estimates-1.html#cb4-2"></a><span class="co"># animate(MLE.equal.geo.eval.plot, fps = 10)</span></span>
+<span id="cb4-3"><a href="evaluation-of-all-estimates-1.html#cb4-3"></a></span>
+<span id="cb4-4"><a href="evaluation-of-all-estimates-1.html#cb4-4"></a><span class="co"># plot_grid(true.geo.eval.plot, MLE.equal.geo.eval.plot,</span></span>
+<span id="cb4-5"><a href="evaluation-of-all-estimates-1.html#cb4-5"></a><span class="co">#           labels = &quot;Comparing MLE equal P.matrix estimate&quot;, label_size = 12,</span></span>
+<span id="cb4-6"><a href="evaluation-of-all-estimates-1.html#cb4-6"></a><span class="co">#           align = &quot;hv&quot;, hjust = -0.1)</span></span>
+<span id="cb4-7"><a href="evaluation-of-all-estimates-1.html#cb4-7"></a></span>
+<span id="cb4-8"><a href="evaluation-of-all-estimates-1.html#cb4-8"></a></span>
+<span id="cb4-9"><a href="evaluation-of-all-estimates-1.html#cb4-9"></a>knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.equal.estimate_map_new.gif&quot;</span>)</span></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.equal.estimate_map_new.gif" /><!-- --></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="evaluation-of-all-estimates-1.html#cb5-1"></a><span class="co"># MLE.true.geo.eval.plot &lt;- readRDS(&quot;Estimates/Plot.files/MLE.oracle.estimate_map.rds&quot;)</span></span>
+<span id="cb5-2"><a href="evaluation-of-all-estimates-1.html#cb5-2"></a><span class="co"># MLE.true.geo.eval.plot &lt;- animate(MLE.true.geo.eval.plot, fps = 10)</span></span>
+<span id="cb5-3"><a href="evaluation-of-all-estimates-1.html#cb5-3"></a><span class="co"># </span></span>
+<span id="cb5-4"><a href="evaluation-of-all-estimates-1.html#cb5-4"></a><span class="co"># </span></span>
+<span id="cb5-5"><a href="evaluation-of-all-estimates-1.html#cb5-5"></a><span class="co"># plot_grid(true.geo.eval.plot, MLE.true.geo.eval.plot,</span></span>
+<span id="cb5-6"><a href="evaluation-of-all-estimates-1.html#cb5-6"></a><span class="co">#           labels = &quot;Comparing MLE true P.matrix estimate&quot;, label_size = 12,</span></span>
+<span id="cb5-7"><a href="evaluation-of-all-estimates-1.html#cb5-7"></a><span class="co">#           align = &quot;hv&quot;, hjust = -0.1)</span></span>
+<span id="cb5-8"><a href="evaluation-of-all-estimates-1.html#cb5-8"></a></span>
+<span id="cb5-9"><a href="evaluation-of-all-estimates-1.html#cb5-9"></a>knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.oracle.estimate_map_new.gif&quot;</span>)</span></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.oracle.estimate_map_new.gif" /><!-- --></p>
+</div>
+<div id="statisticaldistributional-evaluation-1" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> Statistical/Distributional Evaluation</h3>
+<p>In order to actually compare the numerical resemblance between the estimates and the actual true population we introduce two discrepancy performance measures.</p>
+<ul>
+<li><p>Average Absolute Discrepancy (AAD): <span class="math inline">\(D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|\)</span></p></li>
+<li><p>Maximum Absolute Discrepancy (MAD): <span class="math inline">\(D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |\)</span></p></li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="evaluation-of-all-estimates-1.html#cb6-1"></a><span class="kw">require</span>(tidyverse)</span>
+<span id="cb6-2"><a href="evaluation-of-all-estimates-1.html#cb6-2"></a><span class="kw">require</span>(ggthemes)</span>
+<span id="cb6-3"><a href="evaluation-of-all-estimates-1.html#cb6-3"></a></span>
+<span id="cb6-4"><a href="evaluation-of-all-estimates-1.html#cb6-4"></a><span class="co"># Loading in the data</span></span>
+<span id="cb6-5"><a href="evaluation-of-all-estimates-1.html#cb6-5"></a>voro &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Voronoi both/Voronoi.estimates.rds&quot;</span>) <span class="co"># the voronoi estimates</span></span>
+<span id="cb6-6"><a href="evaluation-of-all-estimates-1.html#cb6-6"></a>equal &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part801_1000_new.rds&quot;</span>)[,<span class="dv">202</span>] <span class="co"># estimates from the equal population matrix of MLE</span></span>
+<span id="cb6-7"><a href="evaluation-of-all-estimates-1.html#cb6-7"></a>true &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000_new.rds&quot;</span>)[,<span class="dv">202</span>] <span class="co"># estimates from the from the true population matrix MLE</span></span>
+<span id="cb6-8"><a href="evaluation-of-all-estimates-1.html#cb6-8"></a></span>
+<span id="cb6-9"><a href="evaluation-of-all-estimates-1.html#cb6-9"></a><span class="co"># Transforming the data</span></span>
+<span id="cb6-10"><a href="evaluation-of-all-estimates-1.html#cb6-10"></a>voro =<span class="st"> </span><span class="kw">cbind</span>(voro, equal, true) <span class="op">*</span><span class="co"># combining the three data sets together*</span></span>
+<span id="cb6-11"><a href="evaluation-of-all-estimates-1.html#cb6-11"></a><span class="kw">colnames</span>(voro) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;internal.id&quot;</span>,<span class="st">&quot;pop&quot;</span>,<span class="st">&quot;u.antenna&quot;</span>,<span class="st">&quot;u.tower&quot;</span>,<span class="st">&quot;u.equal&quot;</span>,<span class="st">&quot;u.true&quot;</span>) <span class="co"># changing the column names</span></span>
+<span id="cb6-12"><a href="evaluation-of-all-estimates-1.html#cb6-12"></a>voro =<span class="st"> </span>voro [,<span class="op">-</span><span class="dv">1</span>] <span class="op">%&gt;%</span></span>
+<span id="cb6-13"><a href="evaluation-of-all-estimates-1.html#cb6-13"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">*</span><span class="co"># taking out unnnecessary column*</span></span>
+<span id="cb6-14"><a href="evaluation-of-all-estimates-1.html#cb6-14"></a></span>
+<span id="cb6-15"><a href="evaluation-of-all-estimates-1.html#cb6-15"></a>bigu =<span class="st"> </span><span class="kw">sum</span>(voro<span class="op">$</span>pop) <span class="op">*</span><span class="co"># calculate the constant that we need for MAD*</span></span>
+<span id="cb6-16"><a href="evaluation-of-all-estimates-1.html#cb6-16"></a></span>
+<span id="cb6-17"><a href="evaluation-of-all-estimates-1.html#cb6-17"></a><span class="co"># Average Absolute Discrepancy Calculation:</span></span>
+<span id="cb6-18"><a href="evaluation-of-all-estimates-1.html#cb6-18"></a><span class="co"># First we calculate abs(uj-vj), and also delete all original columns involved.</span></span>
+<span id="cb6-19"><a href="evaluation-of-all-estimates-1.html#cb6-19"></a><span class="co"># We sum up each column calculated above and divide by the bigu, and delete all original columns involved.</span></span>
+<span id="cb6-20"><a href="evaluation-of-all-estimates-1.html#cb6-20"></a>aad.table =<span class="st"> </span>voro <span class="op">%&gt;%</span></span>
+<span id="cb6-21"><a href="evaluation-of-all-estimates-1.html#cb6-21"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u.&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-22"><a href="evaluation-of-all-estimates-1.html#cb6-22"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)<span class="op">/</span>bigu)) </span>
+<span id="cb6-23"><a href="evaluation-of-all-estimates-1.html#cb6-23"></a></span>
+<span id="cb6-24"><a href="evaluation-of-all-estimates-1.html#cb6-24"></a><span class="kw">colnames</span>(aad.table) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Voronoi ~ Antenna&quot;</span>,<span class="st">&quot;Voronoi ~ Tower&quot;</span>,<span class="st">&quot;MLE ~ Equal&quot;</span>,<span class="st">&quot;MLE ~ True&quot;</span>) <span class="co"># Add column names</span></span>
+<span id="cb6-25"><a href="evaluation-of-all-estimates-1.html#cb6-25"></a></span>
+<span id="cb6-26"><a href="evaluation-of-all-estimates-1.html#cb6-26"></a>aadl =<span class="st"> </span>aad.table <span class="op">%&gt;%</span></span>
+<span id="cb6-27"><a href="evaluation-of-all-estimates-1.html#cb6-27"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="op">-</span><span class="kw">c</span>(), <span class="dt">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;aad&quot;</span>) <span class="co"># Transform the dataset into long format</span></span></code></pre></div>
+<table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'>
+<caption>
+(#tab:aad.table)AAD Table
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Voronoi ~ Antenna
+</th>
+<th style="text-align:right;">
+Voronoi ~ Tower
+</th>
+<th style="text-align:right;">
+MLE ~ Equal
+</th>
+<th style="text-align:right;">
+MLE ~ True
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1.366715
+</td>
+<td style="text-align:right;">
+1.410964
+</td>
+<td style="text-align:right;">
+1.839367
+</td>
+<td style="text-align:right;">
+1.641365
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="evaluation-of-all-estimates-1.html#cb7-1"></a><span class="co"># Graph through ggplot</span></span>
+<span id="cb7-2"><a href="evaluation-of-all-estimates-1.html#cb7-2"></a>aad.comp.plot =<span class="st"> </span>aadl <span class="op">%&gt;%</span></span>
+<span id="cb7-3"><a href="evaluation-of-all-estimates-1.html#cb7-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> type,<span class="dt">y =</span> aad, <span class="dt">fill =</span> type)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-4"><a href="evaluation-of-all-estimates-1.html#cb7-4"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-5"><a href="evaluation-of-all-estimates-1.html#cb7-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Estimation Type&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Average Absolute Discrepancy&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Comparison Across Different Estimation Strategies ~ AAD&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-6"><a href="evaluation-of-all-estimates-1.html#cb7-6"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>),<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb7-7"><a href="evaluation-of-all-estimates-1.html#cb7-7"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>()</span>
+<span id="cb7-8"><a href="evaluation-of-all-estimates-1.html#cb7-8"></a></span>
+<span id="cb7-9"><a href="evaluation-of-all-estimates-1.html#cb7-9"></a><span class="kw">saveRDS</span>(aad.comp.plot, <span class="dt">file =</span> <span class="st">&quot;aad.comp.plot.rds&quot;</span>) <span class="co"># save the plot</span></span>
+<span id="cb7-10"><a href="evaluation-of-all-estimates-1.html#cb7-10"></a></span>
+<span id="cb7-11"><a href="evaluation-of-all-estimates-1.html#cb7-11"></a><span class="co"># Maximum Absolute Discrepancy Calculation</span></span>
+<span id="cb7-12"><a href="evaluation-of-all-estimates-1.html#cb7-12"></a><span class="co"># First we calculate abs(uj-vj), and also delete all original columns involved.</span></span>
+<span id="cb7-13"><a href="evaluation-of-all-estimates-1.html#cb7-13"></a><span class="co"># We sum up each column calculated above, and delete all original columns involved.</span></span>
+<span id="cb7-14"><a href="evaluation-of-all-estimates-1.html#cb7-14"></a>mad.table =<span class="st"> </span>voro <span class="op">%&gt;%</span></span>
+<span id="cb7-15"><a href="evaluation-of-all-estimates-1.html#cb7-15"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-16"><a href="evaluation-of-all-estimates-1.html#cb7-16"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)))</span>
+<span id="cb7-17"><a href="evaluation-of-all-estimates-1.html#cb7-17"></a></span>
+<span id="cb7-18"><a href="evaluation-of-all-estimates-1.html#cb7-18"></a><span class="kw">colnames</span>(mad.table) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Voronoi ~ Antenna&quot;</span>,<span class="st">&quot;Voronoi ~ Tower&quot;</span>,<span class="st">&quot;MLE ~ Equal&quot;</span>,<span class="st">&quot;MLE ~ True&quot;</span>) <span class="co"># add column names</span></span>
+<span id="cb7-19"><a href="evaluation-of-all-estimates-1.html#cb7-19"></a></span>
+<span id="cb7-20"><a href="evaluation-of-all-estimates-1.html#cb7-20"></a>madl =<span class="st"> </span>mad.table <span class="op">%&gt;%</span></span>
+<span id="cb7-21"><a href="evaluation-of-all-estimates-1.html#cb7-21"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="op">-</span><span class="kw">c</span>(), <span class="dt">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;mad&quot;</span>) <span class="co"># Transform the dataset into long format.</span></span></code></pre></div>
+<table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'>
+<caption>
+(#tab:mad.table)MAD Table
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Voronoi ~ Antenna
+</th>
+<th style="text-align:right;">
+Voronoi ~ Tower
+</th>
+<th style="text-align:right;">
+MLE ~ Equal
+</th>
+<th style="text-align:right;">
+MLE ~ True
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1.366715
+</td>
+<td style="text-align:right;">
+1.410964
+</td>
+<td style="text-align:right;">
+1.839367
+</td>
+<td style="text-align:right;">
+1.641365
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="evaluation-of-all-estimates-1.html#cb8-1"></a><span class="co"># Graph through ggplot</span></span>
+<span id="cb8-2"><a href="evaluation-of-all-estimates-1.html#cb8-2"></a>mad.comp.plot =<span class="st"> </span>madl <span class="op">%&gt;%</span></span>
+<span id="cb8-3"><a href="evaluation-of-all-estimates-1.html#cb8-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> type,<span class="dt">y =</span> mad, <span class="dt">fill =</span> type)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-4"><a href="evaluation-of-all-estimates-1.html#cb8-4"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-5"><a href="evaluation-of-all-estimates-1.html#cb8-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Estimation Type&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Maximum Absolute Discrepancy&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Comparison Across Different Estimation Strategies ~ MAD&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-6"><a href="evaluation-of-all-estimates-1.html#cb8-6"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>),<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb8-7"><a href="evaluation-of-all-estimates-1.html#cb8-7"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>()</span>
+<span id="cb8-8"><a href="evaluation-of-all-estimates-1.html#cb8-8"></a></span>
+<span id="cb8-9"><a href="evaluation-of-all-estimates-1.html#cb8-9"></a><span class="kw">saveRDS</span>(mad.comp.plot, <span class="dt">file =</span> <span class="st">&quot;mad.comp.plot.rds&quot;</span>) <span class="co"># save the plot</span></span></code></pre></div>
+<p><img src="bookdown_files/figure-html/voronoi%20vs%20MLE-1.png" width="672" /></p>
+<p>By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. In general, the Voronoi estimates result in less discrepancy compared to both of the MLE estimates. Between the two MLE estimates, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimates, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="evaluation-methods.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="kantorovich-wasserstein-distance-kwd.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": true,
+"info": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

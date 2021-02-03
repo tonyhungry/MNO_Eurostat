@@ -45,3 +45,6 @@ discrepancy-measures-per-iteration-1
 convergence-behavior-1
 appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates
 >>>>>>> 9beab66830f52f6e759d00f01df252bd8d77f9ad
+prerequisites
+generation-of-mobile-phone-population
+kantorovich-wasserstein-distance-kwd
