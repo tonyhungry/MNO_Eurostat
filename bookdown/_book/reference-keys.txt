@@ -32,6 +32,16 @@ final-remarks
 generation-of-population
 generation-of-a-synthetic-radio-network-1
 device-to-cell-association-1
+<<<<<<< HEAD
 fig:figures-side
 test
 fig:focus-area
+=======
+evaluation-of-all-estimates-1
+geographical-evaluation-1
+statisticaldistributional-evaluation-1
+appendix-a-a-deep-dive-into-the-convergence-behaviour-of-our-estimates
+discrepancy-measures-per-iteration-1
+convergence-behavior-1
+appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates
+>>>>>>> 9beab66830f52f6e759d00f01df252bd8d77f9ad

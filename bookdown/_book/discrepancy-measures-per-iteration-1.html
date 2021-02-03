@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>8.1 Discrepancy measures per iteration | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</title>
+  <meta name="description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="8.1 Discrepancy measures per iteration | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="8.1 Discrepancy measures per iteration | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  
+  <meta name="twitter:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+<meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
+
+
+<meta name="date" content="2021-02-03" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"/>
+<link rel="next" href="convergence-behavior-1.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Cover</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="executive-summary.html"><a href="executive-summary.html"><i class="fa fa-check"></i><b>3</b> Executive Summary</a><ul>
+<li class="chapter" data-level="3.0.1" data-path="executive-summary.html"><a href="executive-summary.html#preface"><i class="fa fa-check"></i><b>3.0.1</b> Preface</a></li>
+<li class="chapter" data-level="3.0.2" data-path="executive-summary.html"><a href="executive-summary.html#toy-world-generation"><i class="fa fa-check"></i><b>3.0.2</b> Toy World Generation</a></li>
+<li class="chapter" data-level="3.0.3" data-path="executive-summary.html"><a href="executive-summary.html#estimation-strategies"><i class="fa fa-check"></i><b>3.0.3</b> Estimation strategies</a></li>
+<li class="chapter" data-level="3.0.4" data-path="executive-summary.html"><a href="executive-summary.html#evaluation-of-all-estimates"><i class="fa fa-check"></i><b>3.0.4</b> Evaluation of all estimates</a></li>
+<li class="chapter" data-level="3.0.5" data-path="executive-summary.html"><a href="executive-summary.html#excurse-evaluation-looking-deeper-into-the-convergence-behavior"><i class="fa fa-check"></i><b>3.0.5</b> Excurse Evaluation: Looking deeper into the convergence behavior</a></li>
+<li class="chapter" data-level="3.0.6" data-path="executive-summary.html"><a href="executive-summary.html#final-remarks"><i class="fa fa-check"></i><b>3.0.6</b> Final Remarks</a></li>
+<li class="chapter" data-level="3.0.7" data-path="executive-summary.html"><a href="executive-summary.html#references"><i class="fa fa-check"></i><b>3.0.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="making-a-toy-world.html"><a href="making-a-toy-world.html"><i class="fa fa-check"></i><b>4</b> Making a Toy World</a><ul>
+<li class="chapter" data-level="4.1" data-path="generation-of-population.html"><a href="generation-of-population.html"><i class="fa fa-check"></i><b>4.1</b> Generation of Population</a></li>
+<li class="chapter" data-level="4.2" data-path="generation-of-a-synthetic-radio-network-1.html"><a href="generation-of-a-synthetic-radio-network-1.html"><i class="fa fa-check"></i><b>4.2</b> Generation of a synthetic Radio Network</a></li>
+<li class="chapter" data-level="4.3" data-path="device-to-cell-association-1.html"><a href="device-to-cell-association-1.html"><i class="fa fa-check"></i><b>4.3</b> Device-to-cell association</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="estimation-strategies-1.html"><a href="estimation-strategies-1.html"><i class="fa fa-check"></i><b>5</b> Estimation Strategies</a></li>
+<li class="chapter" data-level="6" data-path="evaluation-methods.html"><a href="evaluation-methods.html"><i class="fa fa-check"></i><b>6</b> Evaluation Methods</a><ul>
+<li class="chapter" data-level="6.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html"><i class="fa fa-check"></i><b>6.1</b> Evaluation of all estimates</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#geographical-evaluation-1"><i class="fa fa-check"></i><b>6.1.1</b> Geographical Evaluation</a></li>
+<li class="chapter" data-level="6.1.2" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#statisticaldistributional-evaluation-1"><i class="fa fa-check"></i><b>6.1.2</b> Statistical/Distributional Evaluation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
+<li class="chapter" data-level="8" data-path="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><a href="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><i class="fa fa-check"></i><b>8</b> Appendix A: A deep dive into the convergence behaviour of MLE estimates</a><ul>
+<li class="chapter" data-level="8.1" data-path="discrepancy-measures-per-iteration-1.html"><a href="discrepancy-measures-per-iteration-1.html"><i class="fa fa-check"></i><b>8.1</b> Discrepancy measures per iteration</a></li>
+<li class="chapter" data-level="8.2" data-path="convergence-behavior-1.html"><a href="convergence-behavior-1.html"><i class="fa fa-check"></i><b>8.2</b> Convergence Behavior</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="discrepancy-measures-per-iteration-1" class="section level2">
+<h2><span class="header-section-number">8.1</span> Discrepancy measures per iteration</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="discrepancy-measures-per-iteration-1.html#cb1-1"></a><span class="co"># In this section we will be calculating the AAD and MAD values for the true population matrix</span></span>
+<span id="cb1-2"><a href="discrepancy-measures-per-iteration-1.html#cb1-2"></a></span>
+<span id="cb1-3"><a href="discrepancy-measures-per-iteration-1.html#cb1-3"></a><span class="co"># First get the true population vector from another dataset</span></span>
+<span id="cb1-4"><a href="discrepancy-measures-per-iteration-1.html#cb1-4"></a>voro &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Voronoi both/Voronoi.estimates.rds&quot;</span>) <span class="co"># getting the true pop vector from another object</span></span>
+<span id="cb1-5"><a href="discrepancy-measures-per-iteration-1.html#cb1-5"></a>pop =<span class="st"> </span>voro<span class="op">$</span>pop</span>
+<span id="cb1-6"><a href="discrepancy-measures-per-iteration-1.html#cb1-6"></a>voro =<span class="st"> </span>voro <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>()</span>
+<span id="cb1-7"><a href="discrepancy-measures-per-iteration-1.html#cb1-7"></a></span>
+<span id="cb1-8"><a href="discrepancy-measures-per-iteration-1.html#cb1-8"></a><span class="co"># Calculating Average Absolute Discrepancy</span></span>
+<span id="cb1-9"><a href="discrepancy-measures-per-iteration-1.html#cb1-9"></a><span class="co"># Because the data is in three parts, thus we will calculate the AAD separately. The first set has iterations between 0 and 400. The second set has iterations between 401 and 801. The third set has iterations between 802 and 1002. </span></span>
+<span id="cb1-10"><a href="discrepancy-measures-per-iteration-1.html#cb1-10"></a><span class="co"># The code/procedure is rather similar to the statistical evaluation presented in chapter 5, except that over here we are looking at all of the iterations instead of the last iteration.</span></span>
+<span id="cb1-11"><a href="discrepancy-measures-per-iteration-1.html#cb1-11"></a><span class="co"># Note: the graphing part might take a bit longer to render.</span></span>
+<span id="cb1-12"><a href="discrepancy-measures-per-iteration-1.html#cb1-12"></a></span>
+<span id="cb1-13"><a href="discrepancy-measures-per-iteration-1.html#cb1-13"></a><span class="co"># Part one</span></span>
+<span id="cb1-14"><a href="discrepancy-measures-per-iteration-1.html#cb1-14"></a>equal1 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part1_400_new.rd s&quot;</span> ) <span class="co">#read in the data</span></span>
+<span id="cb1-15"><a href="discrepancy-measures-per-iteration-1.html#cb1-15"></a>equal1 =<span class="st"> </span><span class="kw">cbind</span>(equal1, pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb1-16"><a href="discrepancy-measures-per-iteration-1.html#cb1-16"></a>bigu =<span class="st"> </span><span class="kw">sum</span>(equal1<span class="op">$</span>pop) <span class="co"># useful to have this calculated and stored as a constant already </span></span>
+<span id="cb1-17"><a href="discrepancy-measures-per-iteration-1.html#cb1-17"></a>aad1 =<span class="st"> </span>equal1 <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb1-18"><a href="discrepancy-measures-per-iteration-1.html#cb1-18"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb1-19"><a href="discrepancy-measures-per-iteration-1.html#cb1-19"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)<span class="op">/</span>bigu)) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb1-20"><a href="discrepancy-measures-per-iteration-1.html#cb1-20"></a><span class="kw">colnames</span>(aad1) =<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">400</span> <span class="co"># change the column names</span></span>
+<span id="cb1-21"><a href="discrepancy-measures-per-iteration-1.html#cb1-21"></a></span>
+<span id="cb1-22"><a href="discrepancy-measures-per-iteration-1.html#cb1-22"></a><span class="co"># Part two</span></span>
+<span id="cb1-23"><a href="discrepancy-measures-per-iteration-1.html#cb1-23"></a>equal2 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part401_800_new.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb1-24"><a href="discrepancy-measures-per-iteration-1.html#cb1-24"></a>equal2 =<span class="st"> </span><span class="kw">cbind</span>(equal2,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb1-25"><a href="discrepancy-measures-per-iteration-1.html#cb1-25"></a>aad2 =<span class="st"> </span>equal2 <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># mutating </span></span>
+<span id="cb1-26"><a href="discrepancy-measures-per-iteration-1.html#cb1-26"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-27"><a href="discrepancy-measures-per-iteration-1.html#cb1-27"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)<span class="op">/</span>bigu))</span>
+<span id="cb1-28"><a href="discrepancy-measures-per-iteration-1.html#cb1-28"></a><span class="kw">colnames</span>(aad2) =<span class="st"> </span><span class="dv">401</span><span class="op">:</span><span class="dv">801</span> <span class="co"># change the column names</span></span>
+<span id="cb1-29"><a href="discrepancy-measures-per-iteration-1.html#cb1-29"></a></span>
+<span id="cb1-30"><a href="discrepancy-measures-per-iteration-1.html#cb1-30"></a><span class="co"># Part three</span></span>
+<span id="cb1-31"><a href="discrepancy-measures-per-iteration-1.html#cb1-31"></a>equal3 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part801_1000_new.rds&quot;</span>) <span class="co"># read in the data </span></span>
+<span id="cb1-32"><a href="discrepancy-measures-per-iteration-1.html#cb1-32"></a>equal3 =<span class="st"> </span><span class="kw">cbind</span>(equal3,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb1-33"><a href="discrepancy-measures-per-iteration-1.html#cb1-33"></a>aad3 =<span class="st"> </span>equal3 <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb1-34"><a href="discrepancy-measures-per-iteration-1.html#cb1-34"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb1-35"><a href="discrepancy-measures-per-iteration-1.html#cb1-35"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)<span class="op">/</span>bigu)) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb1-36"><a href="discrepancy-measures-per-iteration-1.html#cb1-36"></a><span class="kw">colnames</span>(aad3) =<span class="st"> </span><span class="dv">802</span><span class="op">:</span><span class="dv">1002</span> <span class="co"># change the column names</span></span>
+<span id="cb1-37"><a href="discrepancy-measures-per-iteration-1.html#cb1-37"></a></span>
+<span id="cb1-38"><a href="discrepancy-measures-per-iteration-1.html#cb1-38"></a>aad =<span class="st"> </span><span class="kw">cbind</span>(aad1,aad2,aad3) <span class="co"># now we merge all three parts together in one</span></span>
+<span id="cb1-39"><a href="discrepancy-measures-per-iteration-1.html#cb1-39"></a>aadt =<span class="st"> </span>aad <span class="op">%&gt;%</span></span>
+<span id="cb1-40"><a href="discrepancy-measures-per-iteration-1.html#cb1-40"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="op">-</span><span class="kw">c</span>(), <span class="dt">names_to =</span> <span class="st">&quot;iter&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;aad&quot;</span>) <span class="co"># transform the data frame into the long format</span></span>
+<span id="cb1-41"><a href="discrepancy-measures-per-iteration-1.html#cb1-41"></a></span>
+<span id="cb1-42"><a href="discrepancy-measures-per-iteration-1.html#cb1-42"></a>aadt<span class="op">$</span>iter =<span class="st"> </span><span class="kw">as.numeric</span>(aadt<span class="op">$</span>iter) <span class="co"># cast the `iter` variable as a numeric variable</span></span>
+<span id="cb1-43"><a href="discrepancy-measures-per-iteration-1.html#cb1-43"></a></span>
+<span id="cb1-44"><a href="discrepancy-measures-per-iteration-1.html#cb1-44"></a><span class="co"># Plot using ggplot</span></span>
+<span id="cb1-45"><a href="discrepancy-measures-per-iteration-1.html#cb1-45"></a>equal.aad.plot =<span class="st"> </span>aadt <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-46"><a href="discrepancy-measures-per-iteration-1.html#cb1-46"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> iter, <span class="dt">y =</span> aad)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-47"><a href="discrepancy-measures-per-iteration-1.html#cb1-47"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Number of Iteration&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Average Absolute Discrepancy&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;Equal Probability Matrix ~ AAD&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>),<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb1-48"><a href="discrepancy-measures-per-iteration-1.html#cb1-48"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">50</span>))</span>
+<span id="cb1-49"><a href="discrepancy-measures-per-iteration-1.html#cb1-49"></a></span>
+<span id="cb1-50"><a href="discrepancy-measures-per-iteration-1.html#cb1-50"></a><span class="kw">saveRDS</span>(equal.aad.plot, <span class="dt">file =</span> <span class="st">&quot;equal.aad.plot.rds&quot;</span>) <span class="co"># save the plot as rds</span></span>
+<span id="cb1-51"><a href="discrepancy-measures-per-iteration-1.html#cb1-51"></a></span>
+<span id="cb1-52"><a href="discrepancy-measures-per-iteration-1.html#cb1-52"></a><span class="co"># Calculating Maximum Absolute Discrepancy</span></span>
+<span id="cb1-53"><a href="discrepancy-measures-per-iteration-1.html#cb1-53"></a></span>
+<span id="cb1-54"><a href="discrepancy-measures-per-iteration-1.html#cb1-54"></a><span class="co"># Part One</span></span>
+<span id="cb1-55"><a href="discrepancy-measures-per-iteration-1.html#cb1-55"></a>mad1 =<span class="st"> </span>equal1 <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb1-56"><a href="discrepancy-measures-per-iteration-1.html#cb1-56"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb1-57"><a href="discrepancy-measures-per-iteration-1.html#cb1-57"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.))) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb1-58"><a href="discrepancy-measures-per-iteration-1.html#cb1-58"></a><span class="kw">colnames</span>(mad1) =<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">400</span> <span class="co"># change the column names</span></span>
+<span id="cb1-59"><a href="discrepancy-measures-per-iteration-1.html#cb1-59"></a></span>
+<span id="cb1-60"><a href="discrepancy-measures-per-iteration-1.html#cb1-60"></a><span class="co"># Part Two</span></span>
+<span id="cb1-61"><a href="discrepancy-measures-per-iteration-1.html#cb1-61"></a>mad2 =<span class="st"> </span>equal2 <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># mutating </span></span>
+<span id="cb1-62"><a href="discrepancy-measures-per-iteration-1.html#cb1-62"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb1-63"><a href="discrepancy-measures-per-iteration-1.html#cb1-63"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.))) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb1-64"><a href="discrepancy-measures-per-iteration-1.html#cb1-64"></a><span class="kw">colnames</span>(mad2) =<span class="st"> </span><span class="dv">401</span><span class="op">:</span><span class="dv">801</span> <span class="co"># change the column names</span></span>
+<span id="cb1-65"><a href="discrepancy-measures-per-iteration-1.html#cb1-65"></a></span>
+<span id="cb1-66"><a href="discrepancy-measures-per-iteration-1.html#cb1-66"></a><span class="co"># Part Three</span></span>
+<span id="cb1-67"><a href="discrepancy-measures-per-iteration-1.html#cb1-67"></a>mad3 =<span class="st"> </span>equal3 <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># mutating </span></span>
+<span id="cb1-68"><a href="discrepancy-measures-per-iteration-1.html#cb1-68"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb1-69"><a href="discrepancy-measures-per-iteration-1.html#cb1-69"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.))) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb1-70"><a href="discrepancy-measures-per-iteration-1.html#cb1-70"></a><span class="kw">colnames</span>(mad3) =<span class="st"> </span><span class="dv">802</span><span class="op">:</span><span class="dv">1002</span> <span class="co"># change the column names</span></span>
+<span id="cb1-71"><a href="discrepancy-measures-per-iteration-1.html#cb1-71"></a></span>
+<span id="cb1-72"><a href="discrepancy-measures-per-iteration-1.html#cb1-72"></a>mad =<span class="st"> </span><span class="kw">cbind</span>(mad1,mad2,mad3) <span class="co"># now we merge all three parts together in one</span></span>
+<span id="cb1-73"><a href="discrepancy-measures-per-iteration-1.html#cb1-73"></a>madt =<span class="st"> </span>mad <span class="op">%&gt;%</span></span>
+<span id="cb1-74"><a href="discrepancy-measures-per-iteration-1.html#cb1-74"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="op">-</span><span class="kw">c</span>(),<span class="dt">names_to =</span> <span class="st">&quot;iter&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;mad&quot;</span>) <span class="co"># transform the data frame into the long format</span></span>
+<span id="cb1-75"><a href="discrepancy-measures-per-iteration-1.html#cb1-75"></a></span>
+<span id="cb1-76"><a href="discrepancy-measures-per-iteration-1.html#cb1-76"></a>madt<span class="op">$</span>iter =<span class="st"> </span><span class="kw">as.numeric</span>(madt<span class="op">$</span>iter) <span class="co"># cast the `iter` variable as a numeric variable</span></span>
+<span id="cb1-77"><a href="discrepancy-measures-per-iteration-1.html#cb1-77"></a></span>
+<span id="cb1-78"><a href="discrepancy-measures-per-iteration-1.html#cb1-78"></a><span class="co"># Plot using ggplot</span></span>
+<span id="cb1-79"><a href="discrepancy-measures-per-iteration-1.html#cb1-79"></a>equal.mad.plot =<span class="st"> </span>madt <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-80"><a href="discrepancy-measures-per-iteration-1.html#cb1-80"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> iter, <span class="dt">y =</span> mad)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-81"><a href="discrepancy-measures-per-iteration-1.html#cb1-81"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Number of Iteration&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Maximum Absolute Discrepancy&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;Equal Probability Matrix ~ MAD&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>),<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb1-82"><a href="discrepancy-measures-per-iteration-1.html#cb1-82"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">50</span>))</span>
+<span id="cb1-83"><a href="discrepancy-measures-per-iteration-1.html#cb1-83"></a></span>
+<span id="cb1-84"><a href="discrepancy-measures-per-iteration-1.html#cb1-84"></a><span class="kw">saveRDS</span>(equal.mad.plot, <span class="dt">file =</span> <span class="st">&quot;equal.mad.plot.rds&quot;</span>) <span class="co"># save the plot as rds</span></span></code></pre></div>
+<p><img src="bookdown_files/figure-html/equal%20aad/mad-1.png" width="672" />
+For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. Specifically, starting at the 700th iteration, the discrepancy values are largely the same.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="discrepancy-measures-per-iteration-1.html#cb2-1"></a><span class="co"># In this section we will be calculating the AAD and MAD values for the true population matrix.</span></span>
+<span id="cb2-2"><a href="discrepancy-measures-per-iteration-1.html#cb2-2"></a><span class="co"># This part is the largely the same procedure as the above section when calculating the equal population matrix. </span></span>
+<span id="cb2-3"><a href="discrepancy-measures-per-iteration-1.html#cb2-3"></a></span>
+<span id="cb2-4"><a href="discrepancy-measures-per-iteration-1.html#cb2-4"></a><span class="co"># NOte: due to memory shortage, I have actively remove unused objects in order to conserve as much memory as possible. I also used as much of the garbage collection function, gc(), as possible. </span></span>
+<span id="cb2-5"><a href="discrepancy-measures-per-iteration-1.html#cb2-5"></a></span>
+<span id="cb2-6"><a href="discrepancy-measures-per-iteration-1.html#cb2-6"></a><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>()) <span class="co"># remove unused objects</span></span>
+<span id="cb2-7"><a href="discrepancy-measures-per-iteration-1.html#cb2-7"></a></span>
+<span id="cb2-8"><a href="discrepancy-measures-per-iteration-1.html#cb2-8"></a>voro &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Voronoi both/Voronoi.estimates.rds&quot;</span>) <span class="co"># getting the true pop vector from another object</span></span>
+<span id="cb2-9"><a href="discrepancy-measures-per-iteration-1.html#cb2-9"></a>pop =<span class="st"> </span>voro<span class="op">$</span>pop</span>
+<span id="cb2-10"><a href="discrepancy-measures-per-iteration-1.html#cb2-10"></a><span class="kw">rm</span>(voro)</span>
+<span id="cb2-11"><a href="discrepancy-measures-per-iteration-1.html#cb2-11"></a></span>
+<span id="cb2-12"><a href="discrepancy-measures-per-iteration-1.html#cb2-12"></a><span class="co"># Calculating Average Absolute Discrepancy</span></span>
+<span id="cb2-13"><a href="discrepancy-measures-per-iteration-1.html#cb2-13"></a></span>
+<span id="cb2-14"><a href="discrepancy-measures-per-iteration-1.html#cb2-14"></a><span class="co"># Part One</span></span>
+<span id="cb2-15"><a href="discrepancy-measures-per-iteration-1.html#cb2-15"></a>true1 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part1_400_new.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb2-16"><a href="discrepancy-measures-per-iteration-1.html#cb2-16"></a>true1 =<span class="st"> </span><span class="kw">cbind</span>(true1,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb2-17"><a href="discrepancy-measures-per-iteration-1.html#cb2-17"></a>bigu =<span class="st"> </span><span class="kw">sum</span>(true1<span class="op">$</span>pop) <span class="co"># useful to have this calculated and stored as a constant already </span></span>
+<span id="cb2-18"><a href="discrepancy-measures-per-iteration-1.html#cb2-18"></a>aad1 =<span class="st"> </span>true1 <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb2-19"><a href="discrepancy-measures-per-iteration-1.html#cb2-19"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb2-20"><a href="discrepancy-measures-per-iteration-1.html#cb2-20"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)<span class="op">/</span>bigu)) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb2-21"><a href="discrepancy-measures-per-iteration-1.html#cb2-21"></a><span class="kw">colnames</span>(aad1) =<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">400</span> <span class="co"># change column names</span></span>
+<span id="cb2-22"><a href="discrepancy-measures-per-iteration-1.html#cb2-22"></a><span class="kw">rm</span>(true1) <span class="co"># remove unnecessary object</span></span>
+<span id="cb2-23"><a href="discrepancy-measures-per-iteration-1.html#cb2-23"></a></span>
+<span id="cb2-24"><a href="discrepancy-measures-per-iteration-1.html#cb2-24"></a><span class="co"># Part Two</span></span>
+<span id="cb2-25"><a href="discrepancy-measures-per-iteration-1.html#cb2-25"></a>true2 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part401_800_new.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb2-26"><a href="discrepancy-measures-per-iteration-1.html#cb2-26"></a>true2 =<span class="st"> </span><span class="kw">cbind</span>(true2,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb2-27"><a href="discrepancy-measures-per-iteration-1.html#cb2-27"></a>aad2 =<span class="st"> </span>true2 <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb2-28"><a href="discrepancy-measures-per-iteration-1.html#cb2-28"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb2-29"><a href="discrepancy-measures-per-iteration-1.html#cb2-29"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)<span class="op">/</span>bigu)) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb2-30"><a href="discrepancy-measures-per-iteration-1.html#cb2-30"></a><span class="kw">colnames</span>(aad2) =<span class="st"> </span><span class="dv">401</span><span class="op">:</span><span class="dv">801</span><span class="co"># change column names</span></span>
+<span id="cb2-31"><a href="discrepancy-measures-per-iteration-1.html#cb2-31"></a><span class="kw">rm</span>(true2)<span class="co"># remove unnecessary object</span></span>
+<span id="cb2-32"><a href="discrepancy-measures-per-iteration-1.html#cb2-32"></a></span>
+<span id="cb2-33"><a href="discrepancy-measures-per-iteration-1.html#cb2-33"></a><span class="co"># Part Three</span></span>
+<span id="cb2-34"><a href="discrepancy-measures-per-iteration-1.html#cb2-34"></a>true3 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000_new.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb2-35"><a href="discrepancy-measures-per-iteration-1.html#cb2-35"></a>true3 =<span class="st"> </span><span class="kw">cbind</span>(true3,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb2-36"><a href="discrepancy-measures-per-iteration-1.html#cb2-36"></a>aad3 =<span class="st"> </span>true3 <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb2-37"><a href="discrepancy-measures-per-iteration-1.html#cb2-37"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb2-38"><a href="discrepancy-measures-per-iteration-1.html#cb2-38"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.)<span class="op">/</span>bigu)) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb2-39"><a href="discrepancy-measures-per-iteration-1.html#cb2-39"></a><span class="kw">colnames</span>(aad3) =<span class="st"> </span><span class="dv">802</span><span class="op">:</span><span class="dv">1002</span> <span class="co"># change column names</span></span>
+<span id="cb2-40"><a href="discrepancy-measures-per-iteration-1.html#cb2-40"></a><span class="kw">rm</span>(true3)<span class="co"># remove unnecessary object</span></span>
+<span id="cb2-41"><a href="discrepancy-measures-per-iteration-1.html#cb2-41"></a></span>
+<span id="cb2-42"><a href="discrepancy-measures-per-iteration-1.html#cb2-42"></a>aad =<span class="st"> </span><span class="kw">cbind</span>(aad1,aad2,aad3) <span class="co"># combining all three parts together in one data frame</span></span>
+<span id="cb2-43"><a href="discrepancy-measures-per-iteration-1.html#cb2-43"></a>aadt =<span class="st"> </span>aad <span class="op">%&gt;%</span></span>
+<span id="cb2-44"><a href="discrepancy-measures-per-iteration-1.html#cb2-44"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="op">-</span><span class="kw">c</span>(), <span class="dt">names_to =</span> <span class="st">&quot;iter&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;aad&quot;</span>) <span class="co"># Transform the data frame into long form</span></span>
+<span id="cb2-45"><a href="discrepancy-measures-per-iteration-1.html#cb2-45"></a></span>
+<span id="cb2-46"><a href="discrepancy-measures-per-iteration-1.html#cb2-46"></a>aadt<span class="op">$</span>iter =<span class="st"> </span><span class="kw">as.numeric</span>(aadt<span class="op">$</span>iter) <span class="co"># cast the `iter` variable as a numeric variable</span></span>
+<span id="cb2-47"><a href="discrepancy-measures-per-iteration-1.html#cb2-47"></a></span>
+<span id="cb2-48"><a href="discrepancy-measures-per-iteration-1.html#cb2-48"></a><span class="co"># Plot using ggplot</span></span>
+<span id="cb2-49"><a href="discrepancy-measures-per-iteration-1.html#cb2-49"></a>true.aad.plot =<span class="st"> </span>aadt <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-50"><a href="discrepancy-measures-per-iteration-1.html#cb2-50"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> iter, <span class="dt">y =</span> aad)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb2-51"><a href="discrepancy-measures-per-iteration-1.html#cb2-51"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Number of Iteration&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Average Absolute Discrepancy&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;True Probability Matrix ~ AAD&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>),<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb2-52"><a href="discrepancy-measures-per-iteration-1.html#cb2-52"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">50</span>))</span>
+<span id="cb2-53"><a href="discrepancy-measures-per-iteration-1.html#cb2-53"></a></span>
+<span id="cb2-54"><a href="discrepancy-measures-per-iteration-1.html#cb2-54"></a><span class="kw">saveRDS</span>(true.aad.plot, <span class="dt">file =</span> <span class="st">&quot;true.aad.plot.rds&quot;</span>) <span class="co"># save the plot as a rds object</span></span>
+<span id="cb2-55"><a href="discrepancy-measures-per-iteration-1.html#cb2-55"></a></span>
+<span id="cb2-56"><a href="discrepancy-measures-per-iteration-1.html#cb2-56"></a><span class="co"># Calculating Maximum Absolute Discrepancy</span></span>
+<span id="cb2-57"><a href="discrepancy-measures-per-iteration-1.html#cb2-57"></a></span>
+<span id="cb2-58"><a href="discrepancy-measures-per-iteration-1.html#cb2-58"></a><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>()) <span class="co"># remove unnecessary objects</span></span>
+<span id="cb2-59"><a href="discrepancy-measures-per-iteration-1.html#cb2-59"></a></span>
+<span id="cb2-60"><a href="discrepancy-measures-per-iteration-1.html#cb2-60"></a>voro &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Voronoi both/Voronoi.estimates.rds&quot;</span>) <span class="co"># getting the true pop vector from another object</span></span>
+<span id="cb2-61"><a href="discrepancy-measures-per-iteration-1.html#cb2-61"></a>pop =<span class="st"> </span>voro<span class="op">$</span>pop</span>
+<span id="cb2-62"><a href="discrepancy-measures-per-iteration-1.html#cb2-62"></a><span class="kw">rm</span>(voro)</span>
+<span id="cb2-63"><a href="discrepancy-measures-per-iteration-1.html#cb2-63"></a></span>
+<span id="cb2-64"><a href="discrepancy-measures-per-iteration-1.html#cb2-64"></a><span class="co"># Part One</span></span>
+<span id="cb2-65"><a href="discrepancy-measures-per-iteration-1.html#cb2-65"></a>true1 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part1_400_new.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb2-66"><a href="discrepancy-measures-per-iteration-1.html#cb2-66"></a>true1 =<span class="st"> </span><span class="kw">cbind</span>(true1,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb2-67"><a href="discrepancy-measures-per-iteration-1.html#cb2-67"></a>mad1 =<span class="st"> </span>true1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-68"><a href="discrepancy-measures-per-iteration-1.html#cb2-68"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb2-69"><a href="discrepancy-measures-per-iteration-1.html#cb2-69"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.))) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb2-70"><a href="discrepancy-measures-per-iteration-1.html#cb2-70"></a><span class="kw">colnames</span>(mad1) =<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">400</span> <span class="co"># change column names</span></span>
+<span id="cb2-71"><a href="discrepancy-measures-per-iteration-1.html#cb2-71"></a><span class="kw">rm</span>(true1) <span class="co"># remove unused object</span></span>
+<span id="cb2-72"><a href="discrepancy-measures-per-iteration-1.html#cb2-72"></a></span>
+<span id="cb2-73"><a href="discrepancy-measures-per-iteration-1.html#cb2-73"></a><span class="co"># Part Two</span></span>
+<span id="cb2-74"><a href="discrepancy-measures-per-iteration-1.html#cb2-74"></a>true2 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part401_800_new.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb2-75"><a href="discrepancy-measures-per-iteration-1.html#cb2-75"></a>true2 =<span class="st"> </span><span class="kw">cbind</span>(true2,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb2-76"><a href="discrepancy-measures-per-iteration-1.html#cb2-76"></a>mad2 =<span class="st"> </span>true2 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-77"><a href="discrepancy-measures-per-iteration-1.html#cb2-77"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb2-78"><a href="discrepancy-measures-per-iteration-1.html#cb2-78"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.))) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb2-79"><a href="discrepancy-measures-per-iteration-1.html#cb2-79"></a><span class="kw">colnames</span>(mad2) =<span class="st"> </span><span class="dv">401</span><span class="op">:</span><span class="dv">801</span> <span class="co"># change column names</span></span>
+<span id="cb2-80"><a href="discrepancy-measures-per-iteration-1.html#cb2-80"></a><span class="kw">rm</span>(true2) <span class="co"># remove unused object</span></span>
+<span id="cb2-81"><a href="discrepancy-measures-per-iteration-1.html#cb2-81"></a></span>
+<span id="cb2-82"><a href="discrepancy-measures-per-iteration-1.html#cb2-82"></a><span class="co"># Part Three</span></span>
+<span id="cb2-83"><a href="discrepancy-measures-per-iteration-1.html#cb2-83"></a>true3 &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000_new.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb2-84"><a href="discrepancy-measures-per-iteration-1.html#cb2-84"></a>true3 =<span class="st"> </span><span class="kw">cbind</span>(true3,pop) <span class="co"># combining the data frame with the population vector</span></span>
+<span id="cb2-85"><a href="discrepancy-measures-per-iteration-1.html#cb2-85"></a>mad3 =<span class="st"> </span>true3 <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb2-86"><a href="discrepancy-measures-per-iteration-1.html#cb2-86"></a><span class="st">  </span><span class="kw">transmute_at</span>(<span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;u&quot;</span>)),<span class="kw">funs</span>(<span class="st">&quot;diff&quot;</span> =<span class="st"> </span><span class="kw">abs</span>(pop <span class="op">-</span><span class="st"> </span>.))) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># transforming the columns</span></span>
+<span id="cb2-87"><a href="discrepancy-measures-per-iteration-1.html#cb2-87"></a><span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="st">&quot;i&quot;</span> =<span class="st"> </span><span class="kw">sum</span>(.))) <span class="co"># summing up all rows for each column</span></span>
+<span id="cb2-88"><a href="discrepancy-measures-per-iteration-1.html#cb2-88"></a><span class="kw">colnames</span>(mad3) =<span class="st"> </span><span class="dv">802</span><span class="op">:</span><span class="dv">1002</span> <span class="co"># change column names</span></span>
+<span id="cb2-89"><a href="discrepancy-measures-per-iteration-1.html#cb2-89"></a><span class="kw">rm</span>(true3) <span class="co"># remove unused object</span></span>
+<span id="cb2-90"><a href="discrepancy-measures-per-iteration-1.html#cb2-90"></a></span>
+<span id="cb2-91"><a href="discrepancy-measures-per-iteration-1.html#cb2-91"></a>mad =<span class="st"> </span><span class="kw">cbind</span>(mad1,mad2,mad3)  <span class="co"># combining all three parts together in one data frame</span></span>
+<span id="cb2-92"><a href="discrepancy-measures-per-iteration-1.html#cb2-92"></a>madt =<span class="st"> </span>mad <span class="op">%&gt;%</span></span>
+<span id="cb2-93"><a href="discrepancy-measures-per-iteration-1.html#cb2-93"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="op">-</span><span class="kw">c</span>(),<span class="dt">names_to =</span> <span class="st">&quot;iter&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;mad&quot;</span>) <span class="co"># Transform the data frame into long form</span></span>
+<span id="cb2-94"><a href="discrepancy-measures-per-iteration-1.html#cb2-94"></a></span>
+<span id="cb2-95"><a href="discrepancy-measures-per-iteration-1.html#cb2-95"></a>madt<span class="op">$</span>iter =<span class="st"> </span><span class="kw">as.numeric</span>(madt<span class="op">$</span>iter) <span class="co"># cast the `iter` variable into numeric</span></span>
+<span id="cb2-96"><a href="discrepancy-measures-per-iteration-1.html#cb2-96"></a></span>
+<span id="cb2-97"><a href="discrepancy-measures-per-iteration-1.html#cb2-97"></a><span class="co"># plot using ggplot</span></span>
+<span id="cb2-98"><a href="discrepancy-measures-per-iteration-1.html#cb2-98"></a>true.mad.plot =<span class="st"> </span>madt <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-99"><a href="discrepancy-measures-per-iteration-1.html#cb2-99"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> iter, <span class="dt">y =</span> mad)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb2-100"><a href="discrepancy-measures-per-iteration-1.html#cb2-100"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Number of Iteration&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Maximum Absolute Discrepancy&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;True Probability Matrix ~ MAD&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>),<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
+<span id="cb2-101"><a href="discrepancy-measures-per-iteration-1.html#cb2-101"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">50</span>))</span>
+<span id="cb2-102"><a href="discrepancy-measures-per-iteration-1.html#cb2-102"></a></span>
+<span id="cb2-103"><a href="discrepancy-measures-per-iteration-1.html#cb2-103"></a><span class="kw">saveRDS</span>(true.mad.plot, <span class="dt">file =</span> <span class="st">&quot;true.mad.plot.rds&quot;</span>) <span class="co"># save the plot as a rds object</span></span>
+<span id="cb2-104"><a href="discrepancy-measures-per-iteration-1.html#cb2-104"></a></span>
+<span id="cb2-105"><a href="discrepancy-measures-per-iteration-1.html#cb2-105"></a><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>()) <span class="co"># remove </span></span></code></pre></div>
+<p><img src="bookdown_files/figure-html/true%20aad/mad-1.png" width="672" />
+For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same.</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="convergence-behavior-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": true,
+"info": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
