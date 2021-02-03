@@ -32,3 +32,6 @@ final-remarks
 generation-of-population
 generation-of-a-synthetic-radio-network-1
 device-to-cell-association-1
+fig:figures-side
+test
+fig:focus-area
