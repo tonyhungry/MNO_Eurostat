@@ -1,3 +1,202 @@
 # Evaluation Methods
 
-Currently under heavy construction.
+In this section, we will graphically compare the two estimates: MLE and Voronoi, and see how well they perform against each other.
+
+The packages used in this section are: `tidyverse`, `ggthemes`, `knitr`, and `cowplot.`
+
+```{r packages, message=FALSE, echo = F}
+library(tidyverse)
+library(sf)
+library(raster)
+library(Matrix)
+library(knitr)
+library(kableExtra)
+library(ggthemes)
+library(cowplot)
+library(transformr)
+library(gganimate)
+set.seed(762)
+```
+
+## Evaluation of all estimates
+
+We created 4 final estimates:
+
+-   Voronoi tessellation with tower locations as seeds
+
+-   Voronoi tessellation with coverage area locations (antennas) as seeds
+
+-   MLE uniform prior equal probability P.matrix after 1000 iterations
+
+-   MLE uniform prior oracle probability P.matrix after 1000 iterations
+
+
+In the following we compare the distributions of the final estimates to the true distribution of the mobile phone density per tile. Significant variation can only be viewed in the tails of the distribution (ECCDF).
+
+```{r estimator pop dist compare, fig.cap="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density."}
+ECCDF.compare <- readRDS("Estimates/Plot.files/ECCDF.estimates.rds")
+
+ECDF.compare <- readRDS("Estimates/Plot.files/ECDF.estimates.rds") +  xlim(0, 1000) +
+  labs(y = "", x = "")
+
+
+# 
+pop.dist.estimates.compare <- ECCDF.compare +
+  annotation_custom(ggplotGrob(ECDF.compare),
+                    xmin = 0, xmax = 1.5,
+                    ymin = -6, ymax = -3)
+
+
+plot_grid(pop.dist.estimates.compare, 
+          labels = "Estimator density comparison",  hjust = -0.1, label_size = 14)
+```
+
+In this section we want to further evaluate the 4 estimates by comparing them with different perspectives in mind to the actual true population. Each subsection defines the perspective-respective performance measure:
+
+1.  Geographical evaluation
+
+2.  Statistical evaluation
+
+
+### Geographical Evaluation
+
+For the geographical evaluation we use the following performance measure: The visual resemblance of fixed tile categories from the respective estimate and the actual true population on a map.    
+
+We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.
+
+```{r Voronoi tower geo eval}
+true.geo.eval.plot <- readRDS("Estimates/Plot.files/true.pop_map.rds")
+
+VT.geo.eval.plot <- readRDS("Estimates/Plot.files/VT.estimate_map.rds")
+
+
+plot_grid(true.geo.eval.plot, VT.geo.eval.plot,
+          labels = "Fig. 14 Comparing Voronoi tower estimate", label_size = 12,
+          align = "hv", hjust = -0.1)
+
+```
+
+```{r Voronoi antenna geo eval}
+VA.geo.eval.plot <- readRDS("Estimates/Plot.files/VA.estimate_map.rds")
+
+plot_grid(true.geo.eval.plot, VA.geo.eval.plot,
+          labels = "Fig. 15 Comparing Voronoi antenna estimate", label_size = 12,
+          align = "hv", hjust = -0.1)
+```
+
+```{r MLE equal geo eval}
+# MLE.equal.geo.eval.plot <- readRDS("Estimates/Plot.files/MLE.oracle.estimate_map.rds")
+# animate(MLE.equal.geo.eval.plot, fps = 10)
+
+# plot_grid(true.geo.eval.plot, MLE.equal.geo.eval.plot,
+#           labels = "Comparing MLE equal P.matrix estimate", label_size = 12,
+#           align = "hv", hjust = -0.1)
+
+
+knitr::include_graphics("https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.equal.estimate_map_new.gif")
+
+
+```
+
+```{r MLE true geo eval}
+# MLE.true.geo.eval.plot <- readRDS("Estimates/Plot.files/MLE.oracle.estimate_map.rds")
+# MLE.true.geo.eval.plot <- animate(MLE.true.geo.eval.plot, fps = 10)
+# 
+# 
+# plot_grid(true.geo.eval.plot, MLE.true.geo.eval.plot,
+#           labels = "Comparing MLE true P.matrix estimate", label_size = 12,
+#           align = "hv", hjust = -0.1)
+
+knitr::include_graphics("https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.oracle.estimate_map_new.gif")
+```
+
+### Statistical/Distributional Evaluation
+
+In order to actually compare the numerical resemblance between the estimates and the actual true population we introduce two discrepancy performance measures. 
+
+-   Average Absolute Discrepancy (AAD): $D_{avg}(u,v) = \frac{1}{U}\sum_{j = 1}^{J} |u_{j} - v_{j}|$
+
+-   Maximum Absolute Discrepancy (MAD): $D_{max}(\textbf{u,v}) \overset{\underset{\mathrm{def}}{}}{=} \sum_{\mathit{j = 1}}^{\mathit{J}}\left | u_{j} - v_{j} \right |$
+
+```{r 5AB_Statistical Comparison, eval = F}
+require(tidyverse)
+require(ggthemes)
+
+# Loading in the data
+voro <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Voronoi both/Voronoi.estimates.rds") # the voronoi estimates
+equal <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.equal/u.est.non.inf.P.equal.part801_1000_new.rds")[,202] # estimates from the equal population matrix of MLE
+true <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/P.oracle/u.est.non.inf.P.oracle.part801_1000_new.rds")[,202] # estimates from the from the true population matrix MLE
+
+# Transforming the data
+voro = cbind(voro, equal, true) *# combining the three data sets together*
+colnames(voro) = c("internal.id","pop","u.antenna","u.tower","u.equal","u.true") # changing the column names
+voro = voro [,-1] %>%
+  ungroup() *# taking out unnnecessary column*
+
+bigu = sum(voro$pop) *# calculate the constant that we need for MAD*
+
+# Average Absolute Discrepancy Calculation:
+# First we calculate abs(uj-vj), and also delete all original columns involved.
+# We sum up each column calculated above and divide by the bigu, and delete all original columns involved.
+aad.table = voro %>%
+  transmute_at(vars(contains("u.")),funs("diff" = abs(pop - .))) %>% 
+  summarise_all(funs("i" = sum(.)/bigu)) 
+
+colnames(aad.table) = c("Voronoi ~ Antenna","Voronoi ~ Tower","MLE ~ Equal","MLE ~ True") # Add column names
+
+aadl = aad.table %>%
+  pivot_longer(-c(), names_to = "type", values_to = "aad") # Transform the dataset into long format
+```
+
+```{r aad.table, echo = F}
+
+```
+
+```{r, eval = F}
+# Graph through ggplot
+aad.comp.plot = aadl %>%
+  ggplot(aes(x = type,y = aad, fill = type)) + 
+  geom_bar(stat="identity") + 
+  labs(x = "Estimation Type", y = "Average Absolute Discrepancy",title = "Comparison Across Different Estimation Strategies ~ AAD") + 
+  theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") +
+  scale_fill_ptol()
+
+saveRDS(aad.comp.plot, file = "aad.comp.plot.rds") # save the plot
+
+# Maximum Absolute Discrepancy Calculation
+# First we calculate abs(uj-vj), and also delete all original columns involved.
+# We sum up each column calculated above, and delete all original columns involved.
+mad.table = voro %>%
+  transmute_at(vars(contains("u")),funs("diff" = abs(pop - .))) %>% 
+  summarise_all(funs("i" = sum(.)))
+
+colnames(mad.table) = c("Voronoi ~ Antenna","Voronoi ~ Tower","MLE ~ Equal","MLE ~ True") # add column names
+
+madl = mad.table %>%
+  pivot_longer(-c(), names_to = "type", values_to = "mad") # Transform the dataset into long format.
+
+# Graph through ggplot
+mad.comp.plot = madl %>%
+  ggplot(aes(x = type,y = mad, fill = type)) + 
+  geom_bar(stat="identity") + 
+  labs(x = "Estimation Type", y = "Maximum Absolute Discrepancy",title = "Comparison Across Different Estimation Strategies ~ MAD") + 
+  theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") +
+  scale_fill_ptol()
+
+saveRDS(mad.comp.plot, file = "mad.comp.plot.rds") # save the plot
+
+```
+
+
+```{r voronoi vs MLE, echo = F}
+
+aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/aad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
+
+mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/mad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
+
+plot_grid(aad.plot, mad.plot,
+          labels = "Fig. 16 Voronoi Estimation vs MLE", 
+          label_size = 12, align = "hv", hjust = -0.1) 
+```
+
+By calculating the two discrepancy measures, we can then evaluate the overall performance for each type of estimation. In general, the Voronoi estimates result in less discrepancy compared to both of the MLE estimates. Between the two MLE estimates, the true population matrix has a lower discrepancy than the equal population matrix. Between the two Voronoi estimates, the Voronoi estimation by antennas has a lower discrepancy than the Voronoi estimation by towers.

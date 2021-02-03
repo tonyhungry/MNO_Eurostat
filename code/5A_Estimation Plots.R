@@ -162,7 +162,9 @@ equal$iter = as.numeric(equal$iter)
 # Estimated Population over Iterations
 equal.plot = equal %>% 
   ggplot(aes(x = iter, y = sim, group = internal.id)) + 
-  geom_line(aes(color = pop.area.kind)) + labs(x = "Number of Iteration", y = "Estimated Population", title = "Equal Probability Matrix") + theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + 
+  geom_line(aes(color = pop.area.kind)) + 
+  labs(x = "Number of Iteration", y = "Estimated Population", title = "Equal Probability Matrix") + 
+  theme(axis.text.x = element_text(angle = 90),legend.position = "bottom") + 
   scale_color_ptol(breaks = c("Rural", "Suburban", "Urban")) + 
   facet_grid(vars(pop.area.kind),scales="free") +
   scale_x_continuous(breaks=seq(0, 1000, 50))
