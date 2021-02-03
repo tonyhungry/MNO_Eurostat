@@ -1,5 +1,6 @@
 # Evaluation Methods
 
+<<<<<<< HEAD
 In this section, we will graphically compare the two estimates: MLE and Voronoi, and see how well they perform against each other. We will measure the performance through the the lens of empirical distributions (ECCDF plots), spatial distributions (maps), statistical distributions (bar graphs), and finally with the Kantorovich-Wasserstein Distance.
 
 The main packages used in this section are: `tidyverse`, `ggthemes`, `knitr`, and `cowplot.` 
@@ -245,3 +246,6 @@ By calculating the two discrepancy measures, we can then evaluate the overall pe
 ## Kantorovich-Wasserstein Distance (KWD)
 
 The KWD is different such that it takes in consideration of the spatial component which was not considered by the previous metrics. Thus it is safe to say that it is a more holistic assessment of the different estimation strategies.
+=======
+Currently under heavy construction.
+>>>>>>> 83db57ae462c9ff68ccc0d87660d9438ea46f2d7
