@@ -1,6 +1,6 @@
 # Evaluation Methods
 
-In this section, we will graphically compare the two estimates: MLE and Voronoi, and see how well they perform against each other. We will measure the performance through the the lens of empirical distributions (ECCDF plots), spatial distributions (maps), statistical distributions (bar graphs), and finally with the Kantorovich-Wasserstein Distance.
+In this section, we will graphically compare the two overall estimation approaches: MLE and Voronoi, and see how well they perform against each other. We will measure the performance through the the lens of empirical distributions (ECCDF plots), spatial distributions (maps), statistical distributions (bar graphs), and finally with the Kantorovich-Wasserstein Distance.
 
 The main packages used in this section are: `tidyverse`, `ggthemes`, `knitr`, and `cowplot.` 
 
