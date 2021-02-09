@@ -24,7 +24,7 @@
 <meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
 
 
-<meta name="date" content="2021-02-04" />
+<meta name="date" content="2021-02-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -154,10 +154,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html"><i class="fa fa-check"></i><b>6.1</b> Evaluation of all estimates</a><ul>
 <li class="chapter" data-level="6.1.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#geographical-evaluation-1"><i class="fa fa-check"></i><b>6.1.1</b> Geographical Evaluation</a></li>
 <li class="chapter" data-level="6.1.2" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#statisticaldistributional-evaluation-1"><i class="fa fa-check"></i><b>6.1.2</b> Statistical/Distributional Evaluation</a></li>
+<li class="chapter" data-level="6.1.3" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#kantorovich-wasserstein-distance-kwd"><i class="fa fa-check"></i><b>6.1.3</b> Kantorovich-Wasserstein Distance (KWD)</a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="kantorovich-wasserstein-distance-kwd.html"><a href="kantorovich-wasserstein-distance-kwd.html"><i class="fa fa-check"></i><b>6.2</b> Kantorovich-Wasserstein Distance (KWD)</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
+<li class="chapter" data-level="8" data-path="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><a href="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><i class="fa fa-check"></i><b>8</b> Appendix A: A deep dive into the convergence behaviour of MLE estimates</a><ul>
+<li class="chapter" data-level="8.1" data-path="discrepancy-measures-per-iteration-1.html"><a href="discrepancy-measures-per-iteration-1.html"><i class="fa fa-check"></i><b>8.1</b> Discrepancy measures per iteration</a></li>
+<li class="chapter" data-level="8.2" data-path="convergence-behavior-1.html"><a href="convergence-behavior-1.html"><i class="fa fa-check"></i><b>8.2</b> Convergence Behavior</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
@@ -178,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="evaluation-methods" class="section level1">
 <h1><span class="header-section-number">6</span> Evaluation Methods</h1>
-<p>In this section, we will graphically compare the two estimates: MLE and Voronoi, and see how well they perform against each other. We will measure the performance through the the lens of empirical distributions (ECCDF plots), spatial distributions (maps), statistical distributions (bar graphs), and finally with the Kantorovich-Wasserstein Distance.</p>
+<p>In this section, we will graphically compare the two overall estimation approaches: MLE and Voronoi, and see how well they perform against each other. We will measure the performance through the the lens of empirical distributions (ECCDF plots), spatial distributions (maps), statistical distributions (bar graphs), and finally with the Kantorovich-Wasserstein Distance.</p>
 <p>The main packages used in this section are: <code>tidyverse</code>, <code>ggthemes</code>, <code>knitr</code>, and <code>cowplot.</code></p>
 </div>
             </section>

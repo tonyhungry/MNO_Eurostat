@@ -24,7 +24,7 @@
 <meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
 
 
-<meta name="date" content="2021-02-07" />
+<meta name="date" content="2021-02-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -152,14 +152,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html"><i class="fa fa-check"></i><b>6.1</b> Evaluation of all estimates</a><ul>
 <li class="chapter" data-level="6.1.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#geographical-evaluation-1"><i class="fa fa-check"></i><b>6.1.1</b> Geographical Evaluation</a></li>
 <li class="chapter" data-level="6.1.2" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#statisticaldistributional-evaluation-1"><i class="fa fa-check"></i><b>6.1.2</b> Statistical/Distributional Evaluation</a></li>
+<li class="chapter" data-level="6.1.3" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#kantorovich-wasserstein-distance-kwd"><i class="fa fa-check"></i><b>6.1.3</b> Kantorovich-Wasserstein Distance (KWD)</a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="kantorovich-wasserstein-distance-kwd.html"><a href="kantorovich-wasserstein-distance-kwd.html"><i class="fa fa-check"></i><b>6.2</b> Kantorovich-Wasserstein Distance (KWD)</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
 <li class="chapter" data-level="8" data-path="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><a href="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><i class="fa fa-check"></i><b>8</b> Appendix A: A deep dive into the convergence behaviour of MLE estimates</a><ul>
 <li class="chapter" data-level="8.1" data-path="discrepancy-measures-per-iteration-1.html"><a href="discrepancy-measures-per-iteration-1.html"><i class="fa fa-check"></i><b>8.1</b> Discrepancy measures per iteration</a></li>
 <li class="chapter" data-level="8.2" data-path="convergence-behavior-1.html"><a href="convergence-behavior-1.html"><i class="fa fa-check"></i><b>8.2</b> Convergence Behavior</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
       </nav>
@@ -246,8 +247,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-65"><a href="discrepancy-measures-per-iteration-1.html#cb1-65"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Number of Iteration&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Maximum Absolute Discrepancy&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;Equal Probability Matrix ~ MAD&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>),<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span></span>
 <span id="cb1-66"><a href="discrepancy-measures-per-iteration-1.html#cb1-66"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">50</span>))</span>
 <span id="cb1-67"><a href="discrepancy-measures-per-iteration-1.html#cb1-67"></a><span class="kw">saveRDS</span>(equal.mad.plot, <span class="dt">file =</span> <span class="st">&quot;equal.mad.plot.rds&quot;</span>) <span class="co"># save the plot as rds</span></span></code></pre></div>
-<p><img src="bookdown_files/figure-html/equal%20aad/mad-1.png" width="672" />
-For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. Specifically, starting at the 700th iteration, the discrepancy values are largely the same.</p>
+<div class="figure">
+<img src="bookdown_files/figure-html/equal%20aad/mad-1.png" alt="Discrepancy Over Time, Equal Pop. Matrix" width="672" /><img src="bookdown_files/figure-html/equal%20aad/mad-2.png" alt="Discrepancy Over Time, Equal Pop. Matrix" width="672" />
+<p class="caption">
+(#fig:equal aad/mad)Discrepancy Over Time, Equal Pop. Matrix
+</p>
+</div>
+<p>For the equal population matrix, the discrepancy values stabilizes as the number of iterations increases. Specifically, starting at the 700th iteration, the discrepancy values are largely the same.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="discrepancy-measures-per-iteration-1.html#cb2-1"></a><span class="co"># In this section we will be calculating the AAD and MAD values for the true population matrix.</span></span>
 <span id="cb2-2"><a href="discrepancy-measures-per-iteration-1.html#cb2-2"></a><span class="co"># This part is the largely the same procedure as the above section when calculating the equal population matrix. </span></span>
 <span id="cb2-3"><a href="discrepancy-measures-per-iteration-1.html#cb2-3"></a><span class="co"># NOte: due to memory shortage, I have actively remove unused objects in order to conserve as much memory as possible. I also used as much of the garbage collection function, gc(), as possible. </span></span>
@@ -331,8 +337,13 @@ For the equal population matrix, the discrepancy values stabilizes as the number
 <span id="cb2-81"><a href="discrepancy-measures-per-iteration-1.html#cb2-81"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">50</span>))</span>
 <span id="cb2-82"><a href="discrepancy-measures-per-iteration-1.html#cb2-82"></a><span class="kw">saveRDS</span>(true.mad.plot, <span class="dt">file =</span> <span class="st">&quot;true.mad.plot.rds&quot;</span>) <span class="co"># save the plot as a rds object</span></span>
 <span id="cb2-83"><a href="discrepancy-measures-per-iteration-1.html#cb2-83"></a><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>()) <span class="co"># remove </span></span></code></pre></div>
-<p><img src="bookdown_files/figure-html/true%20aad/mad-1.png" width="672" />
-For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same.</p>
+<div class="figure">
+<img src="bookdown_files/figure-html/true%20aad/mad-1.png" alt="Discrepancy Over Time, True Pop. Matrix" width="672" /><img src="bookdown_files/figure-html/true%20aad/mad-2.png" alt="Discrepancy Over Time, True Pop. Matrix" width="672" />
+<p class="caption">
+(#fig:true aad/mad)Discrepancy Over Time, True Pop. Matrix
+</p>
+</div>
+<p>For the true population matrix, the discrepancy values stabilizes as the number of iterations increases. More specifically, starting at the 300th iteration, the discrepancy values are largely the same.</p>
 </div>
             </section>
 
