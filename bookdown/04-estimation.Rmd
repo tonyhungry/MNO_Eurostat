@@ -389,7 +389,7 @@ saveRDS(VA.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Est
 
 ```
 
-```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions. The color scale is defined by the log with base 10 local density i.e. the absolute number of mobile phones within a Voronoi region divided by absolute area of the respecitve Voronoi region.",fig.show='hold'}
+```{r voronoi antenna and tower prep plot, fig.cap="The tower centroids were used as seeds for the creation of the Voronoi regions. The color scale is defined by the log with base 10 local density i.e. the absolute number of mobile phones within a Voronoi region divided by absolute area of the respecitve Voronoi region.",fig.show='hold', out.width="50%"}
 
 # Plot read in
 VT.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/VT.plot.rds")
@@ -447,7 +447,7 @@ plot_grid(VT.bird.example.plot, VT.example.plot,
 
 ```
 
-```{r Voronoi tower multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator.",fig.show='hold'}
+```{r Voronoi tower multiples, fig.cap="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator.", out.width="50%",fig.show='hold'}
 
 VT.bird.example.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/VT.bird.example.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
 VT.example.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/VT.example.plot.rds") + theme(axis.text.x=element_text(angle=90, hjust=1))
@@ -468,6 +468,6 @@ In order to iteratively calculate the MLE Poisson, we would first build a modifi
 
 MLE Poisson: $\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}$
 
-With the above formula, we will input different prior vectors (initial guess) to test the behavior of this estimation. We will use a non-informative prior (also called equal matrix in our book) which means that we will compute directly from the model matrix, without inserting an initial guess. Another prior vector we will use is called the informative prior (also called true or oracle matrix in our notebook) which means that we use the information given in the pertubed matrix 
+With the above formula, we will input different prior vectors (initial guess) to test the behavior of this estimation. We will use a non-informative prior which means that we will compute directly from the model matrix, without inserting an initial guess. We will use two different types of non-informative priors. The first non-informative prior is called equal. This is where we estimate based on which tiles are covered by which tower. The second non-informative prior is called true/oracle. This is where we estimate based on the signal strength of each receiving cell. 
 
 This estimation works by iteratively estimating the previous estimation and slowly improves over many iterations. E.g. a block with a population of 10 and the first iteration will result in 0.3 and then the 300th iteration it will estimate a population of 4. The estimations are considered stable when the next iteration is no longer changing from the previous estimation. j

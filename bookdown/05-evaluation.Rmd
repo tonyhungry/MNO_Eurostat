@@ -77,9 +77,7 @@ saveRDS(ECDF.true, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/E
 
 ```
 
-{r coverage-areas-3, fig.cap = "The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density.", fig.show="hold"}
-
-```{r estimator pop dist compare,echo = F, warning=F, fig.cap="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density.", fig.show="hold"}
+```{r estimator pop dist compare,echo = F, warning=F, fig.cap="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density."}
 ECCDF.compare <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/ECCDF.estimates.rds")
 
 ECDF.compare <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/ECDF.estimates.rds") +  xlim(0, 1000) + labs(y = "", x = "")
@@ -106,7 +104,7 @@ For the geographical evaluation we use the following performance measure: The vi
 
 We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.
 
-```{r Voronoi tower geo eval,echo = F, warning=F, fig.cap="Comparing Voronoi tower estimate", fig.show="hold"}
+```{r Voronoi tower geo eval,echo = F, warning=F, fig.cap="Comparing Voronoi tower estimate", fig.show="hold", out.width="50%"}
 true.geo.eval.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/true.pop_map.rds")
 
 VT.geo.eval.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/VT.estimate_map.rds")
@@ -121,7 +119,7 @@ VT.geo.eval.plot
 
 ```
 
-```{r Voronoi antenna geo eval,echo = F, warning=F, fig.cap="Comparing Voronoi antenna estimate", fig.show="hold"}
+```{r Voronoi antenna geo eval,echo = F, warning=F, fig.cap="Comparing Voronoi antenna estimate", fig.show="hold", out.width="50%"}
 VA.geo.eval.plot <- readRDS("~/OneDrive - Vysoká škola ekonomická v Praze/YAY/Estimates/Plot.files/VA.estimate_map.rds")
 
 VA.geo.eval.plot = VA.geo.eval.plot + theme(axis.text.x=element_text(angle=90, hjust=1))
@@ -132,7 +130,7 @@ VA.geo.eval.plot
 #plot_grid(true.geo.eval.plot, VA.geo.eval.plot, labels = "Fig. 15 Comparing Voronoi antenna estimate", label_size = 12,align = "hv", hjust = -0.1)
 ```
 
-```{r MLE equal geo eval,echo = F, warning=F, fig.cap="MLE Evolution of Iterations", fig.show="hold"}
+```{r MLE equal geo eval,echo = F, warning=F, fig.cap="MLE Evolution of Iterations", fig.show="hold", out.width="50%"}
 # MLE.equal.geo.eval.plot <- readRDS("Estimates/Plot.files/MLE.oracle.estimate_map.rds")
 # animate(MLE.equal.geo.eval.plot, fps = 10)
 
@@ -250,7 +248,7 @@ saveRDS(mad.comp.plot, file = "mad.comp.plot.rds") # save the plot
 ```
 
 
-```{r voronoi vs MLE,echo = F, warning=F, fig.cap="Voronoi Estimation vs MLE", fig.show="hold"}
+```{r voronoi vs MLE,echo = F, warning=F, fig.cap="Voronoi Estimation vs MLE", fig.show="hold", out.width="50%"}
 
 aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/aad.comp.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
 

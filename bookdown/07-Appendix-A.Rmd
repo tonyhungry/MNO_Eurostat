@@ -94,7 +94,7 @@ equal.mad.plot = madt %>%
 saveRDS(equal.mad.plot, file = "equal.mad.plot.rds") # save the plot as rds
 ```
 
-```{r equal aad/mad, echo = F,echo = F, warning=F, fig.cap="Discrepancy Over Time, Equal Pop. Matrix", fig.show="hold"}
+```{r equal-aad-mad, echo = F,echo = F, warning=F, fig.cap="Discrepancy Over Time, Equal Pop. Matrix", fig.show="hold", out.width="50%"}
 aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
 mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/equal.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
 
@@ -194,7 +194,7 @@ rm(list = ls()) # remove
 ```
 
 
-```{r true aad/mad,echo = F, warning=F, fig.cap="Discrepancy Over Time, True Pop. Matrix", fig.show="hold"}
+```{r true-aad-mad,echo = F, warning=F, fig.cap="Discrepancy Over Time, True Pop. Matrix", fig.show="hold", out.width="50%"}
 aad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.aad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "AAD")
 mad.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/AADMAD/true.mad.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "MAD")
 
@@ -295,7 +295,7 @@ saveRDS(equal.resid.plot, file = "equal.resid.plot.rds") # save the plot as ggpl
 ```
 
 
-```{r distributionl eval 1, echo = F, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached.",fig.show="hold"}
+```{r distributionl-eval-1, echo = F, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour. The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached.",fig.show="hold", out.width="50%"}
 equal.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
 equal.resid.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/equal.resid.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
 
@@ -349,7 +349,7 @@ true.resid.plot = ggplot(data = tequalr, aes(x = iter, y = resid, group = intern
 saveRDS(true.resid.plot, file = "true.resid.plot.rds") # save ggplot as rds format
 ```
 
-```{r distributionl eval 2, echo = F, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour (equal probability P.matrix). The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached.",fig.show="hold"}
+```{r distributionl-eval-2, echo = F, fig.cap= "The left and right plots show a stratified sample (strata: area kind) and the tile specific estimatands' convergence behaviour (equal probability P.matrix). The convergence behaviour differs between area kinds. The right plot emphasizes that the true value is not necessarily reached.",fig.show="hold", out.width="50%"}
 true.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Evolution")
 true.resid.plot <- readRDS(url("https://github.com/R-ramljak/MNO_Eurostat/raw/master/Plots/Estimation%20Plots/true.resid.plot.rds", method = "libcurl")) + ggtitle("", subtitle = "Residual")
 

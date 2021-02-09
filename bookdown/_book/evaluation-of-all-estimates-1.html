@@ -149,7 +149,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3" data-path="generation-of-a-synthetic-radio-network-1.html"><a href="generation-of-a-synthetic-radio-network-1.html"><i class="fa fa-check"></i><b>4.3</b> Generation of a synthetic Radio Network</a></li>
 <li class="chapter" data-level="4.4" data-path="device-to-cell-association-1.html"><a href="device-to-cell-association-1.html"><i class="fa fa-check"></i><b>4.4</b> Device to cell association</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="estimation-strategies-1.html"><a href="estimation-strategies-1.html"><i class="fa fa-check"></i><b>5</b> Estimation Strategies</a></li>
+<li class="chapter" data-level="5" data-path="estimation-strategies-1.html"><a href="estimation-strategies-1.html"><i class="fa fa-check"></i><b>5</b> Estimation Strategies</a><ul>
+<li class="chapter" data-level="5.1" data-path="voronoi-tesselation-1.html"><a href="voronoi-tesselation-1.html"><i class="fa fa-check"></i><b>5.1</b> Voronoi tesselation</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="voronoi-tesselation-1.html"><a href="voronoi-tesselation-1.html#setup-of-necessary-datasets"><i class="fa fa-check"></i><b>5.1.1</b> Setup of necessary datasets</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="mle-poisson-1.html"><a href="mle-poisson-1.html"><i class="fa fa-check"></i><b>5.2</b> MLE Poisson</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="evaluation-methods.html"><a href="evaluation-methods.html"><i class="fa fa-check"></i><b>6</b> Evaluation Methods</a><ul>
 <li class="chapter" data-level="6.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html"><i class="fa fa-check"></i><b>6.1</b> Evaluation of all estimates</a><ul>
 <li class="chapter" data-level="6.1.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#geographical-evaluation-1"><i class="fa fa-check"></i><b>6.1.1</b> Geographical Evaluation</a></li>
@@ -229,7 +234,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-37"><a href="evaluation-of-all-estimates-1.html#cb1-37"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>())</span>
 <span id="cb1-38"><a href="evaluation-of-all-estimates-1.html#cb1-38"></a></span>
 <span id="cb1-39"><a href="evaluation-of-all-estimates-1.html#cb1-39"></a><span class="kw">saveRDS</span>(ECDF.true, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/ECDF.true.rds&quot;</span>) <span class="co"># save the plot as a rds file</span></span></code></pre></div>
-<p>{r coverage-areas-3, fig.cap = “The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density.”, fig.show=“hold”}</p>
 <div class="figure">
 <img src="bookdown_files/figure-html/estimator%20pop%20dist%20compare-1.png" alt="In this plot one can see the difference in ECCDF and ECDF of the final estimates of the differing strategies compared to the true mobile phone density." width="672" />
 <p class="caption">
@@ -246,19 +250,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>For the geographical evaluation we use the following performance measure: The visual resemblance of fixed tile categories from the respective estimate and the actual true population on a map.</p>
 <p>We basically build a map for every final estimate and compare it to the actual true population. We still need to interpret all of them.</p>
 <div class="figure">
-<img src="bookdown_files/figure-html/Voronoi%20tower%20geo%20eval-1.png" alt="Comparing Voronoi tower estimate" width="672" /><img src="bookdown_files/figure-html/Voronoi%20tower%20geo%20eval-2.png" alt="Comparing Voronoi tower estimate" width="672" />
+<img src="bookdown_files/figure-html/Voronoi%20tower%20geo%20eval-1.png" alt="Comparing Voronoi tower estimate" width="50%" /><img src="bookdown_files/figure-html/Voronoi%20tower%20geo%20eval-2.png" alt="Comparing Voronoi tower estimate" width="50%" />
 <p class="caption">
 (#fig:Voronoi tower geo eval)Comparing Voronoi tower estimate
 </p>
 </div>
 <div class="figure">
-<img src="bookdown_files/figure-html/Voronoi%20antenna%20geo%20eval-1.png" alt="Comparing Voronoi antenna estimate" width="672" /><img src="bookdown_files/figure-html/Voronoi%20antenna%20geo%20eval-2.png" alt="Comparing Voronoi antenna estimate" width="672" />
+<img src="bookdown_files/figure-html/Voronoi%20antenna%20geo%20eval-1.png" alt="Comparing Voronoi antenna estimate" width="50%" /><img src="bookdown_files/figure-html/Voronoi%20antenna%20geo%20eval-2.png" alt="Comparing Voronoi antenna estimate" width="50%" />
 <p class="caption">
 (#fig:Voronoi antenna geo eval)Comparing Voronoi antenna estimate
 </p>
 </div>
 <div class="figure">
-<img src="https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.equal.estimate_map_new.gif" alt="MLE Evolution of Iterations"  /><img src="https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.oracle.estimate_map_new.gif" alt="MLE Evolution of Iterations"  />
+<img src="https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.equal.estimate_map_new.gif" alt="MLE Evolution of Iterations" width="50%" /><img src="https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/MLE.oracle.estimate_map_new.gif" alt="MLE Evolution of Iterations" width="50%" />
 <p class="caption">
 (#fig:MLE equal geo eval)MLE Evolution of Iterations
 </p>
@@ -403,7 +407,7 @@ MLE ~ True
 <span id="cb4-8"><a href="evaluation-of-all-estimates-1.html#cb4-8"></a></span>
 <span id="cb4-9"><a href="evaluation-of-all-estimates-1.html#cb4-9"></a><span class="kw">saveRDS</span>(mad.comp.plot, <span class="dt">file =</span> <span class="st">&quot;mad.comp.plot.rds&quot;</span>) <span class="co"># save the plot</span></span></code></pre></div>
 <div class="figure">
-<img src="bookdown_files/figure-html/voronoi%20vs%20MLE-1.png" alt="Voronoi Estimation vs MLE" width="672" /><img src="bookdown_files/figure-html/voronoi%20vs%20MLE-2.png" alt="Voronoi Estimation vs MLE" width="672" />
+<img src="bookdown_files/figure-html/voronoi%20vs%20MLE-1.png" alt="Voronoi Estimation vs MLE" width="50%" /><img src="bookdown_files/figure-html/voronoi%20vs%20MLE-2.png" alt="Voronoi Estimation vs MLE" width="50%" />
 <p class="caption">
 (#fig:voronoi vs MLE)Voronoi Estimation vs MLE
 </p>
