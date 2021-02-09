@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5.1 Voronoi tesselation | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</title>
+  <meta name="description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5.1 Voronoi tesselation | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5.1 Voronoi tesselation | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  
+  <meta name="twitter:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
+  
+
+<meta name="author" content="Giulia Regazzoni, Marco Ramljak, Stefania Scrofani, Tony Hung" />
+
+
+<meta name="date" content="2021-02-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="estimation-strategies-1.html"/>
+<link rel="next" href="mle-poisson-1.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Cover</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="executive-summary.html"><a href="executive-summary.html"><i class="fa fa-check"></i><b>3</b> Executive Summary</a><ul>
+<li class="chapter" data-level="3.0.1" data-path="executive-summary.html"><a href="executive-summary.html#preface"><i class="fa fa-check"></i><b>3.0.1</b> Preface</a></li>
+<li class="chapter" data-level="3.0.2" data-path="executive-summary.html"><a href="executive-summary.html#toy-world-generation"><i class="fa fa-check"></i><b>3.0.2</b> Toy World Generation</a></li>
+<li class="chapter" data-level="3.0.3" data-path="executive-summary.html"><a href="executive-summary.html#estimation-strategies"><i class="fa fa-check"></i><b>3.0.3</b> Estimation strategies</a></li>
+<li class="chapter" data-level="3.0.4" data-path="executive-summary.html"><a href="executive-summary.html#evaluation-of-all-estimates"><i class="fa fa-check"></i><b>3.0.4</b> Evaluation of all estimates</a></li>
+<li class="chapter" data-level="3.0.5" data-path="executive-summary.html"><a href="executive-summary.html#excurse-evaluation-looking-deeper-into-the-convergence-behavior"><i class="fa fa-check"></i><b>3.0.5</b> Excurse Evaluation: Looking deeper into the convergence behavior</a></li>
+<li class="chapter" data-level="3.0.6" data-path="executive-summary.html"><a href="executive-summary.html#final-remarks"><i class="fa fa-check"></i><b>3.0.6</b> Final Remarks</a></li>
+<li class="chapter" data-level="3.0.7" data-path="executive-summary.html"><a href="executive-summary.html#references"><i class="fa fa-check"></i><b>3.0.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="making-a-toy-world.html"><a href="making-a-toy-world.html"><i class="fa fa-check"></i><b>4</b> Making a Toy World</a><ul>
+<li class="chapter" data-level="4.1" data-path="prerequisites.html"><a href="prerequisites.html"><i class="fa fa-check"></i><b>4.1</b> Prerequisites</a></li>
+<li class="chapter" data-level="4.2" data-path="generation-of-mobile-phone-population.html"><a href="generation-of-mobile-phone-population.html"><i class="fa fa-check"></i><b>4.2</b> Generation of Mobile Phone Population</a></li>
+<li class="chapter" data-level="4.3" data-path="generation-of-a-synthetic-radio-network-1.html"><a href="generation-of-a-synthetic-radio-network-1.html"><i class="fa fa-check"></i><b>4.3</b> Generation of a synthetic Radio Network</a></li>
+<li class="chapter" data-level="4.4" data-path="device-to-cell-association-1.html"><a href="device-to-cell-association-1.html"><i class="fa fa-check"></i><b>4.4</b> Device to cell association</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="estimation-strategies-1.html"><a href="estimation-strategies-1.html"><i class="fa fa-check"></i><b>5</b> Estimation Strategies</a><ul>
+<li class="chapter" data-level="5.1" data-path="voronoi-tesselation-1.html"><a href="voronoi-tesselation-1.html"><i class="fa fa-check"></i><b>5.1</b> Voronoi tesselation</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="voronoi-tesselation-1.html"><a href="voronoi-tesselation-1.html#setup-of-necessary-datasets"><i class="fa fa-check"></i><b>5.1.1</b> Setup of necessary datasets</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="mle-poisson-1.html"><a href="mle-poisson-1.html"><i class="fa fa-check"></i><b>5.2</b> MLE Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="evaluation-methods.html"><a href="evaluation-methods.html"><i class="fa fa-check"></i><b>6</b> Evaluation Methods</a><ul>
+<li class="chapter" data-level="6.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html"><i class="fa fa-check"></i><b>6.1</b> Evaluation of all estimates</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#geographical-evaluation-1"><i class="fa fa-check"></i><b>6.1.1</b> Geographical Evaluation</a></li>
+<li class="chapter" data-level="6.1.2" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#statisticaldistributional-evaluation-1"><i class="fa fa-check"></i><b>6.1.2</b> Statistical/Distributional Evaluation</a></li>
+<li class="chapter" data-level="6.1.3" data-path="evaluation-of-all-estimates-1.html"><a href="evaluation-of-all-estimates-1.html#kantorovich-wasserstein-distance-kwd"><i class="fa fa-check"></i><b>6.1.3</b> Kantorovich-Wasserstein Distance (KWD)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="a-final-note.html"><a href="a-final-note.html"><i class="fa fa-check"></i><b>7</b> A Final Note</a></li>
+<li class="chapter" data-level="8" data-path="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><a href="appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates.html"><i class="fa fa-check"></i><b>8</b> Appendix A: A deep dive into the convergence behaviour of MLE estimates</a><ul>
+<li class="chapter" data-level="8.1" data-path="discrepancy-measures-per-iteration-1.html"><a href="discrepancy-measures-per-iteration-1.html"><i class="fa fa-check"></i><b>8.1</b> Discrepancy measures per iteration</a></li>
+<li class="chapter" data-level="8.2" data-path="convergence-behavior-1.html"><a href="convergence-behavior-1.html"><i class="fa fa-check"></i><b>8.2</b> Convergence Behavior</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="voronoi-tesselation-1" class="section level2">
+<h2><span class="header-section-number">5.1</span> Voronoi tesselation</h2>
+<p>Voronoi tessellation uses seeds to calculate Voronoi regions. For every seed there is one Voronoi region that contains the area that is closest to the particular seed. There are two seed specifications we are interested in:</p>
+<ul>
+<li><p>Tower locations as seeds –&gt; n = 1289</p></li>
+<li><p>Coverage area centroid (per antenna) locations as seeds –&gt; n = 3841</p></li>
+</ul>
+<p>Below we specify the tower locations as seed points. These are then used to compute the Voronoi regions. Before we do that we need to make sure that the corresponding c.vector is aggregated on the tower level. We then join the Voronoi regions with the tiles to create an object that links tiles within respective Voronoi regions.</p>
+<div id="setup-of-necessary-datasets" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Setup of necessary datasets</h3>
+<p>For any kind of Voronoi tessellation we need to work with the grid level data (tiles) and the cell coverage data (tower, antennas).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="voronoi-tesselation-1.html#cb1-1"></a>census.de<span class="fl">.100</span>m.tile &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds&quot;</span>) </span>
+<span id="cb1-2"><a href="voronoi-tesselation-1.html#cb1-2"></a></span>
+<span id="cb1-3"><a href="voronoi-tesselation-1.html#cb1-3"></a>coverage.areas &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/coverage.areas.rds&quot;</span>) </span>
+<span id="cb1-4"><a href="voronoi-tesselation-1.html#cb1-4"></a></span>
+<span id="cb1-5"><a href="voronoi-tesselation-1.html#cb1-5"></a>c.vec &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/C.vec.df.final.new.rds&quot;</span>) </span>
+<span id="cb1-6"><a href="voronoi-tesselation-1.html#cb1-6"></a></span>
+<span id="cb1-7"><a href="voronoi-tesselation-1.html#cb1-7"></a><span class="co">## derive the shape of the focus area</span></span>
+<span id="cb1-8"><a href="voronoi-tesselation-1.html#cb1-8"></a><span class="co"># census.geo.body &lt;- census.de.100m.tile %&gt;% </span></span>
+<span id="cb1-9"><a href="voronoi-tesselation-1.html#cb1-9"></a><span class="co">#   select(internal.id) %&gt;% </span></span>
+<span id="cb1-10"><a href="voronoi-tesselation-1.html#cb1-10"></a><span class="co">#   summarise(geometry = st_union(geometry))</span></span>
+<span id="cb1-11"><a href="voronoi-tesselation-1.html#cb1-11"></a><span class="co"># saveRDS(census.geo.body, &quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds&quot;)</span></span>
+<span id="cb1-12"><a href="voronoi-tesselation-1.html#cb1-12"></a>census.geo.body &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/shape.focusarea.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="voronoi-tesselation-1.html#cb2-1"></a><span class="co"># adding to the coverage areas the results of the c vector</span></span>
+<span id="cb2-2"><a href="voronoi-tesselation-1.html#cb2-2"></a>coverage.areas.comp &lt;-<span class="st"> </span>coverage.areas <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-3"><a href="voronoi-tesselation-1.html#cb2-3"></a><span class="st">  </span><span class="kw">left_join</span>(c.vec, <span class="dt">by =</span> <span class="st">&quot;antenna.ID&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-4"><a href="voronoi-tesselation-1.html#cb2-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">phones.sum =</span> <span class="kw">case_when</span>(<span class="kw">is.na</span>(phones.sum) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</span>
+<span id="cb2-5"><a href="voronoi-tesselation-1.html#cb2-5"></a>                                <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>phones.sum))</span>
+<span id="cb2-6"><a href="voronoi-tesselation-1.html#cb2-6"></a></span>
+<span id="cb2-7"><a href="voronoi-tesselation-1.html#cb2-7"></a><span class="co"># select only the internal id and the mobile phone population per tile</span></span>
+<span id="cb2-8"><a href="voronoi-tesselation-1.html#cb2-8"></a>census.de<span class="fl">.100</span>m.tile.pop &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-9"><a href="voronoi-tesselation-1.html#cb2-9"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(internal.id, pop)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="voronoi-tesselation-1.html#cb3-1"></a><span class="co"># aggregating the antennas to towers (and corresponding values) and identifying problematic tower locations (outside of focus area)</span></span>
+<span id="cb3-2"><a href="voronoi-tesselation-1.html#cb3-2"></a>tower.aggr &lt;-<span class="st"> </span>coverage.areas.comp <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-3"><a href="voronoi-tesselation-1.html#cb3-3"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-4"><a href="voronoi-tesselation-1.html#cb3-4"></a><span class="st">  </span><span class="kw">group_by</span>(tower.ID) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-5"><a href="voronoi-tesselation-1.html#cb3-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">phones.sum =</span> <span class="kw">sum</span>(phones.sum)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-6"><a href="voronoi-tesselation-1.html#cb3-6"></a><span class="st">  </span><span class="kw">distinct</span>(tower.ID, <span class="dt">.keep_all =</span> T) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-7"><a href="voronoi-tesselation-1.html#cb3-7"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-8"><a href="voronoi-tesselation-1.html#cb3-8"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(tower.ID, X.tow, Y.tow, phones.sum) <span class="op">%&gt;%</span></span>
+<span id="cb3-9"><a href="voronoi-tesselation-1.html#cb3-9"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;X.tow&quot;</span>, <span class="st">&quot;Y.tow&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-10"><a href="voronoi-tesselation-1.html#cb3-10"></a><span class="st">  </span><span class="kw">st_sf</span>(<span class="dt">crs =</span> <span class="dv">3035</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb3-11"><a href="voronoi-tesselation-1.html#cb3-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">within.fa =</span> <span class="kw">lengths</span>(<span class="kw">st_within</span>(., census.geo.body))) <span class="co"># find seeds outside the focus area</span></span>
+<span id="cb3-12"><a href="voronoi-tesselation-1.html#cb3-12"></a></span>
+<span id="cb3-13"><a href="voronoi-tesselation-1.html#cb3-13"></a><span class="co"># saving towerIDs of problematic towers</span></span>
+<span id="cb3-14"><a href="voronoi-tesselation-1.html#cb3-14"></a>towers.outside.ID &lt;-<span class="st"> </span>tower.aggr <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-15"><a href="voronoi-tesselation-1.html#cb3-15"></a><span class="st">  </span><span class="kw">filter</span>(within.fa <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-16"><a href="voronoi-tesselation-1.html#cb3-16"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(tower.ID) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-17"><a href="voronoi-tesselation-1.html#cb3-17"></a><span class="st">  </span><span class="kw">deframe</span>()</span>
+<span id="cb3-18"><a href="voronoi-tesselation-1.html#cb3-18"></a></span>
+<span id="cb3-19"><a href="voronoi-tesselation-1.html#cb3-19"></a><span class="co"># filtering unproblematic towers</span></span>
+<span id="cb3-20"><a href="voronoi-tesselation-1.html#cb3-20"></a>towers.inside &lt;-<span class="st"> </span>tower.aggr <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-21"><a href="voronoi-tesselation-1.html#cb3-21"></a><span class="st">  </span><span class="kw">filter</span>(within.fa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</span>
+<span id="cb3-22"><a href="voronoi-tesselation-1.html#cb3-22"></a></span>
+<span id="cb3-23"><a href="voronoi-tesselation-1.html#cb3-23"></a><span class="co"># Finding respective nearest point on focus area border for every problematic tower location and binding the unproblematic towers back</span></span>
+<span id="cb3-24"><a href="voronoi-tesselation-1.html#cb3-24"></a><span class="co"># this object contains the final seed locations in the geometry</span></span>
+<span id="cb3-25"><a href="voronoi-tesselation-1.html#cb3-25"></a>towers.final.data &lt;-<span class="st"> </span>tower.aggr <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-26"><a href="voronoi-tesselation-1.html#cb3-26"></a><span class="st">  </span><span class="kw">filter</span>(within.fa <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb3-27"><a href="voronoi-tesselation-1.html#cb3-27"></a><span class="st">  </span><span class="kw">st_nearest_points</span>(., census.geo.body) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-28"><a href="voronoi-tesselation-1.html#cb3-28"></a><span class="st">  </span><span class="kw">st_cast</span>(<span class="st">&quot;POINT&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-29"><a href="voronoi-tesselation-1.html#cb3-29"></a><span class="st">  </span>.[<span class="kw">seq</span>(<span class="dv">2</span>, <span class="kw">length</span>(.), <span class="dv">2</span>)] <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># </span></span>
+<span id="cb3-30"><a href="voronoi-tesselation-1.html#cb3-30"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-31"><a href="voronoi-tesselation-1.html#cb3-31"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">tower.ID =</span> towers.outside.ID) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-32"><a href="voronoi-tesselation-1.html#cb3-32"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">geometry =</span> x) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-33"><a href="voronoi-tesselation-1.html#cb3-33"></a><span class="st">  </span><span class="kw">st_sf</span>(<span class="dt">sf_column_name =</span> <span class="st">&quot;geometry&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-34"><a href="voronoi-tesselation-1.html#cb3-34"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>x) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-35"><a href="voronoi-tesselation-1.html#cb3-35"></a><span class="st">  </span><span class="kw">bind_rows</span>(towers.inside)</span>
+<span id="cb3-36"><a href="voronoi-tesselation-1.html#cb3-36"></a></span>
+<span id="cb3-37"><a href="voronoi-tesselation-1.html#cb3-37"></a><span class="kw">sum</span>(<span class="kw">unlist</span>(<span class="kw">st_intersects</span>(towers.final.data, census.geo.body))) <span class="op">==</span><span class="st"> </span><span class="kw">length</span>(tower.aggr<span class="op">$</span>tower.ID) <span class="co"># check if all are within now</span></span>
+<span id="cb3-38"><a href="voronoi-tesselation-1.html#cb3-38"></a></span>
+<span id="cb3-39"><a href="voronoi-tesselation-1.html#cb3-39"></a><span class="co"># Using the seed object to calculate the Voronoi regions</span></span>
+<span id="cb3-40"><a href="voronoi-tesselation-1.html#cb3-40"></a>tower.seed.voronoi &lt;-<span class="st"> </span>towers.final.data <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb3-41"><a href="voronoi-tesselation-1.html#cb3-41"></a><span class="st">  </span><span class="kw">st_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-42"><a href="voronoi-tesselation-1.html#cb3-42"></a><span class="st">  </span><span class="kw">st_union</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-43"><a href="voronoi-tesselation-1.html#cb3-43"></a><span class="st">  </span><span class="kw">st_voronoi</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-44"><a href="voronoi-tesselation-1.html#cb3-44"></a><span class="st">  </span><span class="kw">st_collection_extract</span>(<span class="dt">type =</span> <span class="st">&quot;POLYGON&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-45"><a href="voronoi-tesselation-1.html#cb3-45"></a><span class="st">  </span><span class="kw">st_sf</span>(<span class="dt">crs =</span> <span class="dv">3035</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-46"><a href="voronoi-tesselation-1.html#cb3-46"></a><span class="st">  </span><span class="kw">st_join</span>(tower.aggr) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># rejoin with seed object to retain seed id</span></span>
+<span id="cb3-47"><a href="voronoi-tesselation-1.html#cb3-47"></a><span class="st">  </span><span class="kw">st_intersection</span>(census.geo.body) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-48"><a href="voronoi-tesselation-1.html#cb3-48"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">category.log =</span> <span class="kw">log10</span>(phones.sum <span class="op">/</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">st_area</span>(geometry)))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-49"><a href="voronoi-tesselation-1.html#cb3-49"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">category =</span> <span class="kw">cut</span>(category.log, <span class="kw">c</span>(<span class="op">-</span><span class="dv">6</span>, <span class="dv">-4</span>, <span class="dv">-2</span>, <span class="dv">-1</span>), <span class="dt">right =</span> F, <span class="dt">ordered_result =</span> T))</span></code></pre></div>
+<p>And now the same preparation for the coverage area centroids (here also just “antennas” even though this is imprecise).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="voronoi-tesselation-1.html#cb4-1"></a><span class="co">### antennas</span></span>
+<span id="cb4-2"><a href="voronoi-tesselation-1.html#cb4-2"></a><span class="co"># aggregating the antennas to towers (and corresponding values) and identifying problematic tower locations (outside of focus area)</span></span>
+<span id="cb4-3"><a href="voronoi-tesselation-1.html#cb4-3"></a>antenna.aggr &lt;-<span class="st"> </span>coverage.areas.comp <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-4"><a href="voronoi-tesselation-1.html#cb4-4"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-5"><a href="voronoi-tesselation-1.html#cb4-5"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(antenna.ID, <span class="dt">geometry =</span> antenna.centroid, phones.sum) <span class="op">%&gt;%</span></span>
+<span id="cb4-6"><a href="voronoi-tesselation-1.html#cb4-6"></a><span class="st">  </span><span class="kw">st_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-7"><a href="voronoi-tesselation-1.html#cb4-7"></a><span class="st">  </span><span class="kw">st_sf</span>(<span class="dt">crs =</span> <span class="dv">3035</span>) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-8"><a href="voronoi-tesselation-1.html#cb4-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">within.fa =</span> <span class="kw">lengths</span>(<span class="kw">st_within</span>(., census.geo.body))) <span class="co"># find seeds outside the focus area</span></span>
+<span id="cb4-9"><a href="voronoi-tesselation-1.html#cb4-9"></a></span>
+<span id="cb4-10"><a href="voronoi-tesselation-1.html#cb4-10"></a><span class="co"># saving towerIDs of problematic antennas</span></span>
+<span id="cb4-11"><a href="voronoi-tesselation-1.html#cb4-11"></a>antennas.outside.ID &lt;-<span class="st"> </span>antenna.aggr <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-12"><a href="voronoi-tesselation-1.html#cb4-12"></a><span class="st">  </span><span class="kw">filter</span>(within.fa <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-13"><a href="voronoi-tesselation-1.html#cb4-13"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(antenna.ID) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-14"><a href="voronoi-tesselation-1.html#cb4-14"></a><span class="st">  </span><span class="kw">deframe</span>()</span>
+<span id="cb4-15"><a href="voronoi-tesselation-1.html#cb4-15"></a></span>
+<span id="cb4-16"><a href="voronoi-tesselation-1.html#cb4-16"></a><span class="co"># filtering unproblematic antennas</span></span>
+<span id="cb4-17"><a href="voronoi-tesselation-1.html#cb4-17"></a>antennas.inside &lt;-<span class="st"> </span>antenna.aggr <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-18"><a href="voronoi-tesselation-1.html#cb4-18"></a><span class="st">  </span><span class="kw">filter</span>(within.fa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</span>
+<span id="cb4-19"><a href="voronoi-tesselation-1.html#cb4-19"></a></span>
+<span id="cb4-20"><a href="voronoi-tesselation-1.html#cb4-20"></a><span class="co"># Finding respective nearest point on focus area border for every problematic antenna location and binding the unproblematic towers back</span></span>
+<span id="cb4-21"><a href="voronoi-tesselation-1.html#cb4-21"></a><span class="co"># this object contains the final seed locations in the geometry</span></span>
+<span id="cb4-22"><a href="voronoi-tesselation-1.html#cb4-22"></a>antennas.final.data &lt;-<span class="st"> </span>antenna.aggr <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-23"><a href="voronoi-tesselation-1.html#cb4-23"></a><span class="st">  </span><span class="kw">filter</span>(within.fa <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-24"><a href="voronoi-tesselation-1.html#cb4-24"></a><span class="st">  </span><span class="kw">st_nearest_points</span>(., census.geo.body) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-25"><a href="voronoi-tesselation-1.html#cb4-25"></a><span class="st">  </span><span class="kw">st_cast</span>(<span class="st">&quot;POINT&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-26"><a href="voronoi-tesselation-1.html#cb4-26"></a><span class="st">  </span>.[<span class="kw">seq</span>(<span class="dv">2</span>, <span class="kw">length</span>(.), <span class="dv">2</span>)] <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># </span></span>
+<span id="cb4-27"><a href="voronoi-tesselation-1.html#cb4-27"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-28"><a href="voronoi-tesselation-1.html#cb4-28"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">antenna.ID =</span> antennas.outside.ID) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-29"><a href="voronoi-tesselation-1.html#cb4-29"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">geometry =</span> x) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-30"><a href="voronoi-tesselation-1.html#cb4-30"></a><span class="st">  </span><span class="kw">st_sf</span>(<span class="dt">sf_column_name =</span> <span class="st">&quot;geometry&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-31"><a href="voronoi-tesselation-1.html#cb4-31"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>x) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-32"><a href="voronoi-tesselation-1.html#cb4-32"></a><span class="st">  </span><span class="kw">bind_rows</span>(antennas.inside)</span>
+<span id="cb4-33"><a href="voronoi-tesselation-1.html#cb4-33"></a></span>
+<span id="cb4-34"><a href="voronoi-tesselation-1.html#cb4-34"></a><span class="co"># sum(unlist(st_intersects(antennas.final.data, census.geo.body))) == length(antenna.aggr$antenna.ID) # check if all are within now</span></span>
+<span id="cb4-35"><a href="voronoi-tesselation-1.html#cb4-35"></a></span>
+<span id="cb4-36"><a href="voronoi-tesselation-1.html#cb4-36"></a><span class="co"># Using the seed object to calculate the Voronoi regions</span></span>
+<span id="cb4-37"><a href="voronoi-tesselation-1.html#cb4-37"></a>antenna.seed.voronoi &lt;-<span class="st"> </span>antennas.final.data <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb4-38"><a href="voronoi-tesselation-1.html#cb4-38"></a><span class="st">  </span><span class="kw">st_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-39"><a href="voronoi-tesselation-1.html#cb4-39"></a><span class="st">  </span><span class="kw">st_union</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-40"><a href="voronoi-tesselation-1.html#cb4-40"></a><span class="st">  </span><span class="kw">st_voronoi</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-41"><a href="voronoi-tesselation-1.html#cb4-41"></a><span class="st">  </span><span class="kw">st_collection_extract</span>(<span class="dt">type =</span> <span class="st">&quot;POLYGON&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-42"><a href="voronoi-tesselation-1.html#cb4-42"></a><span class="st">  </span><span class="kw">st_sf</span>(<span class="dt">crs =</span> <span class="dv">3035</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-43"><a href="voronoi-tesselation-1.html#cb4-43"></a><span class="st">  </span><span class="kw">st_join</span>(antenna.aggr) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># rejoin with seed object to retain seed id</span></span>
+<span id="cb4-44"><a href="voronoi-tesselation-1.html#cb4-44"></a><span class="st">  </span><span class="kw">st_intersection</span>(census.geo.body) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-45"><a href="voronoi-tesselation-1.html#cb4-45"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">category.log =</span> <span class="kw">log10</span>(phones.sum <span class="op">/</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">st_area</span>(geometry)))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-46"><a href="voronoi-tesselation-1.html#cb4-46"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">category =</span> <span class="kw">cut</span>(category.log, <span class="kw">c</span>(<span class="op">-</span><span class="dv">6</span>, <span class="dv">-4</span>, <span class="dv">-2</span>, <span class="dv">-1</span>), <span class="dt">right =</span> F, <span class="dt">ordered_result =</span> T))</span>
+<span id="cb4-47"><a href="voronoi-tesselation-1.html#cb4-47"></a></span>
+<span id="cb4-48"><a href="voronoi-tesselation-1.html#cb4-48"></a><span class="co"># check density values</span></span>
+<span id="cb4-49"><a href="voronoi-tesselation-1.html#cb4-49"></a><span class="co"># antenna.seed.voronoi %&gt;% </span></span>
+<span id="cb4-50"><a href="voronoi-tesselation-1.html#cb4-50"></a><span class="co">#   ggplot() +</span></span>
+<span id="cb4-51"><a href="voronoi-tesselation-1.html#cb4-51"></a><span class="co">#   geom_density(aes(category.log))</span></span>
+<span id="cb4-52"><a href="voronoi-tesselation-1.html#cb4-52"></a></span>
+<span id="cb4-53"><a href="voronoi-tesselation-1.html#cb4-53"></a><span class="co"># Visualizing the Vornoi regions with respective phone count</span></span>
+<span id="cb4-54"><a href="voronoi-tesselation-1.html#cb4-54"></a>VT.plot &lt;-<span class="st"> </span>tower.seed.voronoi <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-55"><a href="voronoi-tesselation-1.html#cb4-55"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb4-56"><a href="voronoi-tesselation-1.html#cb4-56"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> category), <span class="dt">size =</span> <span class="fl">0.001</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb4-57"><a href="voronoi-tesselation-1.html#cb4-57"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>(<span class="dt">na.translate =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb4-58"><a href="voronoi-tesselation-1.html#cb4-58"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">na.translate =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb4-59"><a href="voronoi-tesselation-1.html#cb4-59"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">color =</span> F) <span class="op">+</span></span>
+<span id="cb4-60"><a href="voronoi-tesselation-1.html#cb4-60"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">fill =</span> <span class="st">&quot;Local density</span><span class="ch">\n</span><span class="st">(log10)&quot;</span>) <span class="op">+</span></span>
+<span id="cb4-61"><a href="voronoi-tesselation-1.html#cb4-61"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Tower locations as seeds&quot;</span>) <span class="op">+</span><span class="st">   </span></span>
+<span id="cb4-62"><a href="voronoi-tesselation-1.html#cb4-62"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb4-63"><a href="voronoi-tesselation-1.html#cb4-63"></a>        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb4-64"><a href="voronoi-tesselation-1.html#cb4-64"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb4-65"><a href="voronoi-tesselation-1.html#cb4-65"></a></span>
+<span id="cb4-66"><a href="voronoi-tesselation-1.html#cb4-66"></a><span class="kw">saveRDS</span>(VT.plot, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.plot.rds&quot;</span>)</span>
+<span id="cb4-67"><a href="voronoi-tesselation-1.html#cb4-67"></a></span>
+<span id="cb4-68"><a href="voronoi-tesselation-1.html#cb4-68"></a>VA.plot &lt;-<span class="st"> </span>antenna.seed.voronoi <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-69"><a href="voronoi-tesselation-1.html#cb4-69"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb4-70"><a href="voronoi-tesselation-1.html#cb4-70"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> category), <span class="dt">size =</span> <span class="fl">0.001</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb4-71"><a href="voronoi-tesselation-1.html#cb4-71"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>(<span class="dt">na.translate =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb4-72"><a href="voronoi-tesselation-1.html#cb4-72"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">na.translate =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb4-73"><a href="voronoi-tesselation-1.html#cb4-73"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">color =</span> F) <span class="op">+</span></span>
+<span id="cb4-74"><a href="voronoi-tesselation-1.html#cb4-74"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">fill =</span> <span class="st">&quot;Local density</span><span class="ch">\n</span><span class="st">(log10)&quot;</span>) <span class="op">+</span></span>
+<span id="cb4-75"><a href="voronoi-tesselation-1.html#cb4-75"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Coverage area centroid locations as seeds&quot;</span>) <span class="op">+</span></span>
+<span id="cb4-76"><a href="voronoi-tesselation-1.html#cb4-76"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb4-77"><a href="voronoi-tesselation-1.html#cb4-77"></a>        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb4-78"><a href="voronoi-tesselation-1.html#cb4-78"></a>        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">9</span>, <span class="dt">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb4-79"><a href="voronoi-tesselation-1.html#cb4-79"></a></span>
+<span id="cb4-80"><a href="voronoi-tesselation-1.html#cb4-80"></a><span class="kw">saveRDS</span>(VA.plot, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VA.plot.rds&quot;</span>)</span>
+<span id="cb4-81"><a href="voronoi-tesselation-1.html#cb4-81"></a></span>
+<span id="cb4-82"><a href="voronoi-tesselation-1.html#cb4-82"></a><span class="kw">plot_grid</span>(VT.plot, VA.plot, <span class="dt">labels =</span> <span class="st">&quot;Fig. 10: Voronoi tower estimation&quot;</span>,  <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<p>We have now created the Voronoi regions for our focus area with tower locations as seeds as well as with antenna respective coverage area centroid locations as seeds. The number of seeds and Voronoi regions align with each other.</p>
+<p>The spatial density per tile can be expressed as the ratio of the mobile phones in that region and the area of the Voronoi region:</p>
+<p><span class="math inline">\(d_{k} = \frac{\sum c_{i}} {A_{k}}\)</span></p>
+<p>This region specific estimand corresponds to the tile estimate for a tile that is contained in this region. On the tile level there can be two cases that we need to differentiate:</p>
+<ul>
+<li><p>Tiles that are <strong>completely contained</strong> within one Voronoi region</p></li>
+<li><p>Tiles that <strong>intersect</strong> with two or more Vornoi regions</p></li>
+</ul>
+<p>For the first case, the tile specific estimate corresponds to <span class="math inline">\(d_{k}\)</span>. For the second case we will calculate a weighted mean of the relevant Voronoi region estimates by using the corresponding tile area within each Voronoi region as weights.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="voronoi-tesselation-1.html#cb5-1"></a><span class="co"># spatial densities per Voronoi region</span></span>
+<span id="cb5-2"><a href="voronoi-tesselation-1.html#cb5-2"></a>tower.voronoi.est &lt;-<span class="st"> </span>tower.seed.voronoi <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-3"><a href="voronoi-tesselation-1.html#cb5-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">area =</span> <span class="kw">as.numeric</span>(<span class="kw">st_area</span>(.<span class="op">$</span>geometry))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-4"><a href="voronoi-tesselation-1.html#cb5-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">voronoi.est =</span> phones.sum <span class="op">/</span><span class="st"> </span>area) <span class="co"># the sum of the product of this and the area is the total pop</span></span>
+<span id="cb5-5"><a href="voronoi-tesselation-1.html#cb5-5"></a></span>
+<span id="cb5-6"><a href="voronoi-tesselation-1.html#cb5-6"></a></span>
+<span id="cb5-7"><a href="voronoi-tesselation-1.html#cb5-7"></a><span class="co"># Joining the regions with the tile specific data</span></span>
+<span id="cb5-8"><a href="voronoi-tesselation-1.html#cb5-8"></a>tower.seed.voronoi.join &lt;-<span class="st"> </span>tower.voronoi.est <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-9"><a href="voronoi-tesselation-1.html#cb5-9"></a><span class="st">  </span><span class="kw">st_join</span>(census.de<span class="fl">.100</span>m.tile.pop) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># &amp; re-connect the data items</span></span>
+<span id="cb5-10"><a href="voronoi-tesselation-1.html#cb5-10"></a><span class="st">  </span><span class="kw">st_set_agr</span>(<span class="st">&quot;aggregate&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># clean up</span></span>
+<span id="cb5-11"><a href="voronoi-tesselation-1.html#cb5-11"></a><span class="st">  </span><span class="kw">group_by</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-12"><a href="voronoi-tesselation-1.html#cb5-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">count =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-13"><a href="voronoi-tesselation-1.html#cb5-13"></a><span class="st">  </span><span class="kw">ungroup</span>()</span>
+<span id="cb5-14"><a href="voronoi-tesselation-1.html#cb5-14"></a></span>
+<span id="cb5-15"><a href="voronoi-tesselation-1.html#cb5-15"></a><span class="co"># identifiying tiles intersecting with multiple Voronoi regions</span></span>
+<span id="cb5-16"><a href="voronoi-tesselation-1.html#cb5-16"></a>tower.multiple &lt;-<span class="st"> </span>tower.seed.voronoi.join <span class="op">%&gt;%</span></span>
+<span id="cb5-17"><a href="voronoi-tesselation-1.html#cb5-17"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-18"><a href="voronoi-tesselation-1.html#cb5-18"></a><span class="st">  </span><span class="kw">filter</span>(count <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-19"><a href="voronoi-tesselation-1.html#cb5-19"></a><span class="st">  </span><span class="kw">distinct</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-20"><a href="voronoi-tesselation-1.html#cb5-20"></a><span class="st">  </span><span class="kw">deframe</span>()</span>
+<span id="cb5-21"><a href="voronoi-tesselation-1.html#cb5-21"></a></span>
+<span id="cb5-22"><a href="voronoi-tesselation-1.html#cb5-22"></a><span class="co"># calculate area within competing voronoi regions of &quot;multiple&quot; tiles</span></span>
+<span id="cb5-23"><a href="voronoi-tesselation-1.html#cb5-23"></a>tower.intersect.tiles &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile.pop <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-24"><a href="voronoi-tesselation-1.html#cb5-24"></a><span class="st">  </span><span class="kw">filter</span>(internal.id <span class="op">%in%</span><span class="st"> </span>tower.multiple) <span class="op">%&gt;%</span></span>
+<span id="cb5-25"><a href="voronoi-tesselation-1.html#cb5-25"></a><span class="st">  </span><span class="kw">st_intersection</span>(tower.voronoi.est) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-26"><a href="voronoi-tesselation-1.html#cb5-26"></a><span class="st">  </span><span class="kw">st_collection_extract</span>(<span class="dt">type =</span> <span class="st">&quot;POLYGON&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># select the polygons</span></span>
+<span id="cb5-27"><a href="voronoi-tesselation-1.html#cb5-27"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">amount.tiles =</span> <span class="kw">as.numeric</span>(<span class="kw">st_area</span>(.<span class="op">$</span>geometry)) <span class="op">/</span><span class="st"> </span><span class="dv">10000</span>) <span class="co"># checked if it adds up to 1</span></span>
+<span id="cb5-28"><a href="voronoi-tesselation-1.html#cb5-28"></a></span>
+<span id="cb5-29"><a href="voronoi-tesselation-1.html#cb5-29"></a></span>
+<span id="cb5-30"><a href="voronoi-tesselation-1.html#cb5-30"></a>example.helper &lt;-<span class="st"> </span>tower.intersect.tiles <span class="op">%&gt;%</span></span>
+<span id="cb5-31"><a href="voronoi-tesselation-1.html#cb5-31"></a><span class="st">  </span><span class="kw">filter</span>(internal.id <span class="op">==</span><span class="st"> &quot;342403&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-32"><a href="voronoi-tesselation-1.html#cb5-32"></a><span class="st">  </span><span class="kw">select</span>(tower.ID) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-33"><a href="voronoi-tesselation-1.html#cb5-33"></a><span class="st">  </span><span class="kw">deframe</span>()</span></code></pre></div>
+<p>And now the same again for the antennas.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="voronoi-tesselation-1.html#cb6-1"></a><span class="co"># spatial densities per Voronoi region</span></span>
+<span id="cb6-2"><a href="voronoi-tesselation-1.html#cb6-2"></a>antenna.voronoi.est &lt;-<span class="st"> </span>antenna.seed.voronoi <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-3"><a href="voronoi-tesselation-1.html#cb6-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">area =</span> <span class="kw">as.numeric</span>(<span class="kw">st_area</span>(.<span class="op">$</span>geometry))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-4"><a href="voronoi-tesselation-1.html#cb6-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">voronoi.est =</span> phones.sum <span class="op">/</span><span class="st"> </span>area) <span class="co"># the sum of the product of this and the area is the total pop</span></span>
+<span id="cb6-5"><a href="voronoi-tesselation-1.html#cb6-5"></a></span>
+<span id="cb6-6"><a href="voronoi-tesselation-1.html#cb6-6"></a></span>
+<span id="cb6-7"><a href="voronoi-tesselation-1.html#cb6-7"></a><span class="co"># Joining the regions with the tile specific data</span></span>
+<span id="cb6-8"><a href="voronoi-tesselation-1.html#cb6-8"></a>antenna.seed.voronoi.join &lt;-<span class="st"> </span>antenna.voronoi.est <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-9"><a href="voronoi-tesselation-1.html#cb6-9"></a><span class="st">  </span><span class="kw">st_join</span>(census.de<span class="fl">.100</span>m.tile.pop) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># &amp; re-connect the data items</span></span>
+<span id="cb6-10"><a href="voronoi-tesselation-1.html#cb6-10"></a><span class="st">  </span><span class="kw">st_set_agr</span>(<span class="st">&quot;aggregate&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># clean up</span></span>
+<span id="cb6-11"><a href="voronoi-tesselation-1.html#cb6-11"></a><span class="st">  </span><span class="kw">group_by</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-12"><a href="voronoi-tesselation-1.html#cb6-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">count =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-13"><a href="voronoi-tesselation-1.html#cb6-13"></a><span class="st">  </span><span class="kw">ungroup</span>()</span>
+<span id="cb6-14"><a href="voronoi-tesselation-1.html#cb6-14"></a></span>
+<span id="cb6-15"><a href="voronoi-tesselation-1.html#cb6-15"></a><span class="co"># identifiying tiles intersecting with multiple Voronoi regions</span></span>
+<span id="cb6-16"><a href="voronoi-tesselation-1.html#cb6-16"></a>antenna.multiple &lt;-<span class="st"> </span>antenna.seed.voronoi.join <span class="op">%&gt;%</span></span>
+<span id="cb6-17"><a href="voronoi-tesselation-1.html#cb6-17"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-18"><a href="voronoi-tesselation-1.html#cb6-18"></a><span class="st">  </span><span class="kw">filter</span>(count <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-19"><a href="voronoi-tesselation-1.html#cb6-19"></a><span class="st">  </span><span class="kw">distinct</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-20"><a href="voronoi-tesselation-1.html#cb6-20"></a><span class="st">  </span><span class="kw">deframe</span>()</span>
+<span id="cb6-21"><a href="voronoi-tesselation-1.html#cb6-21"></a></span>
+<span id="cb6-22"><a href="voronoi-tesselation-1.html#cb6-22"></a><span class="co"># calculate area within competing voronoi regions of &quot;multiple&quot; tiles</span></span>
+<span id="cb6-23"><a href="voronoi-tesselation-1.html#cb6-23"></a>antenna.intersect.tiles &lt;-<span class="st"> </span>census.de<span class="fl">.100</span>m.tile.pop <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-24"><a href="voronoi-tesselation-1.html#cb6-24"></a><span class="st">  </span><span class="kw">filter</span>(internal.id <span class="op">%in%</span><span class="st"> </span>antenna.multiple) <span class="op">%&gt;%</span></span>
+<span id="cb6-25"><a href="voronoi-tesselation-1.html#cb6-25"></a><span class="st">  </span><span class="kw">st_intersection</span>(antenna.voronoi.est) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-26"><a href="voronoi-tesselation-1.html#cb6-26"></a><span class="st">  </span><span class="kw">st_collection_extract</span>(<span class="dt">type =</span> <span class="st">&quot;POLYGON&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># select the polygons</span></span>
+<span id="cb6-27"><a href="voronoi-tesselation-1.html#cb6-27"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">amount.tiles =</span> <span class="kw">as.numeric</span>(<span class="kw">st_area</span>(.<span class="op">$</span>geometry)) <span class="op">/</span><span class="st"> </span><span class="dv">10000</span>) <span class="co"># checked if it adds up to 1</span></span></code></pre></div>
+<p>We can now calculate the estimated spatial density per tile.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="voronoi-tesselation-1.html#cb7-1"></a><span class="co">#### Towers</span></span>
+<span id="cb7-2"><a href="voronoi-tesselation-1.html#cb7-2"></a></span>
+<span id="cb7-3"><a href="voronoi-tesselation-1.html#cb7-3"></a><span class="co"># final datatset to calculate spatial density</span></span>
+<span id="cb7-4"><a href="voronoi-tesselation-1.html#cb7-4"></a>tower.voronoi.final &lt;-<span class="st"> </span>tower.intersect.tiles <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-5"><a href="voronoi-tesselation-1.html#cb7-5"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-6"><a href="voronoi-tesselation-1.html#cb7-6"></a><span class="st">  </span><span class="kw">select</span>(internal.id, tower.ID, amount.tiles) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-7"><a href="voronoi-tesselation-1.html#cb7-7"></a><span class="st">  </span><span class="kw">right_join</span>(tower.seed.voronoi.join, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;internal.id&quot;</span>, <span class="st">&quot;tower.ID&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-8"><a href="voronoi-tesselation-1.html#cb7-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">amount.tiles =</span> <span class="kw">case_when</span>(<span class="kw">is.na</span>(amount.tiles) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb7-9"><a href="voronoi-tesselation-1.html#cb7-9"></a>                                  <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>amount.tiles)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-10"><a href="voronoi-tesselation-1.html#cb7-10"></a><span class="st">  </span><span class="kw">group_by</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-11"><a href="voronoi-tesselation-1.html#cb7-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">voronoi.est.tower =</span> <span class="kw">weighted.mean</span>(<span class="dt">x =</span> voronoi.est, <span class="dt">w =</span> amount.tiles) <span class="op">*</span><span class="st"> </span><span class="dv">10000</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-12"><a href="voronoi-tesselation-1.html#cb7-12"></a><span class="st">  </span><span class="kw">distinct</span>(internal.id, voronoi.est.tower) <span class="co"># should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec</span></span>
+<span id="cb7-13"><a href="voronoi-tesselation-1.html#cb7-13"></a></span>
+<span id="cb7-14"><a href="voronoi-tesselation-1.html#cb7-14"></a><span class="co">#### antennas</span></span>
+<span id="cb7-15"><a href="voronoi-tesselation-1.html#cb7-15"></a></span>
+<span id="cb7-16"><a href="voronoi-tesselation-1.html#cb7-16"></a><span class="co"># final datatset to calculate spatial density</span></span>
+<span id="cb7-17"><a href="voronoi-tesselation-1.html#cb7-17"></a>antenna.voronoi.final &lt;-<span class="st"> </span>antenna.intersect.tiles <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-18"><a href="voronoi-tesselation-1.html#cb7-18"></a><span class="st">  </span><span class="kw">st_drop_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-19"><a href="voronoi-tesselation-1.html#cb7-19"></a><span class="st">  </span><span class="kw">select</span>(internal.id, antenna.ID, amount.tiles) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-20"><a href="voronoi-tesselation-1.html#cb7-20"></a><span class="st">  </span><span class="kw">right_join</span>(antenna.seed.voronoi.join, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;internal.id&quot;</span>, <span class="st">&quot;antenna.ID&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-21"><a href="voronoi-tesselation-1.html#cb7-21"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">amount.tiles =</span> <span class="kw">case_when</span>(<span class="kw">is.na</span>(amount.tiles) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb7-22"><a href="voronoi-tesselation-1.html#cb7-22"></a>                                  <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>amount.tiles)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-23"><a href="voronoi-tesselation-1.html#cb7-23"></a><span class="st">  </span><span class="kw">group_by</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-24"><a href="voronoi-tesselation-1.html#cb7-24"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">voronoi.est.corrected =</span> <span class="kw">weighted.mean</span>(<span class="dt">x =</span> voronoi.est, <span class="dt">w =</span> amount.tiles) <span class="op">*</span><span class="st"> </span><span class="dv">10000</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-25"><a href="voronoi-tesselation-1.html#cb7-25"></a><span class="st">  </span><span class="kw">distinct</span>(internal.id, voronoi.est.corrected, pop) <span class="co"># should result in same length as the raw tiles object and the sum of the vornoir est corrected should resemble the sum of the c.vec</span></span>
+<span id="cb7-26"><a href="voronoi-tesselation-1.html#cb7-26"></a></span>
+<span id="cb7-27"><a href="voronoi-tesselation-1.html#cb7-27"></a></span>
+<span id="cb7-28"><a href="voronoi-tesselation-1.html#cb7-28"></a>voronoi.final.both &lt;-<span class="st"> </span>antenna.voronoi.final <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-29"><a href="voronoi-tesselation-1.html#cb7-29"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">voronoi.est.antenna =</span> voronoi.est.corrected) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-30"><a href="voronoi-tesselation-1.html#cb7-30"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>voronoi.est.corrected) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-31"><a href="voronoi-tesselation-1.html#cb7-31"></a><span class="st">  </span><span class="kw">left_join</span>(tower.voronoi.final, <span class="dt">by =</span> <span class="st">&quot;internal.id&quot;</span>)</span>
+<span id="cb7-32"><a href="voronoi-tesselation-1.html#cb7-32"></a></span>
+<span id="cb7-33"><a href="voronoi-tesselation-1.html#cb7-33"></a><span class="kw">saveRDS</span>(voronoi.final.both, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Voronoi both/Voronoi.estimates.rds&quot;</span>)</span></code></pre></div>
+<p>In this chunk of code, we will then create the plots.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="voronoi-tesselation-1.html#cb8-1"></a><span class="co">## data prep and plot: Voronoi Tower</span></span>
+<span id="cb8-2"><a href="voronoi-tesselation-1.html#cb8-2"></a>estimations.Voronoi.both &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Voronoi both/Voronoi.estimates.rds&quot;</span>) <span class="co"># read in the data</span></span>
+<span id="cb8-3"><a href="voronoi-tesselation-1.html#cb8-3"></a></span>
+<span id="cb8-4"><a href="voronoi-tesselation-1.html#cb8-4"></a>estimations.VT &lt;-<span class="st"> </span>estimations.Voronoi.both <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-5"><a href="voronoi-tesselation-1.html#cb8-5"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-6"><a href="voronoi-tesselation-1.html#cb8-6"></a><span class="st">  </span><span class="kw">select</span>(internal.id, voronoi.est.tower) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-7"><a href="voronoi-tesselation-1.html#cb8-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop.cat =</span> <span class="kw">case_when</span>(voronoi.est.tower <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> &quot;Less or equal 1&quot;</span>,</span>
+<span id="cb8-8"><a href="voronoi-tesselation-1.html#cb8-8"></a>                             voronoi.est.tower <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>voronoi.est.tower <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span> <span class="op">~</span><span class="st"> &quot;Between 2 and 10&quot;</span>,</span>
+<span id="cb8-9"><a href="voronoi-tesselation-1.html#cb8-9"></a>                             voronoi.est.tower <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>voronoi.est.tower <span class="op">&lt;=</span><span class="st"> </span><span class="dv">30</span> <span class="op">~</span><span class="st"> &quot;Between 11 and 30&quot;</span>,</span>
+<span id="cb8-10"><a href="voronoi-tesselation-1.html#cb8-10"></a>                             voronoi.est.tower <span class="op">&gt;</span><span class="st"> </span><span class="dv">30</span> <span class="op">~</span><span class="st">&quot;More than 30&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-11"><a href="voronoi-tesselation-1.html#cb8-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mobile =</span> <span class="kw">factor</span>(pop.cat, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Less or equal 1&quot;</span>, <span class="st">&quot;Between 2 and 10&quot;</span>, <span class="st">&quot;Between 11 and 30&quot;</span>, <span class="st">&quot;More than 30&quot;</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb8-12"><a href="voronoi-tesselation-1.html#cb8-12"></a><span class="st">  </span><span class="kw">arrange</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-13"><a href="voronoi-tesselation-1.html#cb8-13"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">geometry =</span> census.geo<span class="op">$</span>geometry) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-14"><a href="voronoi-tesselation-1.html#cb8-14"></a><span class="st">  </span><span class="kw">select</span>(internal.id, mobile, geometry) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-15"><a href="voronoi-tesselation-1.html#cb8-15"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-16"><a href="voronoi-tesselation-1.html#cb8-16"></a><span class="st">  </span><span class="kw">group_by</span>(mobile) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-17"><a href="voronoi-tesselation-1.html#cb8-17"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">geometry =</span> <span class="kw">st_union</span>(geometry))</span>
+<span id="cb8-18"><a href="voronoi-tesselation-1.html#cb8-18"></a><span class="kw">saveRDS</span>(estimations.VT, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VT.estimate_data.rds&quot;</span>)</span>
+<span id="cb8-19"><a href="voronoi-tesselation-1.html#cb8-19"></a></span>
+<span id="cb8-20"><a href="voronoi-tesselation-1.html#cb8-20"></a>VT.plot &lt;-<span class="st"> </span>estimations.VT <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-21"><a href="voronoi-tesselation-1.html#cb8-21"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb8-22"><a href="voronoi-tesselation-1.html#cb8-22"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> <span class="kw">factor</span>(mobile), <span class="dt">color =</span> <span class="kw">factor</span>(mobile))) <span class="op">+</span></span>
+<span id="cb8-23"><a href="voronoi-tesselation-1.html#cb8-23"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Voronoi tower estimate&quot;</span>, <span class="dt">size =</span> <span class="dv">20</span>) <span class="op">+</span></span>
+<span id="cb8-24"><a href="voronoi-tesselation-1.html#cb8-24"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>(<span class="dt">name =</span> <span class="st">&quot;Mobile phones&quot;</span>) <span class="op">+</span></span>
+<span id="cb8-25"><a href="voronoi-tesselation-1.html#cb8-25"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">guide =</span> F)</span>
+<span id="cb8-26"><a href="voronoi-tesselation-1.html#cb8-26"></a><span class="kw">saveRDS</span>(VT.plot, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VT.estimate_map.rds&quot;</span>)</span>
+<span id="cb8-27"><a href="voronoi-tesselation-1.html#cb8-27"></a></span>
+<span id="cb8-28"><a href="voronoi-tesselation-1.html#cb8-28"></a></span>
+<span id="cb8-29"><a href="voronoi-tesselation-1.html#cb8-29"></a><span class="co">## data prep and plot: Voronoi antenna</span></span>
+<span id="cb8-30"><a href="voronoi-tesselation-1.html#cb8-30"></a>estimations.Voronoi.both &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Voronoi both/Voronoi.estimate.rds&quot;</span>)</span>
+<span id="cb8-31"><a href="voronoi-tesselation-1.html#cb8-31"></a></span>
+<span id="cb8-32"><a href="voronoi-tesselation-1.html#cb8-32"></a>estimations.VA &lt;-<span class="st"> </span>estimations.Voronoi.both <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-33"><a href="voronoi-tesselation-1.html#cb8-33"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-34"><a href="voronoi-tesselation-1.html#cb8-34"></a><span class="st">  </span><span class="kw">select</span>(internal.id, voronoi.est.antenna) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-35"><a href="voronoi-tesselation-1.html#cb8-35"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop.cat =</span> <span class="kw">case_when</span>(voronoi.est.antenna <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> &quot;Less or equal 1&quot;</span>,</span>
+<span id="cb8-36"><a href="voronoi-tesselation-1.html#cb8-36"></a>                             voronoi.est.antenna <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>voronoi.est.antenna <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span> <span class="op">~</span><span class="st"> &quot;Between 2 and 10&quot;</span>,</span>
+<span id="cb8-37"><a href="voronoi-tesselation-1.html#cb8-37"></a>                             voronoi.est.antenna <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>voronoi.est.antenna <span class="op">&lt;=</span><span class="st"> </span><span class="dv">30</span> <span class="op">~</span><span class="st"> &quot;Between 11 and 30&quot;</span>,</span>
+<span id="cb8-38"><a href="voronoi-tesselation-1.html#cb8-38"></a>                             voronoi.est.antenna <span class="op">&gt;</span><span class="st"> </span><span class="dv">30</span> <span class="op">~</span><span class="st"> &quot;More than 30&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-39"><a href="voronoi-tesselation-1.html#cb8-39"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mobile =</span> <span class="kw">factor</span>(pop.cat, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Less or equal 1&quot;</span>, <span class="st">&quot;Between 2 and 10&quot;</span>, <span class="st">&quot;Between 11 and 30&quot;</span>, <span class="st">&quot;More than 30&quot;</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb8-40"><a href="voronoi-tesselation-1.html#cb8-40"></a><span class="st">  </span><span class="kw">arrange</span>(internal.id) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-41"><a href="voronoi-tesselation-1.html#cb8-41"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">geometry =</span> census.geo<span class="op">$</span>geometry) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-42"><a href="voronoi-tesselation-1.html#cb8-42"></a><span class="st">  </span><span class="kw">select</span>(internal.id, mobile, geometry) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-43"><a href="voronoi-tesselation-1.html#cb8-43"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-44"><a href="voronoi-tesselation-1.html#cb8-44"></a><span class="st">  </span><span class="kw">group_by</span>(mobile) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-45"><a href="voronoi-tesselation-1.html#cb8-45"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">geometry =</span> <span class="kw">st_union</span>(geometry))</span>
+<span id="cb8-46"><a href="voronoi-tesselation-1.html#cb8-46"></a><span class="kw">saveRDS</span>(estimations.VA, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VA.estimate_data.rds&quot;</span>)</span>
+<span id="cb8-47"><a href="voronoi-tesselation-1.html#cb8-47"></a></span>
+<span id="cb8-48"><a href="voronoi-tesselation-1.html#cb8-48"></a>VA.plot &lt;-<span class="st"> </span>estimations.VA <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-49"><a href="voronoi-tesselation-1.html#cb8-49"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb8-50"><a href="voronoi-tesselation-1.html#cb8-50"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> <span class="kw">factor</span>(mobile), <span class="dt">color =</span> <span class="kw">factor</span>(mobile))) <span class="op">+</span></span>
+<span id="cb8-51"><a href="voronoi-tesselation-1.html#cb8-51"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Voronoi antenna estimate&quot;</span>, <span class="dt">size =</span> <span class="dv">20</span>) <span class="op">+</span></span>
+<span id="cb8-52"><a href="voronoi-tesselation-1.html#cb8-52"></a><span class="st">  </span><span class="kw">scale_fill_ptol</span>(<span class="dt">name =</span> <span class="st">&quot;Mobile phones&quot;</span>) <span class="op">+</span></span>
+<span id="cb8-53"><a href="voronoi-tesselation-1.html#cb8-53"></a><span class="st">  </span><span class="kw">scale_color_ptol</span>(<span class="dt">guide =</span> F)</span>
+<span id="cb8-54"><a href="voronoi-tesselation-1.html#cb8-54"></a><span class="kw">saveRDS</span>(VA.plot, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Estimates/Plot.files/VA.estimate_map.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="voronoi-tesselation-1.html#cb9-1"></a><span class="co"># Plot read in</span></span>
+<span id="cb9-2"><a href="voronoi-tesselation-1.html#cb9-2"></a>VT.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/VT.plot.rds&quot;</span>)</span>
+<span id="cb9-3"><a href="voronoi-tesselation-1.html#cb9-3"></a>VA.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/VA.plot.rds&quot;</span>)</span>
+<span id="cb9-4"><a href="voronoi-tesselation-1.html#cb9-4"></a></span>
+<span id="cb9-5"><a href="voronoi-tesselation-1.html#cb9-5"></a>VT.plot</span>
+<span id="cb9-6"><a href="voronoi-tesselation-1.html#cb9-6"></a>VA.plot</span>
+<span id="cb9-7"><a href="voronoi-tesselation-1.html#cb9-7"></a></span>
+<span id="cb9-8"><a href="voronoi-tesselation-1.html#cb9-8"></a><span class="co"># plot_grid(VT.plot, VA.plot, labels = &quot;Fig. 10: Voronoi tower estimation&quot;,  hjust = -0.1, label_size = 14)</span></span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/voronoi%20antenna%20and%20tower%20prep%20plot-1.png" alt="The tower centroids were used as seeds for the creation of the Voronoi regions. The color scale is defined by the log with base 10 local density i.e. the absolute number of mobile phones within a Voronoi region divided by absolute area of the respecitve Voronoi region." width="672" /><img src="bookdown_files/figure-html/voronoi%20antenna%20and%20tower%20prep%20plot-2.png" alt="The tower centroids were used as seeds for the creation of the Voronoi regions. The color scale is defined by the log with base 10 local density i.e. the absolute number of mobile phones within a Voronoi region divided by absolute area of the respecitve Voronoi region." width="672" />
+<p class="caption">
+(#fig:voronoi antenna and tower prep plot)The tower centroids were used as seeds for the creation of the Voronoi regions. The color scale is defined by the log with base 10 local density i.e. the absolute number of mobile phones within a Voronoi region divided by absolute area of the respecitve Voronoi region.
+</p>
+</div>
+<p>We have now created the Voronoi regions for our focus area with tower locations as seeds as well as with antenna respective coverage area centroid locations as seeds. The number of seeds and Voronoi regions align with each other.</p>
+<p>The spatial density per tile can be expressed as the ratio of the mobile phones in that region and the area of the Voronoi region:</p>
+<p><span class="math inline">\(d_{k} = \frac{\sum c_{i}} {A_{k}}\)</span></p>
+<p>This region specific estimate corresponds to the tile estimate for a tile that is contained in this region. On the tile level there can be two cases that we need to differentiate:</p>
+<ul>
+<li><p>Tiles that are completely contained within one Voronoi region</p></li>
+<li><p>Tiles that intersect with two or more Vornoi regions</p></li>
+</ul>
+<p>For the first case, the tile specific estimate corresponds to <span class="math inline">\(d_{k}\)</span>. For the second case we will calculate a weighted mean of the relevant Voronoi region estimates by using the corresponding tile area within each Voronoi region as weights.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="voronoi-tesselation-1.html#cb10-1"></a><span class="co"># example plot</span></span>
+<span id="cb10-2"><a href="voronoi-tesselation-1.html#cb10-2"></a>VT.bird.example.plot &lt;-<span class="st"> </span>tower.intersect.tiles <span class="op">%&gt;%</span></span>
+<span id="cb10-3"><a href="voronoi-tesselation-1.html#cb10-3"></a><span class="st">  </span><span class="kw">filter</span>(internal.id <span class="op">==</span><span class="st"> &quot;342403&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-4"><a href="voronoi-tesselation-1.html#cb10-4"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb10-5"><a href="voronoi-tesselation-1.html#cb10-5"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) <span class="op">+</span></span>
+<span id="cb10-6"><a href="voronoi-tesselation-1.html#cb10-6"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> (census.de<span class="fl">.100</span>m.tile <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(internal.id <span class="op">==</span><span class="st"> &quot;342403&quot;</span>)), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb10-7"><a href="voronoi-tesselation-1.html#cb10-7"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> (tower.seed.voronoi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(tower.ID <span class="op">%in%</span><span class="st"> </span>example.helper)), <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb10-8"><a href="voronoi-tesselation-1.html#cb10-8"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Birds view of a tile that intersects with </span></span>
+<span id="cb10-9"><a href="voronoi-tesselation-1.html#cb10-9"></a><span class="st">multiple regions&quot;</span>)</span>
+<span id="cb10-10"><a href="voronoi-tesselation-1.html#cb10-10"></a></span>
+<span id="cb10-11"><a href="voronoi-tesselation-1.html#cb10-11"></a><span class="kw">saveRDS</span>(VT.bird.example.plot, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.bird.example.plot.rds&quot;</span>)</span>
+<span id="cb10-12"><a href="voronoi-tesselation-1.html#cb10-12"></a></span>
+<span id="cb10-13"><a href="voronoi-tesselation-1.html#cb10-13"></a>VT.example.plot &lt;-<span class="st"> </span>tower.intersect.tiles <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-14"><a href="voronoi-tesselation-1.html#cb10-14"></a><span class="st">  </span><span class="kw">filter</span>(internal.id <span class="op">==</span><span class="st"> &quot;342403&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-15"><a href="voronoi-tesselation-1.html#cb10-15"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb10-16"><a href="voronoi-tesselation-1.html#cb10-16"></a><span class="st">  </span><span class="kw">geom_sf</span>() <span class="op">+</span><span class="st"> </span><span class="co"># add description and scales</span></span>
+<span id="cb10-17"><a href="voronoi-tesselation-1.html#cb10-17"></a><span class="st">  </span><span class="kw">geom_sf_label</span>(<span class="kw">aes</span>(<span class="dt">label =</span> tower.ID)) <span class="op">+</span></span>
+<span id="cb10-18"><a href="voronoi-tesselation-1.html#cb10-18"></a><span class="st">  </span><span class="kw">geom_sf_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">paste0</span>(<span class="st">&quot;(&quot;</span>, <span class="kw">round</span>(amount.tiles, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)), <span class="dt">nudge_y =</span> <span class="dv">-7</span>) <span class="op">+</span></span>
+<span id="cb10-19"><a href="voronoi-tesselation-1.html#cb10-19"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> (census.de<span class="fl">.100</span>m.tile.pop <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-20"><a href="voronoi-tesselation-1.html#cb10-20"></a><span class="st">  </span><span class="kw">filter</span>(internal.id <span class="op">==</span><span class="st"> &quot;342403&quot;</span>)), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb10-21"><a href="voronoi-tesselation-1.html#cb10-21"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Relative area per Voronoi region&quot;</span>)</span>
+<span id="cb10-22"><a href="voronoi-tesselation-1.html#cb10-22"></a></span>
+<span id="cb10-23"><a href="voronoi-tesselation-1.html#cb10-23"></a><span class="kw">saveRDS</span>(VT.example.plot, <span class="st">&quot;Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/VT.example.plot.rds&quot;</span>)</span>
+<span id="cb10-24"><a href="voronoi-tesselation-1.html#cb10-24"></a></span>
+<span id="cb10-25"><a href="voronoi-tesselation-1.html#cb10-25"></a><span class="kw">plot_grid</span>(VT.bird.example.plot, VT.example.plot, </span>
+<span id="cb10-26"><a href="voronoi-tesselation-1.html#cb10-26"></a>          <span class="dt">labels =</span> <span class="st">&quot;Fig. 11: Example multiple tile&quot;</span>,  <span class="dt">hjust =</span> <span class="fl">-0.1</span>, <span class="dt">label_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="voronoi-tesselation-1.html#cb11-1"></a>VT.bird.example.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/VT.bird.example.plot.rds&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</span>
+<span id="cb11-2"><a href="voronoi-tesselation-1.html#cb11-2"></a>VT.example.plot &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/OneDrive - Vysoká škola ekonomická v Praze/YAY/working objects/VT.example.plot.rds&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</span>
+<span id="cb11-3"><a href="voronoi-tesselation-1.html#cb11-3"></a></span>
+<span id="cb11-4"><a href="voronoi-tesselation-1.html#cb11-4"></a>VT.bird.example.plot</span>
+<span id="cb11-5"><a href="voronoi-tesselation-1.html#cb11-5"></a>VT.example.plot</span>
+<span id="cb11-6"><a href="voronoi-tesselation-1.html#cb11-6"></a></span>
+<span id="cb11-7"><a href="voronoi-tesselation-1.html#cb11-7"></a><span class="co"># plot_grid(VT.bird.example.plot, VT.example.plot, </span></span>
+<span id="cb11-8"><a href="voronoi-tesselation-1.html#cb11-8"></a><span class="co">#           labels = &quot;Fig. 11: Example multiple tile&quot;,  hjust = -0.1, label_size = 14)</span></span></code></pre></div>
+<div class="figure">
+<img src="bookdown_files/figure-html/Voronoi%20tower%20multiples-1.png" alt="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator." width="672" /><img src="bookdown_files/figure-html/Voronoi%20tower%20multiples-2.png" alt="This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator." width="672" />
+<p class="caption">
+(#fig:Voronoi tower multiples)This is an example of a tile that intersects with multiple Voronoi regions. The labels and number correspond to the Voronoi region and the given area that are used as weights for the weighted mean estimator.
+</p>
+</div>
+<p>Here we visualize the second case with an example tile and example Voronoi regions from the Voronoi with tower locations as seeds. In the left plot we can see a small tile that is indicated in red. This tile is at the intersection of 4 Voronoi regions. The corresponding relative tile area intersecting with each Voronoi region can be seen in the right plot. The labels correspond to the Voronoi region ID and the below in brackets indicate the proportional weight that should be considered in calculting the tile specific weighted mean estimate. To compare this to the first case - where a tile is fully contained only in one region - the weight for the particular Voronoi region is 1. The same methodogolgy is pursued for the Voronoi antenna case.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="estimation-strategies-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="mle-poisson-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": true,
+"info": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

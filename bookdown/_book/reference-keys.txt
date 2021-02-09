@@ -48,3 +48,6 @@ appendix-a-a-deep-dive-into-the-convergence-behaviour-of-mle-estimates
 prerequisites
 generation-of-mobile-phone-population
 kantorovich-wasserstein-distance-kwd
+voronoi-tesselation-1
+setup-of-necessary-datasets
+mle-poisson-1

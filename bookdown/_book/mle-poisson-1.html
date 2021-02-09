@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5 Estimation Strategies | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</title>
+  <title>5.2 MLE Poisson | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020</title>
   <meta name="description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5 Estimation Strategies | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  <meta property="og:title" content="5.2 MLE Poisson | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5 Estimation Strategies | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
+  <meta name="twitter:title" content="5.2 MLE Poisson | Mobile Network Operator Data for Spatial Statistics - Eurostat Coding Labs 2020" />
   
   <meta name="twitter:description" content="A showcase of our remote collaborative efforts from working on the MNO project" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="device-to-cell-association-1.html"/>
-<link rel="next" href="voronoi-tesselation-1.html"/>
+<link rel="prev" href="voronoi-tesselation-1.html"/>
+<link rel="next" href="evaluation-methods.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -183,22 +183,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="estimation-strategies-1" class="section level1">
-<h1><span class="header-section-number">5</span> Estimation Strategies</h1>
-<p>We have implemented two specific estimation strategies:</p>
-<ul>
-<li><p>Voronoi tessellation (tower locations OR coverage area centroids as seeds)</p></li>
-<li><p>MLE Poisson</p></li>
-</ul>
-<p>All three of these estimation techniques produce a tile specific estimate. The sum of these estimates always equals the sum of the c.vector, i.e. all registered mobile phones. This characteristic explains the strategy of all of these estimators: Taking the complete number of registered phones in the c.vector and allocating them across all the tiles. There is however a fundamental difference between the two estimators: The second one allows for the realistic setting of overlapping antenna coverage. As shown above there are many tiles that are covered by multiple antennas. Current research suggests that this can result in more accurate estimations.</p>
+<div id="mle-poisson-1" class="section level2">
+<h2><span class="header-section-number">5.2</span> MLE Poisson</h2>
+<p>MLE Poisson: <span class="math inline">\(\hat{u}^{m+1}_{j} = \hat{u}^{m}_{j}\sum_{i = 1}^{I} c_{i} \frac{p_{ij}}{\sum_{k = 1}^{J} p_{ik} \hat{u}^{m}_{k}}\)</span></p>
+<p>Talk about the difference between MLE True and Equal.</p>
+
 </div>
+<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
-<a href="device-to-cell-association-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="voronoi-tesselation-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="voronoi-tesselation-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="evaluation-methods.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
