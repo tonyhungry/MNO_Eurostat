@@ -1,51 +1,75 @@
 # Making a Toy World 
 
-## Generation of Population
+## Prerequisites
 
-
-Our toy world bases on population census data from the German Federal Statistical Office [2] (https://www.destatis.de/EN/Home/_node.html). This data entails continous population counts on a 100m * 100m grid. *For our project we reduce the population count to a third to mimic the process of receiving data from an MNO provider - therefore we assume that the population count resembles the number of mobile phones in this area.* For computational reasons, this version will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises a high diversity of urban, suburban, and rural areas.
-
-*Terminology used in this project:*
-Due to various definitions out there, it is imperial to define the different terminologies used in this project before going further to reduce unnecessary confusion.
-- When we talk about *tiles*, we mean any square on the regular 100 * 100 m2 grid.
-- An *antenna* is a device facilitating between radio transmission and reception. Specifically in our case, an antenna transmits and receives cell phone signals. This is also known as a *cell*.
-- A (radio) *tower* or commonly referred to as a *cell tower, cellular site, or cellular base station* is a tower equipped with antennas.
+This chapter uses the following packages:
 
 ```{r, setup}
 # change accordingly
-knitr::opts_knit$set(root.dir = normalizePath("/Users/tonyhung/OneDrive - Vysoká škola ekonomická v Praze/YAY")) 
+knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/")) 
 knitr::opts_chunk$set(fig.width = 9)
 knitr::opts_knit$set(eval.after = "fig.cap")
 ```
 
 ```{r packages, message=FALSE}
+library(data.table) 
 library(tidyverse)
 library(sf)
 library(raster)
-library(Matrix)
+library(furrr)
+library(stars)
+library(osc)
 library(knitr)
 library(kableExtra)
 library(ggthemes)
-library(cowplot)
-library(transformr)
-library(gganimate)
 set.seed(762)
-
-census.de.100m.tile <- readRDS("working objects/census.tile.final.rds") 
 ```
 
-Throughout this project, we are going to analyze the area of South Bavaria. Consequently in Figure 1, the interested area in highlighted with a red rectangle. More specifically, this zone is identified by a longitude between 4400000 and 4500000 and a latitude between 2700000 and 2900000. Moreover, the coordinates are transformed and converted so that it is possible to use the same convention through the entire research. 
+In this chapter we develop and explain all steps taken for our final *Toy World*. This toy world resembles our simulation framework, in which we create a population of mobile phones, situated at different geographical locations. These mobile phones can connect to different antennas, which is logged by the respective MNO the antenna belongs to. The toy world contains selected parameters that can be set differently to scrutinize different behaviors.
 
-```{r focus area, fig.width = 7, fig.cap="We will only focus on a subset of the tiles located in the state of Bavaria because it comprises both urban, suburban, and rural areas" }
+The general goal is to create a scenario in which we know how many phones are connected to each antenna. We assume we know the location of the antenna and to some degree its reach. The estimators introduced in the next chapter will try to estimate this antenna specific number of mobile phones.
+
+*Terminology used in the following:*
+Due to various definitions out there, it is imperial to define the different terminologies to reduce unnecessary confusion.
+- When we talk about *tiles*, we mean any square on the regular 100m * 100m grid.
+- An *antenna* is a device facilitating between radio transmission and reception. Specifically in our case, an antenna transmits and receives cell phone signals. This is also known as a *cell*.
+- A (radio) *tower* also known as *cell tower, cellular site, or cellular base station* is a tower equipped with up to 3 antennas.
+
+## Generation of Mobile Phone Population
+
+Our toy world bases on population census data from the German Federal Statistical Office [2] (https://www.destatis.de/EN/Home/_node.html). This data entails continuous population counts on a 100m * 100m geographical grid.
+
+```{r raw-read-in, results='asis'}
+# Raw census 100 m^2 data read in
+census.raw <- fread("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Data/Census data Germany/csv_Bevoelkerung_100m_Gitter/Zensus_Bevoelkerung_100m-Gitter.csv")
+
+census.raw %>% 
+  dplyr::select(x = x_mp_100m, y = y_mp_100m, pop.raw = Einwohner) %>% 
+  sample_n(10) %>% 
+  kbl() %>%
+  kable_material(c("striped", "hover"))
+
+```
+
+`census.raw` contains 4 columns, the tile ID, the x and y coordinate of the tiles left bottom corner and the number of inhabitants associated with the tile. For statistical disclosure reasons tiles containing less than 3 inhabitants have perturbed values. The value `-1` stands for a tile with less than 3 inhabitants. The specific perturbation is explained further in the explanatory notes of the raw data.
+
+For computational reasons, the following analysis will only focus on a subset of the tiles located in the state of Bavaria, which is situated in the south-east of Germany. We chose this area because it comprises a high diversity of urban, suburban, and rural areas, enabling us to focus on the parameter of population density. This zone is identified by a longitude between 4400000 and 4500000 and a latitude between 2700000 and 2900000.
+
+
+```{r focus-area, fig.width = 7, fig.cap="For computational reasons we will only focus on a subset of the tiles located in the state of Bavaria because it comprises high diversity in urban, suburban, and rural areas" }
 # Bounding box of focus area
 bb.focus.dat <- data.frame(xmin = 4400000, xmax = 4500000,
                            ymin = 2700000, ymax = 2900000)
 bb.focus.vec <- c(xmin = 4400000, xmax = 4500000,
                   ymin = 2700000, ymax = 2900000)
+
 # Download data from : https://gadm.org/download_country_v3.html --> R(sf) level 1
-germany.raw <- readRDS("working objects/gadm36_DEU_1_sf.rds") 
+# This data is only used for visualization purposes and not further needed for the rest of the analysis
+germany.raw <- readRDS("C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/gadm36_DEU_1_sf.rds") 
+
 germany <- germany.raw %>%  
   st_transform(crs = 3035)
+
 focus.area.plot <- germany %>%  
   ggplot() + 
   geom_sf() + 
@@ -53,105 +77,267 @@ focus.area.plot <- germany %>%
                                       xmin = xmin, xmax = xmax,  
                                      color = "red"),  
             size = 1, fill = "transparent") + 
-  ggtitle("") + 
+  ggtitle(label = "Focus area of analysis") + 
   scale_color_identity(name = "", 
                        labels = c("Focus area"), 
                        guide = "legend") +
-  labs(x = NULL, y = NULL,
-       title = "")
- 
-plot_grid(focus.area.plot, 
-          labels = "Fig.1: Focusing on a part of South Bavaria",
-          hjust = -0.1, label_size = 13)
+  labs(x = NULL, y = NULL) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+saveRDS(focus.area.plot, "C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Plots/focus.area.rds")
+
 ```
 
 
-As mentioned above, this area is very heterogeneous in urban-rural intensity. Knowing the location of urban centers is very important for the corresponding radio cell network as there are differences in cell coverage between these different area kinds. We are aiming at developing a 3-category classification for each tile: Rural, Suburban and Urban. Based on the census data on the tile level we cannot locate urban centers just yet. Classifying tiles on such a low spatial resolution into one of these categories independent from each other (i.e. based on their population numbers) would not lead to the true location of urban centers; in fact, we need to take spatial dependence into consideration in order to identify urban centers. Therefore we apply a spatial clustering algorithm to account for the spatial dependence. We aimed at having 4 different categories: Uninhabited, Rural, Suburban and Urban. In order to run the clustering algorithm, the original census population is first divided into tiles above and below 15 people per tile. Tiles below 15 are either classified as Uninhabited or Rural, from the start (uninhabited corresponds to the tiles with 0 population). The clustering is then done on the tiles that are above 15 people per tile. Based on the results of the clustering, we define urban areas as clusters that have an agglomeration of more than 100 tiles. Suburban areas are defined as clusters that have more than 50 and less than or equal to 100 tiles. The remaining clusters are considered as Rural areas and therefore result in the same classification as the tiles from above, which had less than 15 people.
-We started with the definition of the data necessary for the Empirical Complementary Cumulative Distribution Function (ECCDF). This function is going to be further explained in Figure 3. 
+We will therefore exclude the tiles that are not contained in this bounding box. Next, we need to define valid values for population values in tiles that contain undisclosed values. We create the variable `pop.pert` and sample from the values 0 and 1 equally if the value in `pop.raw` is `-1`, we sample from the values 2 and 3 equally if the value is 2 or 3, and we copy the values for `pop.pert` from `pop.raw` if they are larger than 3. This follows the logic of the perturbation methods mentioned above. For our final population variable, `pop`, which will also represent our ground truth population, we aim to reach a total value of about a third of the perturbed population, `pop.pert`. The reason for this reduction is the use case of working with data from *one* MNO provider. We assume this MNO provider covers about 1/3 of all inhabitants' phones. Therefore, our measurement unit in the following concerns *mobile phones*.
 
-The plots below present our classification results:
-```{r pop distribution 1, fig.cap= "Figure 2a shows the classification results from the clustering algorithm and the proportion of people in the area categories.While Figure 2b shows the distribution of the four different categories of tiles obtained throught spatial clustering."}
+For the creation of `pop` we split the tiles according to `pop.pert` into 2 groups: 
+1. tiles below or equal to `40`, 
+2. tiles above `40`. 
 
-# Since there is a large percentage of zeros in the tiles, we added 1 to every tile to receive valid values for the log transformation
-# ECCDF of population distribution 
-census.de.100m.tile <- readRDS("working objects/census.tile.final.rds")
-ECCDF.pop.data <- census.de.100m.tile %>% 
-  # sample_n(1000) %>%
-  mutate(pop.plot = pop + 1) %>%  
-  arrange(pop.plot) %>%  
-  mutate(prob = 1 / n()) %>%  
-  mutate(cum.prob = cumsum(prob)) %>%  
-  mutate(log10.cum.prob.comp = log10(1 - cum.prob)) %>%  
-  mutate(log10.pop = log10(pop.plot)) %>%  
-  mutate(cum.prob.comp = 1 - cum.prob) %>% 
-  mutate(pop.area.kind = case_when(pop == 0 ~ "Uninhabitated", 
-                                   TRUE ~ pop.area.kind))
+```{r}
+census <- census.raw %>% 
+  dplyr::select(x = x_mp_100m, y = y_mp_100m, pop.raw = Einwohner) %>% 
+  filter(between(y, 2700000, 2900000), # 
+         between(x, 4400000, 4500000)) %>%
+  mutate(internal.id = row_number()) %>%  # create new ID variable 
+  mutate(pop.pert = case_when(pop.raw == "-1" | is.na(pop.raw) ~ sample(0:1, n(), replace = T),
+                              pop.raw %in% c(2:3) ~ sample(2:3, n(), replace = T),
+                              TRUE ~ as.integer(pop.raw)))
+  
+census %>% 
+  mutate(pop.group = case_when(pop.pert <= 40 ~ "Less or equal 40",
+                               pop.raw > 40 ~ "More than 40")) %>% 
+  group_by(pop.group) %>% 
+  summarise(n.tiles = n()) %>% 
+  kbl() %>%
+  kable_material(c("striped", "hover"))
+```
 
-prop.class <- data.frame( 
-  class = c("Rural","Suburban", "Uninhabitated","Urban"), 
-  n = summary(as.factor(ECCDF.pop.data$pop.area.kind)), 
-  prop = round(summary(as.factor(ECCDF.pop.data$pop.area.kind)) / length(census.de.100m.tile$internal.id), digits = 4) * 100)  %>% 
-  mutate(class = factor(class)) %>% 
-  arrange(desc(class)) %>% 
-  mutate(lab.ypos = cumsum(prop) - 0.5 * prop) 
- 
-tile.prop.plot <- prop.class %>% 
-  ggplot(aes(x = "", y = prop, fill = class)) + 
-  geom_bar(width = 1, stat = "identity", color = "white") + 
-  scale_fill_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) +
-  geom_text(aes(y = lab.ypos, label = paste0(prop, "%")), color = "black") +
-  labs(x = "Class", y = "Number of tiles", title = "",
-    subtitle = "Fig. 2b: Tile proportion") + 
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5))
- 
-cluster.plot <- census.de.100m.tile %>%
+For the first group we will sample from a Binomial distribution with N as the number of phones per tile, `pop.pert` and a success probability of 1/3. For the second group we will copy the value from `pop.pert` and divide it by 3.
+
+```{r}
+# Dataframe with bounding box, tile id, and two versions of the population variable
+census.pop.new <- census %>%
+  mutate(bin.helper = case_when(pop.pert <= 40 ~ sample(0:1, n(), prob = c(2/3, 1/3), replace = T),
+                                pop.pert > 40 ~  NA_integer_)) %>% 
+  mutate(pop = case_when(bin.helper == 1 ~ pop.pert,
+                         bin.helper == 0 ~ as.integer(0),
+                         is.na(bin.helper) ~ as.integer(round(pop.pert / 3, 0))))
+
+sum(census.pop.new$pop.pert)
+sum(census.pop.new$pop) # should yield about 1/3 of pop.pert
+
+```
+This operationalization yields about 1/3 of `pop.pert`. 
+
+As mentioned above, this area is very heterogeneous in urban-rural intensity. Knowing the location of urban centers is very important for the corresponding radio cell network as there are differences in cell coverage between these different area kinds. We are aiming at developing a 3-category classification for each tile: Rural, Suburban and Urban. Based on the census data we *cannot* locate urban centers just yet. Classifying tiles on such a low spatial resolution into one of these categories independent from each other (i.e. based on their population numbers) would not lead to the true location of urban centers; in fact, we need to take spatial dependence into consideration in order to identify urban centers. Therefore we apply a spatial clustering algorithm to account for the spatial dependence. 
+
+In order to run the clustering algorithm, we again form two groups according to `pop`:
+1. tiles below 15,
+2. tiles above or equal 15.
+
+```{r}
+census.cluster <- census.pop.new %>% 
+  mutate(pop.raster = case_when(pop < 15 ~ 1,
+                                pop >= 15 ~ 2)) %>%
+  dplyr::select(-pop.raw)
+
+saveRDS(census.cluster, "C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/example data frame.rds")
+
+census.cluster %>% 
+  group_by(pop.raster) %>% 
+  summarise(n.tiles = n()) %>% 
+  kbl() %>%
+  kable_material(c("striped", "hover"))
+
+```
+
+
+The group formation is saved in `pop.raster`. We will only use the second group for the clustering. These tiles represent so to say seed points for the occurrence of agglomerations.
+
+For clustering we will use the `cca()` function from the `osc` package. The input data needs to be a raster object, therefore we will transform `census.cluster` data frame into a raster brick. We will set our coordinate reference system (depends on the input data, here "3035"). The final input object for the `cca()` function is the raster layer that contains the `pop.raster` dummy variable.
+
+```{r}
+# Raster brick object of the complete bounding box region
+census.tile <- raster::rasterFromXYZ(census.cluster, crs = st_crs(3035)$proj4string)
+
+# Raster layer object with specified dichotomized variable for cca
+census.tile.pop.raster <- raster::raster(census.tile, 
+                                         layer = 5) # this needs to be the index of the pop.raster variable
+
+# CCA workflow, clustering 1 values (pop > 15) 
+cities <- cca(census.tile.pop.raster, 
+              cell.class = 2, # indicating that only tiles with "1" in pop should be used for clustering
+              s = 11100000, # radius/shell size of burning clustering procedure
+              unit = "m") 
+
+# number of unique clusters
+length(cities$size)
+
+```
+This leads to `r length(cities$size)` unique clusters of varying sizes. This is still a very large number and we aim to reduce it. We can now assign a `cluster.id` to each of the tiles in group 2 back in our original`census.cluster` data frame. In order to receive a `sf` object, which is advantageous for spatial data analysis, we need to rasterize the cluster results. We do this per cluster and use a paralized workflow to decrease computation time. Furthermore, we classify clusters into two groups:
+1. Clusters, with less than 10 tiles,
+2. Cluster with more or equal to 10 tiles.
+
+```{r}
+# Adding classification results to census.cluster sf object and splitting it up for further parallelized workflow
+census.classified.sf <- cities[["cluster"]] %>% 
+  right_join(census.cluster, by = c("long" = "x", "lat" = "y")) %>% 
+  mutate(parts = ntile(internal.id, 50)) %>%
+  group_by(parts) %>%
+  group_split()
+
+# Calculate the number of cores
+no_cores <- availableCores() - 1
+plan(multisession, workers = no_cores)
+
+# Rasterizing the sf object with cluster results and transforming back to final sf object
+census.classified.sf.transform <- census.classified.sf %>% 
+  future_map(~raster::rasterFromXYZ(., crs = st_crs(3035)$proj4string), .progress = T) %>% 
+  future_map(~st_as_stars(.), .progress = T) %>% 
+  future_map_dfr(~st_as_sf(., coords = c("long", "lat")), .progress = T) %>%
+  st_transform(crs = 3035) %>% 
+  group_by(cluster_id) %>% 
+  mutate(cluster.tile.n = n()) %>% 
+  ungroup() %>% 
+  dplyr::select(-parts) %>% 
+  mutate(pop.area.kind.helper = case_when(pop.raster != 0 & cluster.tile.n > 10 ~ 1, # specify clusters that have at least 10 tiles
+                                          TRUE ~ 0))  
+
+census.classified.sf.transform %>% 
+  st_drop_geometry() %>% 
+  ungroup() %>% 
+  filter(pop.area.kind.helper == 1) %>% 
+  summarise(n.cluster.unique = n_distinct(cluster_id)) %>% 
+  as_vector()
+
+
+
+```
+
+By differentiating by cluster size, we can exclude the small clusters and therefore reduce the number of unique clusters to the more sensible number of 276. These represent the largest spatial agglomerations of tiles that contain more than 15 people. 
+
+```{r}
+census.classified.sf.transform %>% 
+  filter(pop.area.kind.helper == 1) %>% 
+  ggplot() +
+  geom_sf() +
+  labs(x = "", y = "", title = "Tiles classified in the largest clusters", size = 20) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+From this plot we can identify the major urban areas, Munich and Nuremberg for example. Each of the tiles represents potential seed points for a spatial agglomeration that we can define as an urban center. With the current cluster classification we can define the tiles that belong to the largest clusters, however, we also want to classify close by tiles that are not labeled yet. Therefore, we need to identify neighboring tiles. For this we will union the tiles belonging to the same cluster and then build two buffers around each cluster. The buffer identifies close by tiles in a certain radius (buffer size). The idea is that these tiles should belong to the same cluster because they are close by. The smaller buffer defines urban cores, therefore these will be labeled `Urban` and the larger buffer defines suburban rings. Tiles that belong to the suburban buffer but not to the urban one, are labeled as `Suburban`. The remaining tiles that are not within any buffer are labeled `Rural`.
+
+
+```{r}
+# summarise clusters geometries to build buffers
+result.interim <- census.classified.sf.transform %>% 
+  filter(pop.area.kind.helper == 1 & !is.na(cluster_id)) %>% 
+  group_by(cluster_id) %>% 
+  summarise(geometry = st_union(geometry))
+
+# build buffers for suburban and urban area respectively
+urban.buffer <- st_buffer(result.interim, 800)
+suburban.buffer <- st_buffer(result.interim, 3000)
+
+# classify tiles that are within the respective buffer with either suburban or urban, rest is rural
+census.classified.final.sf <- census.classified.sf.transform %>% 
+  mutate(urban.dummy = lengths(st_within(census.classified.sf.transform, urban.buffer))) %>% 
+  mutate(suburban.dummy = lengths(st_within(census.classified.sf.transform, suburban.buffer))) %>% 
+  mutate(pop.area.kind = case_when(urban.dummy > 0 ~ "Urban",
+                                   suburban.dummy > 0 & urban.dummy == 0 ~ "Suburban",
+                                   TRUE ~ "Rural"))
+
+saveRDS(census.classified.final.sf, "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/census.tile.final.rds")
+# census.classified.final.sf <- readRDS("Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/census.tile.final.rds")
+
+
+
+# check if correctly classified
+(cluster.plot <- census.classified.final.sf %>%
   filter(pop.area.kind %in% c("Suburban", "Urban")) %>% 
   ggplot() +  
-  geom_sf(aes(col = factor(pop.area.kind)), show.legend = F) + 
-  ggtitle("", subtitle = "Clustering Results") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm")) +  
-  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#117733", "#CC6677")) +
-   labs(subtitle = "Fig. 2a: Clustering results") +
-  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 9, hjust = 0.5))
+  geom_sf(aes(color = factor(pop.area.kind), fill = factor(pop.area.kind)), show.legend = F) + 
+  scale_color_manual(breaks = c("Suburban", "Urban"), values = c("#DDCC77", "#CC6677")) +
+  labs(x = "", y = "", title = "Clustering results", size = 20)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-plot_grid(cluster.plot, tile.prop.plot, labels = "Fig.2 : Population Classification",  
-            hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1)) 
+saveRDS(cluster.plot, "Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/working objects/cluster.plot.rds")
+
+
+
 ```
-In Figure 2a, only the Suburban and Urban categories of tiles are represented and the transition from one category to another is highlighted thanks to the different colors used. It is possible to notice that there is an agglomeration of Urban tiles in correspondence to the important cities of South Bavaria, such as Munich. The Suburban tiles surround perfectly the Urban ones. 
 
-The Figure 2b is a the stacked bar plot, that shows the proportions of the tiles according to the four categories. Based on our clustering algorithm, `r prop.class$prop[1]`% of the tiles are urban areas. `r prop.class$prop[2]`% of the tiles are uninhabited areas. `r prop.class$prop[3]`% of the tiles are suburban areas, and `r prop.class$prop[4]`% of the tiles are rural areas. As we can see, the largest percentage of tiles is inhabited. 
+Tiles that are within the colored boundaries are classified either as `Suburban` or `Urban`. The outer tiles are classified as `Rural`. 
 
-```{r pop distribution 2, fig.cap= "The Figure 3a shows the geographical distribution of the tiles classified thought the clustering algorithm of the population. In Figure 3b there is rapresented  the logarithm of ECCDF of the population data and the graph inside the figure 3b is the linear ECCDF." }
+```{r}
+census.classified.final.sf %>% 
+  st_drop_geometry() %>% 
+  group_by(pop.area.kind) %>% 
+  summarise(n.tiles = n(), n.tiles.prop = n() / length(census.classified.final.sf$pop.area.kind)) %>% 
+  kbl() %>%
+  kable_material(c("striped", "hover"))
+```
+Our spatial clustering approach led us to the above proportions concerning the area classification of our tiles. About 10% of our focus area is classified either as `Suburban` or `Urban`. To better understand the relationship between number of mobile phones and the classified area we can visualize this distribution with an Empirical Cumulative Distribution Function (ECDF) and the complement of it, the Empirical Complementary Cumulative Distribution Function (ECCDF).
 
-pop.dist.map.plot <- ECCDF.pop.data %>% 
-  # sample_n(1000) %>%
-  ggplot() + 
-  geom_sf(aes(color = pop.area.kind), show.legend = F) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-  ggtitle("", subtitle = " Fig. 3a : Geographic distribution") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
- 
-ECCDF.pop.plot <- ECCDF.pop.data %>%   
+```{r}
+## This function computes ECCDF data frames with log10 transformations of the x and y axis
+
+custom_ecdf_prep <- function(df) {
+  data <- df %>% 
+    mutate(pop.plot = pop + 1) %>%  
+    arrange(pop.plot) %>%  
+    mutate(prob = 1 / n()) %>%  
+    mutate(cum.prob = cumsum(prob)) %>%  
+    mutate(cum.prob.comp = 1 - cum.prob) %>%  
+    mutate(log10.cum.prob.comp = log10(cum.prob.comp)) %>% 
+    mutate(log10.pop = log10(pop.plot)) %>%  
+    mutate(cum.prob.comp = 1 - cum.prob)
+  
+  return(data)
+}
+
+
+pop.true.ECCDF <- census.classified.final.sf %>% 
+  st_drop_geometry() %>% 
+  ungroup() %>% 
+  custom_ecdf_prep() %>% 
+  dplyr::select(log10.cum.prob.comp, log10.pop, pop.area.kind) %>%
+  mutate(log10.cum.prob.comp = round(log10.cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
+  distinct()
+
+
+pop.true.ECDF <- census.classified.final.sf %>% 
+  st_drop_geometry() %>% 
+  ungroup() %>% 
+  custom_ecdf_prep() %>% 
+  dplyr::select(cum.prob.comp, pop.plot, pop.area.kind) %>%
+  mutate(cum.prob.comp = round(cum.prob.comp, 4)) %>% # effective plot sample --> faster plotting excluding overplot
+  distinct()
+
+breaks.first <- c("Rural", "Suburban", "Urban")
+
+ECCDF.pop.plot <- pop.true.ECCDF %>%   
   ggplot() + 
   geom_point(aes(x = log10.pop, y = log10.cum.prob.comp, 
                  color = pop.area.kind)) + 
   geom_hline(yintercept = -0.3010300, linetype = "dotted") + 
   geom_hline(yintercept = -1, linetype = "dotted") + 
-  geom_text(x = 1.5, y = -0.2, label = "50% of the data") + 
-  geom_text(x = 1.5, y = -0.9, label = "90% of the data") + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-  ggtitle("", subtitle = "Fig. 3b: Empirical cumulative complementary\ndistribution function") +  
+  geom_text(x = 1.5, y = -0.15, label = "50% of the data") + 
+  geom_text(x = 1.5, y = -0.8, label = "90% of the data") + 
+  scale_color_ptol(breaks = breaks.first) + 
+  ggtitle("Mobile phone density per tile") +  
   labs(y = "log10(Prob(Y > x))", x = "log10(Mobile phones)",  
         colour = "") + 
   ylim(-7, 0) +
   theme(legend.position = "bottom") 
  
-ECDF.pop.plot <- ECCDF.pop.data %>%   
+ECDF.pop.plot <- pop.true.ECDF %>%   
   ggplot() + 
   geom_point(aes(x = pop.plot, y = cum.prob.comp, color = pop.area.kind)) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban"), guide = FALSE, expand = c(0, 0)) +
+  scale_color_ptol(breaks = breaks.first,
+                   guide = FALSE, expand = c(0, 0)) +
   xlim(0, 30) +
   labs(y = "", x = "") +
   theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
@@ -159,99 +345,174 @@ ECDF.pop.plot <- ECCDF.pop.data %>%
         axis.title.x = element_blank(),
         axis.title.y = element_blank())
 
-pop.dist.ecdf.insert <- ECCDF.pop.plot +
+(pop.dist.ecdf.insert.plot <- ECCDF.pop.plot +
   annotation_custom(ggplotGrob(ECDF.pop.plot), 
                     xmin = 0, xmax = 1.5, 
-                    ymin = -7, ymax = -3)
+                    ymin = -7, ymax = -3))
 
-plot_grid(pop.dist.map.plot, pop.dist.ecdf.insert, labels = "Fig. 3: Mobile phone density per tile",  
-          hjust = -0.1, label_size = 14, rel_widths = c(0.8, 1))
+saveRDS(pop.dist.ecdf.insert.plot, "C:/Users/Marco/Vysoká škola ekonomická v Praze/Tony Wei Tse Hung - YAY/Plots/pop.dist.ecdf.insert.plot.rds")
+
+
+
+
 ```
 
-Figure 3 shows the mobile phone density per tile in the focus area. In particular, we have 4 different colors representing the clusters: Uninhabited, Rural, Suburban and Urban.
-Figure 3a confirms what we have written previously, in fact, the majority of the figure is yellow, which represents the Inhabitant tiles. It is possible to see the Urban tiles, which are red. But it is not possible to clearly distinguish Suburban and Rural tiles. Anyway, in Figure 2a, we have seen the detail of Urban and Suburban tiles. The Rural tiles are more distributed.
 
-However, as we have already said, to have a deeper look of the mobile phone density per tile, we choose to represent the data with an empirical cumulative complementary distribution function (ECCDF) (using a log base 10 transformation).
-The ECCDF is a step function with jumps `i/n` at observation values, where `i` is the number of tied observations at that value. Moreover, missing values are ignored and the objective "complementary" means that we need to subtract 1 - the cumulative probability. It is commonly used with variables that have a highly skewed distribution. We can see that this is the case - the population on this low spatial resolution is heavily right skewed.
+The ECCDF is a step function and it is commonly used with variables that have a highly skewed distribution. We can see that this is the case - the population on this low spatial resolution is heavily right skewed. We can also notice that our spatial clustering approach worked because even though most high populated tiles are most often classified as `Urban`, there are some `Urban` and `Suburban` tiles with low number of mobile phones. *For more complete plotting we added 1 to `pop` because otherwise tiles with 0 mobile phones would not be visualized due to the log transformation.*
 
-As Figure 3b suggests with the presentation of the ECCDF, 50% of the data are represented by uninhabited tiles with no phones; furthermore, 90% of the tiles contain less than half of the mobile phones in our focus area. One can also see the tiles' classification based on the clustering results. Some tiles classified as Rural have higher values for their mobile phone population - this is because they are not considered as an Urban or Suburban cluster, as mentioned above. 10% left are tiles both Urban and Rural containing 0.5 and above mobile phones.
+The tile classification marks an important interim result in the Generation of our Toy World. We now have an interesting mobile phone population situated in a area-diverse geography, being able to differentiate between Rural, Suburban and Urban areas. In the next part we will use the area classification, `pop.area.kind`, as a basis for the generation of a synthetic Radio Network.
 
 
 ## Generation of a synthetic Radio Network
 
-We generate a radio network, which is composed of three layers. The layers follow the pop.area.kind variable - layer 1 (Rural) spans over the rural, suburban and urban tiles, layer 2 (Suburban) spans over the suburban and urban tiles and layer 3 (Urban) is spanned over the urban tiles.
+In our research we are very interested in different effects originating from the Radio Network specification. Therefore, we will implement many parameters that can be tuned and toggled for further research. The current choices of the parameter values are grounded on exploratory and theoretical research.
 
-**Important features and parameters of the generated radio network are:**
+We generate a radio network, which is composed of three layers. The layers follow the `pop.area.kind` variable - `layer 1 (Rural)` spans over the `Rural`, `Suburban` and `Urban` tiles, `layer 2 (Suburban)` spans over the `Suburban` and `Urban` tiles and `layer 3 (Urban)` is spanned over the `Urban` tiles.
+
+**Important features and parameters of the generated radio network:**
 
 -   The layers follow a hexagon shape with cell towers located in the respective centroid of each hexagon
 
--   Towers vary in distance to each other of the same layer, i.e. how far/close are towers of the same layer located to each other: layer 1 = 27,000m; layer 2 = 7000m; layer 3 = 900m (-\> the more urbanized, the closer the towers are too each other -\> denser coverage). Furthermore, hexagon independent rotation in terms of the first layer is executed: layer 2 = 35 degrees; layer 3 = 70 degrees
+-   Towers vary in distance to each other of the same layer, i.e. how far/close are towers of the same layer located to each other: layer 1 = 27,000m; layer 2 = 7000m; layer 3 = 900m (-\> the more urbanized, the closer the towers are too each other -\> denser coverage). Furthermore, hexagon independent rotation in reference to the first layer is executed: `layer 2` = 35 degrees; `layer 3` = 70 degrees
 
--   Each cell tower location is jittered in order to break the symmetry. The jitter amount depends on the layer: layer 1 = 5000m, layer 2 = 1000m, layer 3 = 400m.
+-   Each cell tower location is jittered in order to break the symmetry. The jitter amount depends on the layer: `layer 1` = 5000m, `layer 2` = 1000m, `layer 3` = 400m.
 
 -   Each tower contains three antennas pointing into 120 degree differing directions.
 
--   The layer determines the coverage diameter of an antenna: layer 1 = 15,000m; layer 2 = 2500m; layer 3 = 500m
+-   We assume a circular coverage. The layer determines the coverage diameter of an antenna: `layer 1` = 15,000m; `layer 2` = 2500m; `layer 3` = 500m.
 
--   Each tile of the focus area is sufficiently covered by at least one antenna and the antennas' coverage areas are allowed to overlap.
+-   Each tile of the focus area is sufficiently covered by at least one antenna and **the antennas' coverage areas are allowed to overlap.**
 
--   Parameters concerning the device to cell association are specified in the next section
+Parameters concerning the device to cell association are specified in the next subsection.
 
-The link to the source code for the layers.1 object as well as the coverage.areas.1 object is [here](https://github.com/R-ramljak/MNO_GM/blob/master/2_Radio%20cell%20generation.R).
+To operationalize this, we first define some helper objects that carry the specifications of the parameters and functions that help with specifiying. Furthermore, we create a layer object, `layers`, that contains three independent versions of our focus area, one for each layer. Each of these data frames contains the spatial area which the layer dependent network is covering. For this we span a regular hexagonal shape grid over these areas and introduce the mentioned rotation to `layer 2` and `layer 3`.
 
-The link to the source code for the layers object as well as the coverage.areas object is [here] (<https://github.com/R-ramljak/MNO_Eurostat/blob/master/code/2_Radio%20cell%20generation.R>).
+
+```{r}
+# Three region / layer types
+type <- list("Rural" = c("Rural", "Suburban", "Urban"),
+             "Suburban" = c("Suburban", "Urban"),
+             "Urban" = c("Urban"))
+layer.base <- list("Rural" = census.classified.final.sf, "Suburban" = census.classified.final.sf, "Urban" = census.classified.final.sf) %>% 
+  map2(., type, ~filter(.x, pop.area.kind %in% .y))
+
+
+area.kind <- list("Rural" = "Rural", "Suburban" = "Suburban", "Urban" = "Urban")
+tower.dist <- list("Rural" = 20000, "Suburban" = 4000, "Urban" = 900) # relation to radius (qm)
+rotation.degree <- list("Rural" = 0, "Suburban" = 35, "Urban" = 70)
+jitter <- list("Rural" = 5000, "Suburban" = 1000, "Urban" = 400)
+coverage.centroid.dist <- list("Rural" = 12000, "Suburban" = 2500, "Urban" = 500) # same as radius
+coverage.radius <- c("Rural" = 12000, "Suburban" = 2500, "Urban" = 500)
+# Focus area
+bb.focus.vec <- c(xmin = 4400000, xmax = 4500000,
+                  ymin = 2700000, ymax = 2900000)
+
+# functions
+rotation = function(a){
+  r = a * pi / 180 #degrees to radians
+  matrix(c(cos(r), sin(r), -sin(r), cos(r)), nrow = 2, ncol = 2)
+} 
+
+layer_network_generate = function(x, tower.dist, rotation.degree){
+  layer.geo <- x %>% 
+    st_make_grid(cellsize = tower.dist, 
+                 square = F, # hexagon 
+                 flat_topped = T) %>%  # different cell size (qm)
+    st_geometry()
+  
+  layer.centroid <- st_centroid(layer.geo)
+  layer <- (layer.geo - layer.centroid) * rotation(rotation.degree) + layer.centroid # rotate by 35 degrees
+  return(layer)
+  
+}
+
+# Generate layers
+layers <- pmap(list(layer.base, tower.dist, rotation.degree), 
+              ~layer_network_generate(x = ..1, tower.dist = ..2, rotation.degree = ..3)) %>% 
+  set_names(c("Layer.1", "Layer.2", "Layer.3"))
+
+# saveRDS(layers, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/radio cell layers.rds")
+```
 
 
 We use a hexagonal structure to place towers across our focus area. This is a quite realistic setup for cell towers. Each hexagon corresponds to one tower which is originally placed in the centroid of the respective hexagon. In order to exclude symmetrical structure, we implement some randomness in the exact location of the cell towers. 
 
-```{r network layers, fig.width = 7, fig.cap = "The figure presents the hexagonal structure. Each triangle is a tower location with some randomness implemented."}
-layers <- readRDS("working objects/radio cell layers.rds") 
-coverage.areas <- readRDS("working objects/coverage.areas.rds") 
- 
-coverage.layer1 <- coverage.areas %>%  
-  filter(area.kind == "Rural") %>%  
-  st_drop_geometry() %>%  
-  dplyr::select(-antenna.centroid) %>%  
+```{r}
+# Generate 3 antennas per tower and coverage areas
+coverage.areas.tower <- layers %>%
+  map2(., jitter, ~st_jitter(st_centroid(.x), .y)) %>%
+  map(~st_coordinates(.)) %>%
+  map(~as_tibble(.)) %>%
+  # map_at(c("Layer.1"), ~bind_rows(., manually.towers.rural)) %>% 
+  # map_at(c("Layer.2"), ~bind_rows(., manually.towers.suburban)) %>% 
+  map(~dplyr::select(., X.tow = X, Y.tow = Y)) %>% 
+  map2(., c("RT", "ST", "UT"), ~mutate(.x, tower.ID = paste0(.y, 1:n())))
+
+coverage.layer1 <- coverage.areas.tower[[1]] %>% # Layer 1
   st_as_sf(coords = c("X.tow", "Y.tow"), crs = 3035) 
  
-layers.plot <- layers[[1]] %>% 
+(layers.plot <- layers[[1]] %>% 
   st_as_sf(crs = 3035) %>%  
   ggplot() + 
-    # geom_rect(data = bb.focus.dat, aes(ymin = ymin, ymax = ymax,  
-    #                                   xmin = xmin, xmax = xmax),  
-    #         color = "black", size = 0.3, alpha = 0.5, fill = alpha("grey", 0)) + 
   geom_sf(linetype = "dotted") + 
   geom_sf(data = coverage.layer1, aes(color = "#4273C5"), shape = 17) + 
   scale_color_identity(name = "", 
-                       # breaks = c("Focus area"), 
                        labels = c("Jittered tower location"), 
                        guide = "legend") + 
   labs(x = NULL, y = NULL,
-       title = "",
-    subtitle = "Towers are located in the centroid of a hexagon.") +
-  theme(plot.title = element_text(size=10, face="bold", hjust = 0.5),
-  plot.subtitle = element_text(size=9,hjust = 0.5))
-   
-plot_grid(layers.plot,
-          labels = "Fig. 4:Radio network - Example Layer 1 (Rural)",
-          hjust = -0.1, label_size = 14)
+       title = "Tower locations in Layer 1")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+This example visualizes the tower locations for `layer 1`. The actual location deviates slightly from the centroid in order to break the symmetry of the underlying hexagonal structure. We can also see from this plot that the hexagonal grid spans over the complete focus area. Next we need to place three antennas on each tower for each layer and specify their coverage area. The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.
+
+```{r}
+knitr::include_graphics("https://raw.githubusercontent.com/R-ramljak/MNO_Eurostat/master/Gifs/antenna%20animation.gif")
 ```
 
-Figure 3 exemplifies the effect of the jitter parameter in the 1st layer, which covers the Rural tiles. The actual location deviates slightly from the centroid in order to break the symmetry of the underlying hexagonal structure. This is done for every layer.
+We end up with a data frame of the following format:
 
-The setup of a tower with its corresponding antennas is in every layer the same: Three antennas per tower, pointing into 120 degree differing directions. The animated visualization exemplifies this for any generic tower.
+```{r}
+coverage.areas.final <- coverage.areas.tower %>% 
+  map(~slice(., rep(1:n(), each = 3))) %>%
+  map(~group_by(., tower.ID)) %>%
+  map(~mutate(., antenna.ID = paste(tower.ID, "A", 1:3, sep = "."))) %>%
+  map(~ungroup(.)) %>%
+  map(~mutate(., antenna.kind = str_sub(antenna.ID, -1))) %>%
+  map2(., coverage.centroid.dist, ~mutate(.x,
+                                          X.ant.help = case_when(antenna.kind == "1" ~ X.tow - .y * 0,
+                                                                 antenna.kind == "2" ~ X.tow + .y * 0.77,
+                                                                 antenna.kind == "3" ~ X.tow - .y * 0.77),
+                                          Y.ant.help = case_when(antenna.kind == "1" ~ Y.tow - .y * 1, # meter distance apart
+                                                                 antenna.kind == "2" ~ Y.tow + .y * 0.77,
+                                                                 antenna.kind == "3" ~ Y.tow + .y * 0.77))) %>%
+  # map(~mutate(., X.ant = X.ant.help,
+  #             Y.ant = Y.ant.help)) %>% 
+  map(~st_as_sf(., coords = c("X.ant.help", "Y.ant.help"))) %>%
+  map(~mutate(., antenna.centroid = geometry)) %>% 
+  map2(., coverage.radius, ~st_buffer(.x, .y)) %>% # radius coverage are per antenna
+  map2(., coverage.radius, ~mutate(.x, coverage.radius = .y)) %>% # 
+  map(~st_sf(., crs = 3035)) %>%
+  map(~st_crop(., bb.focus.vec)) %>%
+  map(~st_set_agr(., "aggregate")) %>% # clean up
+  map2_dfr(., area.kind, ~mutate(., area.kind = .y))
 
-```{r animation}
-knitr::include_graphics("https://github.com/R-ramljak/MNO_Eurostat/raw/master/antenna%20animation.gif")
+saveRDS(coverage.areas.final, file = "C:/Users/Marco/OneDrive - Universiteit Utrecht/MNO/working objects/coverage.areas.rds")
+
+
+coverage.areas.final %>% 
+  sample_n(10) %>% 
+  kbl() %>%
+  kable_material(c("striped", "hover"))
 ```
 
-Basically, a tower is generated at its specified location, then three antennas are created. For the operationalized data structure, the antenna location is not really relevant as it corresponds to the respective tower location. What is more important are the antennas' *coverage area centroids* because they describe the middle point of the then generated circular coverage area. The specific radius of any generic coverage area is layer specific and listed above. As indicated in the animation, an antenna specific coverage area is setup with a variable *coverage intensity profile*. Basically, cell phones that are closer to the coverage area centroid of any antenna, have a higher coverage probability, which will be later introduced as the *signal strength* parameter.
+The table above presents the structure of the radio network object, `coverage.areas.final`. The data frame contains information on the antenna level. Each antenna has a unique ID, which also reveals the corresponding `Layer`. We know the location of the respective tower and the location of the antenna's coverage area centroid, (*coverage area centroid*).
 
-The following table presents the number of towers and the number of antennas of each layer (Rural, Urban and Suburban). More specifically, it is computed as a cumulative sum also the area in squared kilometers covered by each layers. 
+
+The following table presents the number of towers and the number of antennas of each `layer`. Furthermore, it indicates the coverage area in square kilometers. 
 The number of antennas is not always a perfect factor of 3 as the coverage areas are cropped according to the focus area. This means if the complete coverage area of an antenna lies outside of the focus area it is discarded.
 
 ```{r coverage areas 1}
-tile.count <- census.de.100m.tile %>%  
+tile.count <- census.classified.final.sf %>%  
   st_drop_geometry() %>% 
   group_by(pop.area.kind) %>%  
   summarise(area.in.sq.km = n() / 100) %>% 
@@ -261,7 +522,7 @@ tile.count <- census.de.100m.tile %>%
                                    pop.area.kind == "Urban" ~ cumsum(area.in.sq.km))) %>% 
   arrange(pop.area.kind)
 
-coverage.areas %>%  
+coverage.areas.final %>%  
   st_drop_geometry() %>%  
   group_by(area.kind, tower.ID) %>%  
   summarise(n.antenna = n(), .groups = "drop") %>%  
@@ -271,93 +532,68 @@ coverage.areas %>%
             n.antenna = sum(n.antenna), .groups = "drop") %>%  
   left_join(tile.count, by = c("area.kind" = "pop.area.kind")) %>%  
   dplyr::select(layer = area.kind, n.tower, n.antenna, area.in.sq.km) %>%  
-  kbl(caption = "Descriptive statistics per coverage layer") %>%
-  kable_minimal() %>%
+  kbl() %>%
+  kable_material(c("striped", "hover"))
   footnote(general = "`area.in.sq.km` reports the actual area that was used for the generation of the coverage. Therefore, the first layer spans over the whole focus area, the second layer over the suburban and urban area, and the third layer over the urban area.")
 ```
 
-As described in the parameter list above, Rural areas are covered only by layer 1, Suburban areas are covered by layer 1 and 2 and the urbanized areas are covered by all three layers. The average distance between multiple towers of the same layer decrease in layer 2 and layer 3 compared to layer 1. This leads to denser networks within these layers represented by the higher numbers of towers and therefore higher numbers of antennas in layer 2 and 3, given their area. The reason for this is that any generic antenna can only offer signal service to a limited amount of number of mobile phones. To cover all cell phones in more urbanized areas a denser radio cell network is needed in these areas.
+As described in the parameter list above, `Rural` areas are covered only by `layer 1`, `Suburban` areas are covered by `layer 1` and `2` and the `Urban` areas are covered by all three layers. The average distance between multiple towers of the same layer decreases in `layer 2` and `layer 3` compared to `layer 1`. This leads to denser networks within these layers represented by the higher numbers of towers and therefore higher numbers of antennas in `layer 2` and `3`, given their area. The reason for this is that any generic antenna can only offer signal service to a limited amount of number of mobile phones. To cover all cell phones in more urbanized areas a denser radio cell network is needed in these areas.
 
-The following figures present the actual coverage of each layer for the focus area.
+The following figures present the actual geographic coverage of each layer for the focus area.
 
-```{r coverage areas 2, fig.cap = "The circles represent the coverage area of each antenna per layer. The signal density increases with increasing population density."}
-coverage.area.plot <- coverage.areas %>%  
+```{r coverage-areas-2, fig.cap = "The circles represent the coverage area of each antenna per layer. The signal density increases with increasing population density."}
+(coverage.area.plot <- coverage.areas.final %>%  
   ggplot() + 
   geom_sf(aes(col = area.kind), fill = NA) + 
   facet_grid(cols = vars(area.kind)) + 
   ggtitle("") + 
     scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-  labs(x = NULL, y = NULL) +
-  theme(axis.text.x=element_text(angle=90, hjust=1),plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-  plot.subtitle = element_text(size = 9, hjust = 0.5))
-
-plot_grid(coverage.area.plot, labels = "Fig. 5: Coverage per layer",
-          hjust = -0.1, label_size = 14) 
+  labs(x = NULL, y = NULL, title = "Coverage per layer")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-The interpretations of the Figure 5 above correspond to the level of coverage of each layer. It should be noticed that the antennas' coverage areas are allowed to overlap - with antennas of the same tower, as well as across towers of the same or another layer.
+The figure above visualizes the possibility of overlapping coverage areas - with antennas of the same tower, as well as across towers of the same or another layer.
 
-```{r coverage areas 3, fig.cap = "The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density."}
+Finally, we can compare our true geographic population distribution and our generated radio network.
+
+```{r coverage-areas-3, fig.cap = "The figure on the left shows the geographical distribution of the tiles classified into the three layers based on the spatial clustering. On the right side, the coverage per layer is represented. The full coverage corresponds to the population density.", fig.show="hold"}
 # Implement shape of focus area
 
-pop.dist.map.plot <- ECCDF.pop.data %>% 
-  # sample_n(1000) %>%
+pop.dist.map.plot <- census.classified.final.sf %>% 
+  sample_n(1000) %>%
   ggplot() + 
   geom_sf(aes(color = pop.area.kind), show.legend = F) + 
-  scale_color_ptol(breaks = c("Uninhabitated", "Rural", "Suburban", "Urban")) + 
-  ggtitle("", subtitle = " Fig. 6a : Geographic distribution") + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "mm"), axis.text.x=element_text(angle=90, hjust=1)) 
+  scale_color_ptol(breaks = breaks.first) + 
+  ggtitle("Geographic distribution") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
  
-coverage.area.full.plot <- coverage.areas %>% 
+coverage.area.full.plot <- coverage.areas.final %>% 
   ggplot() +
   geom_sf(aes(col = area.kind), fill = NA) +
-  ggtitle("", subtitle = "Fig. 6b: Full coverage") +
-    scale_color_ptol(breaks = c("Rural", "Suburban", "Urban"), "Layer") +
-  theme(axis.text.x=element_text(angle=90, hjust=1),
-        plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
-  plot.subtitle = element_text(size = 9, hjust = 0.5))
+  ggtitle("Full coverage") +
+    scale_color_ptol(breaks = breaks.first, "Layer") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-plot_grid(pop.dist.map.plot, coverage.area.full.plot, labels = "Fig. 6: Full coverage corresponding to the density", 
-          hjust = -0.1, label_size = 14)
+
+pop.dist.map.plot
+coverage.area.full.plot
 ```
 
-Figure 6b presents the full network structure. By comparing the network structure to the tile density in Figure 6a we can see that full, partially overlapping coverage is granted for all areas and that the network layering structure follows suit with the true geographical population density.
+The figure on the right presents the full network structure. By comparing the network structure to the geographic distribution we can see that full, partially overlapping coverage is granted for all areas and that the network layering structure follows suit with the true geographical population density.
 
-```{r coverage intensity, fig.width = 7, fig.cap= paste0("The distribution is right skewed with a mean of ", round(mean(coverage.intensity$count), 2),", a minimum of ", min(coverage.intensity$count),", and a maximum of ", max(coverage.intensity$count)," antenna(s) per tile.")}
-tiles.cat <- readRDS("working objects/coverage intensity.rds")
-coverage.intensity <- tiles.cat %>%
-  # left_join(census.de.100m.tile, by = "internal.id") %>% 
-  # dplyr::select(internal.id, count, pop.area.kind) %>% 
-  arrange(count) #%>%
-  #mutate(prob = 1 / n()) %>%
-  #mutate(cum.prob = cumsum(prob))
+The radio network generation marks the next important interim result in the Generation of our Toy World. We now have radio network implemented into our geography and that covers to a sufficient degree all tiles. However, this does not guarantee that all units in the population can actually connect, and therefore be counted, to an antenna. We will introduce the parameter of **signal strength** as this describes the differing coverage intensity, dependent on how far a mobile phone is from the coverage area centroid. This will be handlded in the next part, **device to cell (antenna) association**.
 
-coverage.intensity.plot <- coverage.intensity %>%
-  ggplot() +
-  stat_count(aes(count), fill = "#4477A9") +
-  geom_vline(xintercept = mean(coverage.intensity$count), linetype = "solid", color = "#117733", size = 1.5) +
-  geom_vline(xintercept = median(coverage.intensity$count), linetype = "solid", color = "#CC6677", size = 1.5) +
-  annotate("text", x = median(coverage.intensity$count) - 2, y = 5e+05, color = "#CC6677",
-           label = paste("Median =", median(coverage.intensity$count))) +
-  annotate("text", x = round(mean(coverage.intensity$count), 2) + 2, y = 5e+05, color = "#117733", 
-           label = paste("Mean =", round(mean(coverage.intensity$count), 2))) +
-  labs(y = "Count of tiles", x = "Covered by ... antennas", colour = "", title = "")
-  # facet_grid(~pop.area.kind)
-  
-  
-plot_grid(coverage.intensity.plot, labels = "Fig. 7: Number of antennas covering a tile",
-          hjust = -0.1, label_size = 14)
-```
 
-Figure 7 shows a histogram representing the number of antennas per tile. The distribution is right skewed with a mean of `r round(mean(coverage.intensity$count), 2)`, a minimum of `r min(coverage.intensity$count)` and a maximum of `r max(coverage.intensity$count)` antenna(s) per tile. So, we have a median of `r median(coverage.intensity$count)` antennas per tile, which is a more robust measure than the mean that is driven by the extreme values. Even though the coverage areas were generated synthetically, this distribution mimics a realistic layout.
+## Device to cell association
 
-## Device-to-cell association
+The fact that we allow for overlapping coverage areas means that mobile phones have different antennas they can connect to, when being at a location that is multiply covered. In our toy world this makes it possible to associate mobile phones to antennas in a stochastic manner. This is also the reason why we cannot know yet, how many phones are assigned to each antenna. With overlapping coverage areas, we let a relevant subset of antennas compete for the mobile phones which are in their reach. This will be dependent on the signal strength parameter. 
 
-At this stage we have added to the geographically distributed mobile phone population a radio network, which is setup in three layers, spanning respectively across tiles that correspond to specific tile classification. (`pop.area.kind`).
+This part will establish the association between mobile phones of a generic tile to a relevant antenna. The result will be a reference matrix $P$ of size $I x J$, where $I$ denotes the total number of radio cells (antennas), $J$ is the total number of tiles, and the elements correspond to the probability of the mobile phones of any tile $j$ which are registered in the cell $i$. With $P$ one is able to simulate a column vector $c$ (random variable) which describes the total count of mobile phones associated to a radio cell.
 
-The following module will establish the association between mobile phones of a generic tile to a relevant antenna. The result will be a reference matrix $P$ of size $I x J$, where I denotes the total number of radio cells (antennas), $J$ is the total number of tiles and the elements correspond to the probability of the mobile phones of any tile $j$ are registered in the cell $i$. With $P$ one is able to simulate the column vector $c$ (random variable) which describes the total count of mobile phone associated to a radio cell.
+We assume that $\mathcal{L}_{j}$ denotes the subset of radio cells covering a particular tile. This means that these respective radio cells are competing with each other to be associated with the cell phones in the tile. We therefore assign probabilities which describe the respective association between a radio cell $i$ and tile $j$. 
 
-Assuming that $\mathcal{L}_{j}$ denotes the subset of radio cells covering a particular tile (remember, overlapping coverage areas are very common). This means that these respective radio cells are competing with each other to be associated with the cell phones in the tile. We therefore assign probabilities which describe the respective association between a radio cell $i$ and tile $j$. This probability depends on the parameter signal strength which we mimic with a simple linear function that describes the gradual decrease in signal the further away the tile centroid $j$ is from the coverage area centroid of $i$:
+
+This probability depends on the parameter signal strength which we mimic with a simple linear function that describes the gradual decrease in signal the further away the tile centroid $j$ is from the coverage area centroid of $i$:
 
 $$
 s_{ij} = \frac{d_{ij}}{r_{i}}
@@ -440,3 +676,33 @@ plot_grid(extreme.antennas.plot, labels = "Fig. 9: Extreme antennas",
           hjust = -0.1, label_size = 14) 
 ```
 
+
+
+
+```{r coverage intensity, fig.width = 7, fig.cap= paste0("The distribution is right skewed with a mean of ", round(mean(coverage.intensity$count), 2),", a minimum of ", min(coverage.intensity$count),", and a maximum of ", max(coverage.intensity$count)," antenna(s) per tile.")}
+tiles.cat <- readRDS("working objects/coverage intensity.rds")
+coverage.intensity <- tiles.cat %>%
+  # left_join(census.de.100m.tile, by = "internal.id") %>% 
+  # dplyr::select(internal.id, count, pop.area.kind) %>% 
+  arrange(count) #%>%
+  #mutate(prob = 1 / n()) %>%
+  #mutate(cum.prob = cumsum(prob))
+
+coverage.intensity.plot <- coverage.intensity %>%
+  ggplot() +
+  stat_count(aes(count), fill = "#4477A9") +
+  geom_vline(xintercept = mean(coverage.intensity$count), linetype = "solid", color = "#117733", size = 1.5) +
+  geom_vline(xintercept = median(coverage.intensity$count), linetype = "solid", color = "#CC6677", size = 1.5) +
+  annotate("text", x = median(coverage.intensity$count) - 2, y = 5e+05, color = "#CC6677",
+           label = paste("Median =", median(coverage.intensity$count))) +
+  annotate("text", x = round(mean(coverage.intensity$count), 2) + 2, y = 5e+05, color = "#117733", 
+           label = paste("Mean =", round(mean(coverage.intensity$count), 2))) +
+  labs(y = "Count of tiles", x = "Covered by ... antennas", colour = "", title = "")
+  # facet_grid(~pop.area.kind)
+  
+  
+plot_grid(coverage.intensity.plot, labels = "Fig. 7: Number of antennas covering a tile",
+          hjust = -0.1, label_size = 14)
+```
+
+Figure 7 shows a histogram representing the number of antennas per tile. The distribution is right skewed with a mean of `r round(mean(coverage.intensity$count), 2)`, a minimum of `r min(coverage.intensity$count)` and a maximum of `r max(coverage.intensity$count)` antenna(s) per tile. So, we have a median of `r median(coverage.intensity$count)` antennas per tile, which is a more robust measure than the mean that is driven by the extreme values. Even though the coverage areas were generated synthetically, this distribution mimics a realistic layout.
